@@ -1,0 +1,9 @@
+node/
+bower_components/
+node_modules/
+lib/
+target/
+.idea/
+.project
+.DS_Store
+spring-flo.iml
