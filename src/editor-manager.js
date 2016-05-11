@@ -1574,8 +1574,7 @@ define(function(require) {
 //	    }
 //	});
 	
-	$scope.flo.scheduleUpdateGraphRepresentation = function (evt) {
-		//enableSyncing(false);
+	$scope.flo.scheduleUpdateGraphRepresentation = function() {
 		if (graphUpdateTimer) {
 			$timeout.cancel(graphUpdateTimer);
 		}
@@ -1583,9 +1582,6 @@ define(function(require) {
 			graphUpdateTimer = null;
 			updateGraphRepresentation();
 		}, 300 );
-		if (evt) {
-			evt.stopPropagation();
-		}
 	};
 	
 	$scope.flo.updateGraphRepresentation = updateGraphRepresentation;
