@@ -28,7 +28,7 @@ The same here includes a very basic domain that you can easily customize:
 
 - there are a handful of nodes with basic properties. These are defined in
   `metamodel-sample.json` - that is a JSON array of the modules supported.
-- the DSL form is `module --key=value --key=value | nextModule --key=value`.
+- the DSL form is `module --key=value --key=value > nextModule --key=value`.
 - the conversion from text to graph is done in `text-to-graph.js`
 - the conversion from graph to text is done in `graph-to-text.js`
 
