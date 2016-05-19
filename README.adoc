@@ -27,7 +27,7 @@ If you have any questions, issues, feedback or feature request please https://gi
 
 ## Samples
 
-A small self contained sample usage of Spring Flo is coming soon. The https://github.com/spring-cloud/spring-cloud-dataflow-ui[Spring Cloud Data Flow UI] at github shows a larger scale usage of Spring Flo.
+A small self contained sample usage of Spring Flo is now available in the https://github.com/spring-projects/spring-flo/tree/master/samples/spring-flo-sample[samples] sub folder. It includes a README that describes running it and where you might want to customize it. The https://github.com/spring-cloud/spring-cloud-dataflow-ui[Spring Cloud Data Flow UI] at github shows a larger scale usage of Spring Flo.
 
 ## Contributing
 
