@@ -5,3 +5,10 @@ before_script:
   - 'npm install -g bower grunt-cli'
   - 'bower install'
 script: grunt 
+
+notifications:
+  email:
+    - aclement@pivotal.io
+    - aboyko@pivotal.io
+    - sanandan@pivotal.io
+  on_failure: always
