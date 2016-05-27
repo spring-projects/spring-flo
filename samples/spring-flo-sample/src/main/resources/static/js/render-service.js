@@ -71,20 +71,6 @@ define(function(require) {
 				if (node.attr('metadata/constraints/maxOutgoingLinksNumber') === 0) {
 					node.attr('.output-port/display','none');
 				}
-
-	            var type = node.attr('metadata/name');
-	            if (type === 'tap') {
-	                if (!node.attr('props/channel')) {
-	                    node.attr('props/channel', 'tap:stream:STREAM');
-	                }
-	                refreshVisuals(node, 'props/channel', context.paper);
-	            } else if (type === 'named-channel') {
-	                // Default channel for named channel is 'queue:default'
-	                if (!node.attr('props/channel')) {
-	                    node.attr('props/channel', 'queue:default');
-	                }
-	                refreshVisuals(node, 'props/channel', context.paper);
-	            }
 			}
 
         }
@@ -94,8 +80,8 @@ define(function(require) {
     	        smooth: true,
         		attrs: {
     	        	'.': { 
-				//filter: { name: 'dropShadow', args: { dx: 1, dy: 1, blur: 2 } } 
-			},
+    	        		//filter: { name: 'dropShadow', args: { dx: 1, dy: 1, blur: 2 } } 
+    	        	},
     	        	'.connection': { 'stroke-width': 3, 'stroke': 'black', 'stroke-linecap': 'round' },
     	        	'.marker-arrowheads': { display: 'none' },
     	        	'.tool-options': { display: 'none' }
@@ -109,27 +95,7 @@ define(function(require) {
         }
         
         function refreshVisuals(element, changedPropertyPath/*, paper*/) {
-        	var type = element.attr('metadata/name');
-        	
-        	if (type === 'tap' && changedPropertyPath === 'props/channel') {
-                var name = element.attr('props/channel');
-                if (name) {
-                    var colon = name.indexOf(':');
-                    if (colon !== -1) {
-                        colon = name.indexOf(':',colon+1);
-                        if (colon !== -1) {
-                            var displayValue = name.substring(0,colon) + '\n' + name.substring(colon);
-                            element.attr('.label2/text', displayValue);
-                        }
-                    }
-                } else {
-                	element.removeAttr('.label2/text');
-                }
-        	}
-        	
-        	if (type === 'named-channel' && changedPropertyPath === 'props/channel') {
-        		element.attr('.label2/text', element.attr('props/channel'));
-        	} 
+//        	var type = element.attr('metadata/name');
         }
 
         function layout(paper) {

@@ -61,50 +61,20 @@ define(function(require) {
 	            var source = dragDescriptor.source ? dragDescriptor.source.cell : undefined;
 	            var target = dragDescriptor.target ? dragDescriptor.target.cell : undefined;
 	            if (target instanceof joint.dia.Element && target.attr('metadata/name')) {
+		            // Custom handling allowing a node to be dropped on a port and inserting
+		            // it into the flow directly without the user needing to do more link
+	            	// drawing
 	                var type = source.attr('metadata/name');
-	                if (type === 'tap') {
-	                    // Fill in the channel on the new node
-	                    // work out tap name, something like: tap:stream:mystream.filter (filter optional if on head of stream)
-	                    // 1. work your way back from node that was dropped on to the first node (the one with no further links)
-	                    var oncell = target;
-	                    var headerCell = oncell;
-	                    var incomingLinks = graph.getConnectedLinks(oncell, { inbound: true });
-	                    while (incomingLinks.length !== 0) {
-	                        headerCell = graph.getCell(incomingLinks[0].get('source').id);
-	                        incomingLinks = graph.getConnectedLinks(headerCell, { inbound: true });
-	                    }
-	                    var streamname = 'STREAM';
-	                    if (headerCell.attr('stream-name')) {
-	                        streamname = headerCell.attr('stream-name');
-	                    }
-	                    else {
-	                        var streamId = headerCell.attr('stream-id');
-	                        if (streamId) {
-	                            streamname = 'STREAM'+streamId;
-	                        } else {
-	                            streamname = 'STREAM';
-	                        }
-	                        headerCell.attr('stream-name',streamname);
-	                    }
-	                    var channel = 'tap:stream:'+streamname;
-	                    var label2 = 'tap:stream:\n' + streamname;
-	                    if (oncell.id !== headerCell.id) {
-	                        channel = channel + '.' + oncell.attr('.label/text');
-	                        label2 = label2 + '.' + oncell.attr('.label/text');
-	                    }
-	                    source.attr('.label2/text', label2);
-	                    source.attr('props/channel', channel);
-	                    relinking = true;
-	                } else {
-	                    if (dragDescriptor.target.selector === '.output-port') {
-	                        moveNodeOnNode(flo, source, target, 'right', true);
-	                        relinking = true;
-	                    } else if (dragDescriptor.target.selector === '.input-port') {
-	                        moveNodeOnNode(flo, source, target, 'left', true);
-	                        relinking = true;
-	                    }
-	                }
+                    if (dragDescriptor.target.selector === '.output-port') {
+                        moveNodeOnNode(flo, source, target, 'right', true);
+                        relinking = true;
+                    } else if (dragDescriptor.target.selector === '.input-port') {
+                        moveNodeOnNode(flo, source, target, 'left', true);
+                        relinking = true;
+                    }
 	            } else if (target instanceof joint.dia.Link) { // jshint ignore:line
+	            	// Custom handling allowing a node to be dropped on a link and inserting
+	            	// itself in that link without the user needing to do more link drawing
 	                moveNodeOnLink(flo, source, target);
 	                relinking = true;
 	            }
@@ -115,19 +85,7 @@ define(function(require) {
 	        }
 
 	        function calculateDragDescriptor(flo, draggedView, targetUnderMouse, point, context) {
-	            // check if it's a tap being dragged
 	            var source = draggedView.model;
-	            if ((targetUnderMouse instanceof joint.dia.Element) && source.attr('metadata/name') === 'tap') { // jshint ignore:line
-	                return {
-	                    context: context,
-	                    source: {
-	                        cell: draggedView.model,
-	                    },
-	                    target: {
-	                        cell: targetUnderMouse,
-	                    }
-	                };
-	            }
 
 	            // Find closest port
 	            var range = 30;
@@ -200,7 +158,11 @@ define(function(require) {
 	            }
 
 	            // Check if drop on a link is allowed
-	            if (targetUnderMouse instanceof joint.dia.Link && !(source.attr('metadata/constraints/xorSourceSink') || source.attr('metadata/constraints/maxOutgoingLinksNumber') === 0 || source.attr('metadata/constraints/maxIncomingLinksNumber') === 0) && graph.getConnectedLinks(source).length === 0) { // jshint ignore:line
+	            if (targetUnderMouse instanceof joint.dia.Link && 
+	            		!(source.attr('metadata/constraints/xorSourceSink') || 
+	            		  source.attr('metadata/constraints/maxOutgoingLinksNumber') === 0 || 
+	            		  source.attr('metadata/constraints/maxIncomingLinksNumber') === 0) && 
+	            		graph.getConnectedLinks(source).length === 0) { // jshint ignore:line
 	                return {
 	                    context: context,
 	                    source: {
@@ -393,6 +355,11 @@ define(function(require) {
 	            }
 	        }
 
+	        /**
+	         * Node moved onto a link. Remove the existing link and replace it with two links
+	         * that go from the original link source to the dropped node and from the dropped node
+	         * to the original link target.
+	         */
 	        function moveNodeOnLink(flo, node, link, shouldRepairDamage) {
 	            var source = link.get('source').id;
 	            var target = link.get('target').id;
@@ -403,29 +370,19 @@ define(function(require) {
 	            link.remove();
 
 	            if (source) {
-	                flo.createLink({
-	                    'id': source,
-	                    'selector': '.output-port'
-	                }, {
-	                    'id': node.id,
-	                    'selector': '.input-port'
-	                });
+	                flo.createLink({'id': source,'selector': '.output-port'}, {'id': node.id,'selector': '.input-port'});
 	            }
 	            if (target) {
-	                flo.createLink({
-	                    'id': node.id,
-	                    'selector': '.output-port'
-	                }, {
-	                    'id': target,
-	                    'selector': '.input-port'
-	                });
+	                flo.createLink({'id': node.id,'selector': '.output-port'}, {'id': target,'selector': '.input-port'});
 	            }
 	        }
 
+	        /**
+	         * When a node is removed any dangling links should be removed. What this function will also try to do
+	         * is if removing a node from a chain it will attempt to replace dangling links with a link from the
+	         * deleted nodes original source to the deleted nodes original target.
+	         */
 	        function repairDamage(flo, node) {
-	            /*
-	             * remove incoming, outgoing links and cache their sources and targets not equal to current node
-	             */
 	            var sources = [];
 	            var targets = [];
 	            var i = 0;
@@ -442,29 +399,17 @@ define(function(require) {
 	                }
 	            }
 	            /*
-	             * best attempt to connect source and targets bypassing the node
+	             * If appropriate, create new links to replace the dangling ones deleted
 	             */
 	            if (sources.length === 1) {
 	                var source = sources[0];
 	                for (i = 0; i < targets.length; i++) {
-	                    flo.createLink({
-	                        'id': source,
-	                        'selector': '.output-port'
-	                    }, {
-	                        'id': targets[i],
-	                        'selector': '.input-port'
-	                    });
+	                    flo.createLink({'id': source,'selector': '.output-port'}, {'id': targets[i],'selector': '.input-port'});
 	                }
 	            } else if (targets.length === 1) {
 	                var target = targets[0];
 	                for (i = 0; i < sources.length; i++) {
-	                    flo.createLink({
-	                        'id': sources[i],
-	                        'selector': '.output-port'
-	                    }, {
-	                        'id': target,
-	                        'selector': '.input-port'
-	                    });
+	                    flo.createLink({'id': sources[i], 'selector': '.output-port'}, {'id': target,'selector': '.input-port'});
 	                }
 	            }
 	        }
