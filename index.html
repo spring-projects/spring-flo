@@ -1,0 +1,77 @@
+---
+# The name of your project
+title: Spring Flo
+
+badges:
+
+  # Specify your project's twitter handle, if any. Delete if none.
+  twitter: SpringCentral
+
+  # Customize your project's badges. Delete any entries that do not apply.
+  custom:
+    - name: Source (GitHub)
+      url:  https://github.com/spring-projects/spring-flo
+      icon: github
+
+    - name: Issues (GitHub Issues)
+      url:  https://github.com/spring-projects/spring-flo/issues
+      icon: tracking
+
+    - name: CI (Travis)
+      url:  https://travis-ci.org/spring-projects/spring-flo
+      icon: ci
+
+---
+<!DOCTYPE HTML>
+<html lang="en-US">
+
+<!-- Specify the parent of this project (or delete if none) to influence the rendering of the breadcrumb -->
+
+{% capture billboard_description %}
+
+Spring Flo is a JavaScript library that offers a basic embeddable HTML5 visual builder for pipelines 
+and simple graphs. This library is used as the basis of the stream builder in [Spring Cloud Data Flow](http://cloud.spring.io/spring-cloud-dataflow/)
+and [Spring XD](http://projects.spring.io/spring-xd/).
+
+{% endcapture %}
+
+{% capture main_content %}
+
+Flo includes all the basic elements of an integration-flow designer such as connectors, 
+control nodes, palettes, state transitions, and graph topologies—importantly, there is a textual 
+shell, DSL support, and a graphical canvas designed for creating and reviewing comprehensive 
+workflows.
+
+## Features
+
+* Create, manage, and monitor stream pipelines using DSL, a graphical canvas, or both
+* Write pipelines via DSL with content-assist and auto-complete
+* See a visual representation of modules across a distributed deployment
+* Use auto-adjustment and grid-layout capabilities in the GUI for easier and more efficient 
+organization of pipelines
+
+<span id="quick-start"></span>
+
+## Quick Start
+
+Step 1 - [Build Flo](https://github.com/spring-projects/spring-flo#build)
+
+Step 2 - Try [Flo Samples](https://github.com/spring-projects/spring-flo#samples)
+
+Step 3 - Try Spring Cloud Data Flow's [Stream Designer](https://github.com/spring-cloud/spring-cloud-dataflow-ui)
+
+{% endcapture %}
+
+{% capture related_resources %}
+
+### Sample Projects
+
+* [Spring Cloud Data Flow](https://github.com/spring-cloud/spring-cloud-dataflow)
+* [Spring Cloud Data Flow UI](https://github.com/spring-cloud/spring-cloud-dataflow-ui)
+* [Spring XD]({{site.projects_site_url}}/spring-xd/)
+
+{% endcapture %}
+
+
+{% include project_page.html %}
+</html>
