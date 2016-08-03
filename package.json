@@ -6,10 +6,6 @@
     "type": "git",
     "url": "http://github.com/spring-projects/spring-flo.git"
   },
-  "licenses": [{
-    "type": "Apache-2.0",
-    "url": "http://www.apache.org/licenses/LICENSE-2.0"
-  }],
   "devDependencies": {
     "bower": "1.3.12",
     "grunt": "0.4.5",
