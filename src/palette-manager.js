@@ -134,101 +134,103 @@ define(function(require) {
 
 		// TODO lock to grid on drag? (if grid is on)
 
-		var ConstraintElementView = joint.dia.ElementView.extend({
-		    pointerdown: function(/*evt, x, y*/) {
-		    	// Remove the tooltip
-	    		$('.node-tooltip').remove();	
-				// TODO move metadata to the right place (not inside attrs I think)
-				clickedElement = this.model;
-				if (clickedElement.attr('metadata')) {
-					$(document).on('mousemove', handleDrag);
-				}
-		    },
-		    pointermove: function(/*evt, x, y*/) {
-		    	// Nothing to prevent move within the palette canvas
-		    },
-		    events: {
-		    	// Tooltips on the palette elements
-		    	'mouseenter': function(evt) {
-		    		
-		    		// Ignore 'mouseenter' if any other buttons are pressed
-		    		if (evt.buttons) {
-		    			return;
+		function getPaletteView(view) {
+			return view.extend({
+			    pointerdown: function(/*evt, x, y*/) {
+			    	// Remove the tooltip
+		    		$('.node-tooltip').remove();	
+					// TODO move metadata to the right place (not inside attrs I think)
+					clickedElement = this.model;
+					if (clickedElement.attr('metadata')) {
+						$(document).on('mousemove', handleDrag);
+					}
+			    },
+			    pointermove: function(/*evt, x, y*/) {
+			    	// Nothing to prevent move within the palette canvas
+			    },
+			    events: {
+			    	// Tooltips on the palette elements
+			    	'mouseenter': function(evt) {
+			    		
+			    		// Ignore 'mouseenter' if any other buttons are pressed
+			    		if (evt.buttons) {
+			    			return;
+			    		}
+			    		
+			    		var model = this.model;
+			    		var metadata = model.attr('metadata');
+			    		if (!metadata) {
+			    			return;
+			    		}
+			    		
+			    		this.showTooltip(evt.pageX, evt.pageY);
+			    	},
+			    	// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
+			    	'mouseleave': function(/*evt, x,y*/) {
+			    		this.hideTooltip();
+			    	},
+			    	'mousemove': function(evt) {
+			    		this.moveTooltip(evt.pageX, evt.pageY);
+			    	}		    	
+			    },
+			    
+			    showTooltip: function(x, y) {
+			    	var model = this.model;
+			    	var metadata = model.attr('metadata');
+		    		// TODO refactor to use tooltip module
+		    		var nodeTooltip = document.createElement('div');
+		    		$(nodeTooltip).addClass('node-tooltip');
+		    		$(nodeTooltip).appendTo($('body')).fadeIn('fast');
+		    		var nodeDescription = document.createElement('div');
+		    		$(nodeTooltip).addClass('tooltip-description');
+		    		$(nodeTooltip).append(nodeDescription);
+			    		
+		    		metadata.get('description').then(function(description) {
+		    			$(nodeDescription).text(description ? description : model.attr('metadata/name'));
+		    		}, function() {
+		    			$(nodeDescription).text(model.attr('metadata/name'));
+		    		});
+			    		
+		    		if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
+		    			metadata.get('properties').then(function(metaProps) {
+		    				if (metaProps) {
+		    					Object.keys(metaProps).sort().forEach(function(propertyName) {
+				    				var optionRow = document.createElement('div');
+				    				var optionName = document.createElement('span');
+				    				var optionDescription = document.createElement('span');
+				    				$(optionName).addClass('node-tooltip-option-name');
+				    				$(optionDescription).addClass('node-tooltip-option-description');
+				    				$(optionName).text(metaProps[propertyName].name);
+				    				$(optionDescription).text(metaProps[propertyName].description);
+				    				$(optionRow).append(optionName);
+				    				$(optionRow).append(optionDescription); 
+				    				$(nodeTooltip).append(optionRow);
+		    					});
+		    				}
+		    			}, function(error) {
+		    				if (error) {
+		    					$log.error(error);
+		    				}
+		    			});
 		    		}
-		    		
-		    		var model = this.model;
-		    		var metadata = model.attr('metadata');
-		    		if (!metadata) {
-		    			return;
-		    		}
-		    		
-		    		this.showTooltip(evt.pageX, evt.pageY);
-		    	},
-		    	// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
-		    	'mouseleave': function(/*evt, x,y*/) {
-		    		this.hideTooltip();
-		    	},
-		    	'mousemove': function(evt) {
-		    		this.moveTooltip(evt.pageX, evt.pageY);
-		    	}		    	
-		    },
-		    
-		    showTooltip: function(x, y) {
-		    	var model = this.model;
-		    	var metadata = model.attr('metadata');
-	    		// TODO refactor to use tooltip module
-	    		var nodeTooltip = document.createElement('div');
-	    		$(nodeTooltip).addClass('node-tooltip');
-	    		$(nodeTooltip).appendTo($('body')).fadeIn('fast');
-	    		var nodeDescription = document.createElement('div');
-	    		$(nodeTooltip).addClass('tooltip-description');
-	    		$(nodeTooltip).append(nodeDescription);
-		    		
-	    		metadata.get('description').then(function(description) {
-	    			$(nodeDescription).text(description ? description : model.attr('metadata/name'));
-	    		}, function() {
-	    			$(nodeDescription).text(model.attr('metadata/name'));
-	    		});
-		    		
-	    		if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
-	    			metadata.get('properties').then(function(metaProps) {
-	    				if (metaProps) {
-	    					Object.keys(metaProps).sort().forEach(function(propertyName) {
-			    				var optionRow = document.createElement('div');
-			    				var optionName = document.createElement('span');
-			    				var optionDescription = document.createElement('span');
-			    				$(optionName).addClass('node-tooltip-option-name');
-			    				$(optionDescription).addClass('node-tooltip-option-description');
-			    				$(optionName).text(metaProps[propertyName].name);
-			    				$(optionDescription).text(metaProps[propertyName].description);
-			    				$(optionRow).append(optionName);
-			    				$(optionRow).append(optionDescription); 
-			    				$(nodeTooltip).append(optionRow);
-	    					});
-	    				}
-	    			}, function(error) {
-	    				if (error) {
-	    					$log.error(error);
-	    				}
-	    			});
-	    		}
-		    		
-	            var mousex = x + 10;
-	            var mousey = y + 10; 
-	            $('.node-tooltip').css({ top: mousey, left: mousex });
-		    },
-		    
-		    hideTooltip: function() {
-	    		$('.node-tooltip').remove();	
-		    },
-		    
-		    moveTooltip: function(x, y) {
-	    		var mousex = x + 10; // Get X coordinates
-    	        var mousey = y + 10; // Get Y coordinates
-    	        $('.node-tooltip').css({ top: mousey, left: mousex });
-		    }
+			    		
+		            var mousex = x + 10;
+		            var mousey = y + 10; 
+		            $('.node-tooltip').css({ top: mousey, left: mousex });
+			    },
+			    
+			    hideTooltip: function() {
+		    		$('.node-tooltip').remove();	
+			    },
+			    
+			    moveTooltip: function(x, y) {
+		    		var mousex = x + 10; // Get X coordinates
+	    	        var mousey = y + 10; // Get Y coordinates
+	    	        $('.node-tooltip').css({ top: mousey, left: mousex });
+			    }
 
-		});
+			});
+		}
 
 		function createPaletteGroup(title, isOpen) {
 			var newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs:{text:{text:title}}});
@@ -470,7 +472,7 @@ define(function(require) {
 				model:paletteGraph,
 				height: $(domContext.parentNode).height(),
 				width: $(domContext.parentNode).width(),
-				elementView: ConstraintElementView
+				elementView: getPaletteView(renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : joint.dia.ElementView)
 			});
 			
 			palette.on('cell:pointerup',
