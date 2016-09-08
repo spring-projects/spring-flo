@@ -22,7 +22,9 @@ requirejs.config({
     jquery: '../lib/jquery/jquery',
     bootstrap: '../lib/bootstrap/bootstrap',
     lodash: '../lib/lodash/lodash.compat',
-    jshint: '../lib/jshint/dist/jshint'
+    jshint: '../lib/jshint/dist/jshint',
+	floDirectives: './directives',
+	floServices: './services'
   },
   map: {
       '*': {

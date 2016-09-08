@@ -19,60 +19,60 @@ define(function(require) {
 
 	var $ = require('jquery');
 	var joint = require('joint');
-	var shapesFactory = require('shapes-factory');
+	var shapesFactory = require('common/shapes-factory');
 	var angular = require('angular');
-	
+
 	// TODO move this node into custom nodes and links to centralize
 	if (!joint.shapes.flo) {
 		joint.shapes.flo = {};
 	}
-	
+
 	// http://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
 	joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 		// The path is the open/close arrow, defaults to vertical (open)
 		markup: '<g class="scalable"><rect/></g><text/><g class="rotatable"><path d="m 10 10 l 5 8.7 l 5 -8.7 z"/></g>',
 		defaults: joint.util.deepSupplement({
-		    type: 'palette.groupheader',
+			type: 'palette.groupheader',
 			size:{width:170,height:30},
 			position:{x:0,y:0},
-		    attrs: {
-		        'rect': { fill: '#34302d', 'stroke-width': 1, stroke: '#6db33f', 'follow-scale':true, width:80, height:40 },
-		        'text': {
-		        	text:'',
-		            fill: '#eeeeee',
-		            'ref-x': 0.5,
-		            'ref-y': 7,
-		            'x-alignment':'middle',
-		            'font-size': 18/*, 'font-weight': 'bold', 'font-variant': 'small-caps', 'text-transform': 'capitalize'*/
-		        },
-		        'path': { fill: 'white', 'stroke-width': 2, stroke: 'white'/*,transform:'rotate(90,15,15)'*/}
-		    },
-		    // custom properties
-		    isOpen:true
+			attrs: {
+				'rect': { fill: '#34302d', 'stroke-width': 1, stroke: '#6db33f', 'follow-scale':true, width:80, height:40 },
+				'text': {
+					text:'',
+					fill: '#eeeeee',
+					'ref-x': 0.5,
+					'ref-y': 7,
+					'x-alignment':'middle',
+					'font-size': 18/*, 'font-weight': 'bold', 'font-variant': 'small-caps', 'text-transform': 'capitalize'*/
+				},
+				'path': { fill: 'white', 'stroke-width': 2, stroke: 'white'/*,transform:'rotate(90,15,15)'*/}
+			},
+			// custom properties
+			isOpen:true
 		}, joint.shapes.basic.Generic.prototype.defaults)
 	});
-	
+
 	return ['$scope', '$timeout', '$log', '$injector', function($scope, $timeout, $log, $injector) {
-		
+
 		var domContext;
-		
+
 		var metamodelService;
-		
+
 		var renderService;
-		
+
 		var paletteGraph = new joint.dia.Graph();
 		paletteGraph.attributes.type = joint.shapes.flo.PALETTE_TYPE;
-		
+
 		var palette;
-		
+
 		/**
 		 * The names of any groups in the palette that have been deliberately closed (the arrow clicked on)
 		 * @type {String[]}
 		 */
 		var closedGroups = [];
-		
+
 		/**
-		 * Model of the clicked element 
+		 * Model of the clicked element
 		 */
 		var clickedElement;
 
@@ -134,101 +134,103 @@ define(function(require) {
 
 		// TODO lock to grid on drag? (if grid is on)
 
-		var ConstraintElementView = joint.dia.ElementView.extend({
-		    pointerdown: function(/*evt, x, y*/) {
-		    	// Remove the tooltip
-	    		$('.node-tooltip').remove();	
-				// TODO move metadata to the right place (not inside attrs I think)
-				clickedElement = this.model;
-				if (clickedElement.attr('metadata')) {
-					$(document).on('mousemove', handleDrag);
-				}
-		    },
-		    pointermove: function(/*evt, x, y*/) {
-		    	// Nothing to prevent move within the palette canvas
-		    },
-		    events: {
-		    	// Tooltips on the palette elements
-		    	'mouseenter': function(evt) {
-		    		
-		    		// Ignore 'mouseenter' if any other buttons are pressed
-		    		if (evt.buttons) {
-		    			return;
-		    		}
-		    		
-		    		var model = this.model;
-		    		var metadata = model.attr('metadata');
-		    		if (!metadata) {
-		    			return;
-		    		}
-		    		
-		    		this.showTooltip(evt.pageX, evt.pageY);
-		    	},
-		    	// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
-		    	'mouseleave': function(/*evt, x,y*/) {
-		    		this.hideTooltip();
-		    	},
-		    	'mousemove': function(evt) {
-		    		this.moveTooltip(evt.pageX, evt.pageY);
-		    	}		    	
-		    },
-		    
-		    showTooltip: function(x, y) {
-		    	var model = this.model;
-		    	var metadata = model.attr('metadata');
-	    		// TODO refactor to use tooltip module
-	    		var nodeTooltip = document.createElement('div');
-	    		$(nodeTooltip).addClass('node-tooltip');
-	    		$(nodeTooltip).appendTo($('body')).fadeIn('fast');
-	    		var nodeDescription = document.createElement('div');
-	    		$(nodeTooltip).addClass('tooltip-description');
-	    		$(nodeTooltip).append(nodeDescription);
-		    		
-	    		metadata.get('description').then(function(description) {
-	    			$(nodeDescription).text(description ? description : model.attr('metadata/name'));
-	    		}, function() {
-	    			$(nodeDescription).text(model.attr('metadata/name'));
-	    		});
-		    		
-	    		if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
-	    			metadata.get('properties').then(function(metaProps) {
-	    				if (metaProps) {
-	    					Object.keys(metaProps).sort().forEach(function(propertyName) {
-			    				var optionRow = document.createElement('div');
-			    				var optionName = document.createElement('span');
-			    				var optionDescription = document.createElement('span');
-			    				$(optionName).addClass('node-tooltip-option-name');
-			    				$(optionDescription).addClass('node-tooltip-option-description');
-			    				$(optionName).text(metaProps[propertyName].name);
-			    				$(optionDescription).text(metaProps[propertyName].description);
-			    				$(optionRow).append(optionName);
-			    				$(optionRow).append(optionDescription); 
-			    				$(nodeTooltip).append(optionRow);
-	    					});
-	    				}
-	    			}, function(error) {
-	    				if (error) {
-	    					$log.error(error);
-	    				}
-	    			});
-	    		}
-		    		
-	            var mousex = x + 10;
-	            var mousey = y + 10; 
-	            $('.node-tooltip').css({ top: mousey, left: mousex });
-		    },
-		    
-		    hideTooltip: function() {
-	    		$('.node-tooltip').remove();	
-		    },
-		    
-		    moveTooltip: function(x, y) {
-	    		var mousex = x + 10; // Get X coordinates
-    	        var mousey = y + 10; // Get Y coordinates
-    	        $('.node-tooltip').css({ top: mousey, left: mousex });
-		    }
+		function getPaletteView(view) {
+			return view.extend({
+				pointerdown: function(/*evt, x, y*/) {
+					// Remove the tooltip
+					$('.node-tooltip').remove();
+					// TODO move metadata to the right place (not inside attrs I think)
+					clickedElement = this.model;
+					if (clickedElement.attr('metadata')) {
+						$(document).on('mousemove', handleDrag);
+					}
+				},
+				pointermove: function(/*evt, x, y*/) {
+					// Nothing to prevent move within the palette canvas
+				},
+				events: {
+					// Tooltips on the palette elements
+					'mouseenter': function(evt) {
 
-		});
+						// Ignore 'mouseenter' if any other buttons are pressed
+						if (evt.buttons) {
+							return;
+						}
+
+						var model = this.model;
+						var metadata = model.attr('metadata');
+						if (!metadata) {
+							return;
+						}
+
+						this.showTooltip(evt.pageX, evt.pageY);
+					},
+					// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
+					'mouseleave': function(/*evt, x,y*/) {
+						this.hideTooltip();
+					},
+					'mousemove': function(evt) {
+						this.moveTooltip(evt.pageX, evt.pageY);
+					}
+				},
+
+				showTooltip: function(x, y) {
+					var model = this.model;
+					var metadata = model.attr('metadata');
+					// TODO refactor to use tooltip module
+					var nodeTooltip = document.createElement('div');
+					$(nodeTooltip).addClass('node-tooltip');
+					$(nodeTooltip).appendTo($('body')).fadeIn('fast');
+					var nodeDescription = document.createElement('div');
+					$(nodeTooltip).addClass('tooltip-description');
+					$(nodeTooltip).append(nodeDescription);
+
+					metadata.get('description').then(function(description) {
+						$(nodeDescription).text(description ? description : model.attr('metadata/name'));
+					}, function() {
+						$(nodeDescription).text(model.attr('metadata/name'));
+					});
+
+					if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
+						metadata.get('properties').then(function(metaProps) {
+							if (metaProps) {
+								Object.keys(metaProps).sort().forEach(function(propertyName) {
+									var optionRow = document.createElement('div');
+									var optionName = document.createElement('span');
+									var optionDescription = document.createElement('span');
+									$(optionName).addClass('node-tooltip-option-name');
+									$(optionDescription).addClass('node-tooltip-option-description');
+									$(optionName).text(metaProps[propertyName].name);
+									$(optionDescription).text(metaProps[propertyName].description);
+									$(optionRow).append(optionName);
+									$(optionRow).append(optionDescription);
+									$(nodeTooltip).append(optionRow);
+								});
+							}
+						}, function(error) {
+							if (error) {
+								$log.error(error);
+							}
+						});
+					}
+
+					var mousex = x + 10;
+					var mousey = y + 10;
+					$('.node-tooltip').css({ top: mousey, left: mousex });
+				},
+
+				hideTooltip: function() {
+					$('.node-tooltip').remove();
+				},
+
+				moveTooltip: function(x, y) {
+					var mousex = x + 10; // Get X coordinates
+					var mousey = y + 10; // Get Y coordinates
+					$('.node-tooltip').css({ top: mousey, left: mousex });
+				}
+
+			});
+		}
 
 		function createPaletteGroup(title, isOpen) {
 			var newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs:{text:{text:title}}});
@@ -417,7 +419,7 @@ define(function(require) {
 		}
 
 		// TODO better name for this function as this does the animation *and* updates the palette
-		
+
 		/*
 		 * Modify the rotation of the arrow in the header from vertical(open) to horizontal(closed)
 		 */
@@ -436,31 +438,31 @@ define(function(require) {
 				}
 			};
 			$timeout(rotateIt);
-		}		
-		
+		}
+
 		function handleMouseUp(/*event*/) {
 			$(document).off('mousemove', handleDrag);
 		}
-		
+
 		function dispose() {
 			if (metamodelService && angular.isFunction(metamodelService.unsubscribe)) {
 				metamodelService.unsubscribe(_metamodelListener);
 			}
 			$(document).off('mouseup', handleMouseUp);
 		}
-		
+
 		function filterTextUpdated() {
 			metamodelService.load().then(buildPalette);
 		}
 
 		function init(element/*, attrs*/) {
-			
+
 			domContext = element;
-			
+
 			metamodelService = $injector.get($scope.metamodelServiceName);
-			
+
 			if ($scope.renderServiceName) {
-				renderService = $injector.get($scope.renderServiceName);				
+				renderService = $injector.get($scope.renderServiceName);
 			}
 
 			// Create the paper for the palette using the specified element view
@@ -470,19 +472,19 @@ define(function(require) {
 				model:paletteGraph,
 				height: $(domContext.parentNode).height(),
 				width: $(domContext.parentNode).width(),
-				elementView: ConstraintElementView
+				elementView: getPaletteView(renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : joint.dia.ElementView)
 			});
-			
+
 			palette.on('cell:pointerup',
-					function(cellview, evt) {
-						$log.debug('pointerup');
-						if (viewBeingDragged) {
-							trigger('drop',{'dragged':viewBeingDragged,'evt':evt});
-							viewBeingDragged = null;
-						}
-						clickedElement = null;
-						$('#palette-floater').remove();		
-					});
+				function(cellview, evt) {
+					$log.debug('pointerup');
+					if (viewBeingDragged) {
+						trigger('drop',{'dragged':viewBeingDragged,'evt':evt});
+						viewBeingDragged = null;
+					}
+					clickedElement = null;
+					$('#palette-floater').remove();
+				});
 
 			// Toggle the header open/closed on a click
 			palette.on('cell:pointerclick',
@@ -501,7 +503,7 @@ define(function(require) {
 					// TODO [palette] ensure other mouse handling events do nothing for headers
 					// TODO [palette] move 'metadata' field to the right place (not inside attrs I think)
 				});
-			
+
 			$(document).on('mouseup', handleMouseUp);
 
 			if (metamodelService) {
@@ -518,22 +520,22 @@ define(function(require) {
 			if ($scope.flo) {
 				$scope.flo.paletteSize = $scope.flo.paletteSize || $(domContext.parentNode).width();
 			}
-			
+
 		}
 
 		$scope.$on('$destroy', dispose);
 
 		$scope.init = init;
-		
+
 		$scope.filterTextUpdated = filterTextUpdated;
-		
+
 		if ($scope.flo) {
 			$scope.flo._paletteGraph = function() {
 				return paletteGraph;
 			};
 			$scope.flo.paletteEntryPadding = $scope.flo.paletteEntryPadding || {x:12, y:12};
 		}
-		
+
 		$scope.$watch(function() {
 			return $scope.flo.paletteSize;
 		}, function(newValue, oldValue) {
@@ -541,7 +543,7 @@ define(function(require) {
 				metamodelService.load().then(buildPalette);
 			}
 		});
-		
+
 	}];
-			
+
 });

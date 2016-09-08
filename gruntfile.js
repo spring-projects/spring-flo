@@ -44,9 +44,9 @@ module.exports = function(grunt) {
         	// global config
         	options: {
         		baseUrl: './src',
-				name: 'flo',
+				name: 'app',
 				exclude: [ 'joint', 'angular', 'jquery', 'bootstrap', 'underscore' ],
-				insertRequire: [ 'flo' ],
+				// insertRequire: [ './app' ],
         		mainConfigFile: './src/main.js'
         	},
         	production: {
