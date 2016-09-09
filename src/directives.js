@@ -29,5 +29,6 @@ define(function(require) {
         .directive('dslEditor', require('directives/dsl-editor'))
         .directive('codeEditor', require('directives/code-editor'))
         .directive('floPalette', require('directives/palette'))
-        .directive('floEditor', require('directives/graph-editor'));
+        .directive('floEditor', require('directives/graph-editor'))
+        .directive('genericDslEditor', require('directives/generic-dsl-editor'));
 });
