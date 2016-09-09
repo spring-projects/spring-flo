@@ -1,3 +1,102 @@
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('directives/resizer',[],function () {
+    
+
+    return ['$document', function($document) {
+
+        return function($scope, $element, $attrs) {
+
+            function resize(size) {
+                if ($attrs.resizer === 'vertical') {
+                    // Handle vertical resizer
+                    var x = size;
+
+                    if ($attrs.resizerMax && x > $attrs.resizerMax) {
+                        x = parseInt($attrs.resizerMax);
+                    }
+
+                    $element.css({
+                        left: x + 'px'
+                    });
+
+                    $($attrs.resizerLeft).css({
+                        width: x + 'px'
+                    });
+                    $($attrs.resizerRight).css({
+                        left: (x + parseInt($attrs.resizerWidth)) + 'px'
+                    });
+                } else {
+                    // Handle horizontal resizer
+                    var y = size;
+
+                    $element.css({
+                        bottom: y + 'px'
+                    });
+
+                    $($attrs.resizerTop).css({
+                        bottom: (y + parseInt($attrs.resizerHeight)) + 'px'
+                    });
+                    $($attrs.resizerBottom).css({
+                        height: y + 'px'
+                    });
+                }
+            }
+
+            function mousemove(event) {
+                var size;
+                if ($attrs.resizer === 'vertical') {
+                    // Handle vertical resizer. Calculate new size relative to palette container DOM node
+                    size = event.pageX - $($attrs.resizerLeft).offset().left;
+                } else {
+                    // Handle horizontal resizer Calculate new size relative to palette container DOM node
+                    size = window.innerHeight - event.pageY - $($attrs.resizerTop).offset().top;
+                }
+                $scope.flo.paletteSize = size;
+                // Apply changes to the scope such that various watchers can react to palette size change
+                $scope.$apply();
+            }
+
+            function mouseup() {
+                $document.unbind('mousemove', mousemove);
+                $document.unbind('mouseup', mouseup);
+            }
+
+            $element.on('mousedown', function(event) {
+                event.preventDefault();
+
+                $document.on('mousemove', mousemove);
+                $document.on('mouseup', mouseup);
+            });
+
+            // Adjust DOM node sizes based on palette size model value
+            $scope.$watch(function() {
+                return $scope.flo.paletteSize;
+            }, function(newValue) {
+                resize(newValue);
+            });
+
+            if ($scope.flo.paletteSize) {
+                resize($scope.flo.paletteSize);
+            }
+        };
+
+    }];
+
+});
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
@@ -9264,7 +9363,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
  */
 
 
-define('dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint'],function(require) {
+define('controllers/synced-dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint'],function(require) {
 	
 
 	var angular = require('angular');
@@ -9415,6 +9514,38 @@ define('dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lin
 		
     }];
 
+});
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('directives/synced-dsl-editor',['controllers/synced-dsl-editor'],function () {
+    
+
+    return [function () {
+        return {
+            restrict: 'A',
+            scope: true,
+            controller: require('controllers/synced-dsl-editor'),
+            link: function (scope, element, attrs) {
+                if (attrs.contentAssistServiceName) {
+                    scope.contentAssistServiceName = attrs.contentAssistServiceName;
+                }
+                scope.init(element.context);
+            }
+        };
+    }];
 });
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
@@ -24610,7 +24741,7 @@ define("jshint", ["lodash"], function(){});
  * benefit from the use of a real editor that can provide features like syntax highlighting and mark
  * errors/warnings.
  */
-define('code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function(require) {
+define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function(require) {
 	
     
     return ['$scope', function ($scope) {
@@ -24740,12 +24871,46 @@ define('code-editor',['require','angular','codemirror','codemirror/mode/meta','c
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+define('directives/code-editor',['controllers/code-editor'],function () {
+    
+
+    return [function () {
+        return {
+            restrict: 'A',
+            controller: require('controllers/code-editor'),
+            link: function(scope, element, attrs) {
+                scope.init(element.context, attrs);
+            },
+            scope: {
+                language: '=codeLanguage',
+                text: '=codeText',
+                decodeFunction: '&',
+                encodeFunction: '&'
+            }
+        };
+    }];
+});
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 /**
  * Define the custom nodes and links that will be used in our graphs and
  * functions to create them.
  */
-define('shapes-factory',['joint', 'underscore'],function(joint, _) {
+define('common/shapes-factory',['joint', 'underscore'],function(joint, _) {
 	
 
 	var isChrome = !!window.chrome;
@@ -25352,65 +25517,65 @@ define('shapes-factory',['joint', 'underscore'],function(joint, _) {
  * limitations under the License.
  */
 
-define('palette-manager',['require','jquery','joint','shapes-factory','angular'],function(require) {
+define('controllers/palette',['require','jquery','joint','common/shapes-factory','angular'],function(require) {
 	
 
 	var $ = require('jquery');
 	var joint = require('joint');
-	var shapesFactory = require('shapes-factory');
+	var shapesFactory = require('common/shapes-factory');
 	var angular = require('angular');
-	
+
 	// TODO move this node into custom nodes and links to centralize
 	if (!joint.shapes.flo) {
 		joint.shapes.flo = {};
 	}
-	
+
 	// http://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
 	joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 		// The path is the open/close arrow, defaults to vertical (open)
 		markup: '<g class="scalable"><rect/></g><text/><g class="rotatable"><path d="m 10 10 l 5 8.7 l 5 -8.7 z"/></g>',
 		defaults: joint.util.deepSupplement({
-		    type: 'palette.groupheader',
+			type: 'palette.groupheader',
 			size:{width:170,height:30},
 			position:{x:0,y:0},
-		    attrs: {
-		        'rect': { fill: '#34302d', 'stroke-width': 1, stroke: '#6db33f', 'follow-scale':true, width:80, height:40 },
-		        'text': {
-		        	text:'',
-		            fill: '#eeeeee',
-		            'ref-x': 0.5,
-		            'ref-y': 7,
-		            'x-alignment':'middle',
-		            'font-size': 18/*, 'font-weight': 'bold', 'font-variant': 'small-caps', 'text-transform': 'capitalize'*/
-		        },
-		        'path': { fill: 'white', 'stroke-width': 2, stroke: 'white'/*,transform:'rotate(90,15,15)'*/}
-		    },
-		    // custom properties
-		    isOpen:true
+			attrs: {
+				'rect': { fill: '#34302d', 'stroke-width': 1, stroke: '#6db33f', 'follow-scale':true, width:80, height:40 },
+				'text': {
+					text:'',
+					fill: '#eeeeee',
+					'ref-x': 0.5,
+					'ref-y': 7,
+					'x-alignment':'middle',
+					'font-size': 18/*, 'font-weight': 'bold', 'font-variant': 'small-caps', 'text-transform': 'capitalize'*/
+				},
+				'path': { fill: 'white', 'stroke-width': 2, stroke: 'white'/*,transform:'rotate(90,15,15)'*/}
+			},
+			// custom properties
+			isOpen:true
 		}, joint.shapes.basic.Generic.prototype.defaults)
 	});
-	
+
 	return ['$scope', '$timeout', '$log', '$injector', function($scope, $timeout, $log, $injector) {
-		
+
 		var domContext;
-		
+
 		var metamodelService;
-		
+
 		var renderService;
-		
+
 		var paletteGraph = new joint.dia.Graph();
 		paletteGraph.attributes.type = joint.shapes.flo.PALETTE_TYPE;
-		
+
 		var palette;
-		
+
 		/**
 		 * The names of any groups in the palette that have been deliberately closed (the arrow clicked on)
 		 * @type {String[]}
 		 */
 		var closedGroups = [];
-		
+
 		/**
-		 * Model of the clicked element 
+		 * Model of the clicked element
 		 */
 		var clickedElement;
 
@@ -25474,98 +25639,98 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 
 		function getPaletteView(view) {
 			return view.extend({
-			    pointerdown: function(/*evt, x, y*/) {
-			    	// Remove the tooltip
-		    		$('.node-tooltip').remove();	
+				pointerdown: function(/*evt, x, y*/) {
+					// Remove the tooltip
+					$('.node-tooltip').remove();
 					// TODO move metadata to the right place (not inside attrs I think)
 					clickedElement = this.model;
 					if (clickedElement.attr('metadata')) {
 						$(document).on('mousemove', handleDrag);
 					}
-			    },
-			    pointermove: function(/*evt, x, y*/) {
-			    	// Nothing to prevent move within the palette canvas
-			    },
-			    events: {
-			    	// Tooltips on the palette elements
-			    	'mouseenter': function(evt) {
-			    		
-			    		// Ignore 'mouseenter' if any other buttons are pressed
-			    		if (evt.buttons) {
-			    			return;
-			    		}
-			    		
-			    		var model = this.model;
-			    		var metadata = model.attr('metadata');
-			    		if (!metadata) {
-			    			return;
-			    		}
-			    		
-			    		this.showTooltip(evt.pageX, evt.pageY);
-			    	},
-			    	// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
-			    	'mouseleave': function(/*evt, x,y*/) {
-			    		this.hideTooltip();
-			    	},
-			    	'mousemove': function(evt) {
-			    		this.moveTooltip(evt.pageX, evt.pageY);
-			    	}		    	
-			    },
-			    
-			    showTooltip: function(x, y) {
-			    	var model = this.model;
-			    	var metadata = model.attr('metadata');
-		    		// TODO refactor to use tooltip module
-		    		var nodeTooltip = document.createElement('div');
-		    		$(nodeTooltip).addClass('node-tooltip');
-		    		$(nodeTooltip).appendTo($('body')).fadeIn('fast');
-		    		var nodeDescription = document.createElement('div');
-		    		$(nodeTooltip).addClass('tooltip-description');
-		    		$(nodeTooltip).append(nodeDescription);
-			    		
-		    		metadata.get('description').then(function(description) {
-		    			$(nodeDescription).text(description ? description : model.attr('metadata/name'));
-		    		}, function() {
-		    			$(nodeDescription).text(model.attr('metadata/name'));
-		    		});
-			    		
-		    		if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
-		    			metadata.get('properties').then(function(metaProps) {
-		    				if (metaProps) {
-		    					Object.keys(metaProps).sort().forEach(function(propertyName) {
-				    				var optionRow = document.createElement('div');
-				    				var optionName = document.createElement('span');
-				    				var optionDescription = document.createElement('span');
-				    				$(optionName).addClass('node-tooltip-option-name');
-				    				$(optionDescription).addClass('node-tooltip-option-description');
-				    				$(optionName).text(metaProps[propertyName].name);
-				    				$(optionDescription).text(metaProps[propertyName].description);
-				    				$(optionRow).append(optionName);
-				    				$(optionRow).append(optionDescription); 
-				    				$(nodeTooltip).append(optionRow);
-		    					});
-		    				}
-		    			}, function(error) {
-		    				if (error) {
-		    					$log.error(error);
-		    				}
-		    			});
-		    		}
-			    		
-		            var mousex = x + 10;
-		            var mousey = y + 10; 
-		            $('.node-tooltip').css({ top: mousey, left: mousex });
-			    },
-			    
-			    hideTooltip: function() {
-		    		$('.node-tooltip').remove();	
-			    },
-			    
-			    moveTooltip: function(x, y) {
-		    		var mousex = x + 10; // Get X coordinates
-	    	        var mousey = y + 10; // Get Y coordinates
-	    	        $('.node-tooltip').css({ top: mousey, left: mousex });
-			    }
+				},
+				pointermove: function(/*evt, x, y*/) {
+					// Nothing to prevent move within the palette canvas
+				},
+				events: {
+					// Tooltips on the palette elements
+					'mouseenter': function(evt) {
+
+						// Ignore 'mouseenter' if any other buttons are pressed
+						if (evt.buttons) {
+							return;
+						}
+
+						var model = this.model;
+						var metadata = model.attr('metadata');
+						if (!metadata) {
+							return;
+						}
+
+						this.showTooltip(evt.pageX, evt.pageY);
+					},
+					// TODO bug here - if the call to get the info takes a while, the tooltip may appear after the pointer has left the cell
+					'mouseleave': function(/*evt, x,y*/) {
+						this.hideTooltip();
+					},
+					'mousemove': function(evt) {
+						this.moveTooltip(evt.pageX, evt.pageY);
+					}
+				},
+
+				showTooltip: function(x, y) {
+					var model = this.model;
+					var metadata = model.attr('metadata');
+					// TODO refactor to use tooltip module
+					var nodeTooltip = document.createElement('div');
+					$(nodeTooltip).addClass('node-tooltip');
+					$(nodeTooltip).appendTo($('body')).fadeIn('fast');
+					var nodeDescription = document.createElement('div');
+					$(nodeTooltip).addClass('tooltip-description');
+					$(nodeTooltip).append(nodeDescription);
+
+					metadata.get('description').then(function(description) {
+						$(nodeDescription).text(description ? description : model.attr('metadata/name'));
+					}, function() {
+						$(nodeDescription).text(model.attr('metadata/name'));
+					});
+
+					if (!metadata.metadata || !metadata.metadata['hide-tooltip-options']) {
+						metadata.get('properties').then(function(metaProps) {
+							if (metaProps) {
+								Object.keys(metaProps).sort().forEach(function(propertyName) {
+									var optionRow = document.createElement('div');
+									var optionName = document.createElement('span');
+									var optionDescription = document.createElement('span');
+									$(optionName).addClass('node-tooltip-option-name');
+									$(optionDescription).addClass('node-tooltip-option-description');
+									$(optionName).text(metaProps[propertyName].name);
+									$(optionDescription).text(metaProps[propertyName].description);
+									$(optionRow).append(optionName);
+									$(optionRow).append(optionDescription);
+									$(nodeTooltip).append(optionRow);
+								});
+							}
+						}, function(error) {
+							if (error) {
+								$log.error(error);
+							}
+						});
+					}
+
+					var mousex = x + 10;
+					var mousey = y + 10;
+					$('.node-tooltip').css({ top: mousey, left: mousex });
+				},
+
+				hideTooltip: function() {
+					$('.node-tooltip').remove();
+				},
+
+				moveTooltip: function(x, y) {
+					var mousex = x + 10; // Get X coordinates
+					var mousey = y + 10; // Get Y coordinates
+					$('.node-tooltip').css({ top: mousey, left: mousex });
+				}
 
 			});
 		}
@@ -25757,7 +25922,7 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 		}
 
 		// TODO better name for this function as this does the animation *and* updates the palette
-		
+
 		/*
 		 * Modify the rotation of the arrow in the header from vertical(open) to horizontal(closed)
 		 */
@@ -25776,31 +25941,31 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 				}
 			};
 			$timeout(rotateIt);
-		}		
-		
+		}
+
 		function handleMouseUp(/*event*/) {
 			$(document).off('mousemove', handleDrag);
 		}
-		
+
 		function dispose() {
 			if (metamodelService && angular.isFunction(metamodelService.unsubscribe)) {
 				metamodelService.unsubscribe(_metamodelListener);
 			}
 			$(document).off('mouseup', handleMouseUp);
 		}
-		
+
 		function filterTextUpdated() {
 			metamodelService.load().then(buildPalette);
 		}
 
 		function init(element/*, attrs*/) {
-			
+
 			domContext = element;
-			
+
 			metamodelService = $injector.get($scope.metamodelServiceName);
-			
+
 			if ($scope.renderServiceName) {
-				renderService = $injector.get($scope.renderServiceName);				
+				renderService = $injector.get($scope.renderServiceName);
 			}
 
 			// Create the paper for the palette using the specified element view
@@ -25812,17 +25977,17 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 				width: $(domContext.parentNode).width(),
 				elementView: getPaletteView(renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : joint.dia.ElementView)
 			});
-			
+
 			palette.on('cell:pointerup',
-					function(cellview, evt) {
-						$log.debug('pointerup');
-						if (viewBeingDragged) {
-							trigger('drop',{'dragged':viewBeingDragged,'evt':evt});
-							viewBeingDragged = null;
-						}
-						clickedElement = null;
-						$('#palette-floater').remove();		
-					});
+				function(cellview, evt) {
+					$log.debug('pointerup');
+					if (viewBeingDragged) {
+						trigger('drop',{'dragged':viewBeingDragged,'evt':evt});
+						viewBeingDragged = null;
+					}
+					clickedElement = null;
+					$('#palette-floater').remove();
+				});
 
 			// Toggle the header open/closed on a click
 			palette.on('cell:pointerclick',
@@ -25841,7 +26006,7 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 					// TODO [palette] ensure other mouse handling events do nothing for headers
 					// TODO [palette] move 'metadata' field to the right place (not inside attrs I think)
 				});
-			
+
 			$(document).on('mouseup', handleMouseUp);
 
 			if (metamodelService) {
@@ -25858,22 +26023,22 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 			if ($scope.flo) {
 				$scope.flo.paletteSize = $scope.flo.paletteSize || $(domContext.parentNode).width();
 			}
-			
+
 		}
 
 		$scope.$on('$destroy', dispose);
 
 		$scope.init = init;
-		
+
 		$scope.filterTextUpdated = filterTextUpdated;
-		
+
 		if ($scope.flo) {
 			$scope.flo._paletteGraph = function() {
 				return paletteGraph;
 			};
 			$scope.flo.paletteEntryPadding = $scope.flo.paletteEntryPadding || {x:12, y:12};
 		}
-		
+
 		$scope.$watch(function() {
 			return $scope.flo.paletteSize;
 		}, function(newValue, oldValue) {
@@ -25881,11 +26046,53 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
 				metamodelService.load().then(buildPalette);
 			}
 		});
-		
+
 	}];
-			
+
 });
 
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+define('directives/palette',['controllers/palette'],function () {
+    
+
+    return [function () {
+
+        return {
+            restrict: 'E',
+            scope: true,
+            link: function(scope, element, attrs) {
+                if (attrs.metamodelServiceName) {
+                    scope.metamodelServiceName = attrs.metamodelServiceName;
+                }
+                scope.init(element.context, attrs);
+            },
+            controller: require('controllers/palette'),
+            controllerAs: 'floPalette',
+            template:
+                '<div id="palette-filter" class="palette-filter">' +
+                    '<input type="text" id="palette-filter-textfield" ng-model="filterText" ng-change="filterTextUpdated()" class="palette-filter-textfield" ng-model-options="{ debounce: 500 }"/>' +
+                '</div>' +
+                '<div id="palette-paper-container" style="height:calc(100% - 46px); width:100%; overflow:auto;">' +
+                    '<div id="palette-paper" class="palette-paper" style="overflow:hidden;"></div>' +
+                '</div>'
+        };
+    }];
+
+});
 /*
  * Copyright 2016 the original author or authors.
  *
@@ -25909,7 +26116,7 @@ define('palette-manager',['require','jquery','joint','shapes-factory','angular']
  * Events coming out of here:
  * 'change' - something changed!
  */
-define('properties-manager',['require','underscore','codemirror','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/clike/clike'],function(require) {
+define('common/properties-manager',['require','underscore','codemirror','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/clike/clike'],function(require) {
 	
 
 	var _ = require('underscore');
@@ -26701,7 +26908,7 @@ define('properties-manager',['require','underscore','codemirror','codemirror/add
  * limitations under the License.
  */
 
-define('event-manager',[],function() {
+define('common/event-manager',[],function() {
 	
 
 	return function() {
@@ -26768,7 +26975,7 @@ define('event-manager',[],function() {
  *
  * Note: controller contains some DOM manipulation logic that will be moved to the corresponding directive link function
  */
-define('editor-manager',['require','angular','joint','shapes-factory','properties-manager','event-manager'],function(require) {
+define('controllers/graph-editor',['require','angular','joint','common/shapes-factory','common/properties-manager','common/event-manager'],function(require) {
 	
 	
 	var isChrome = !!window.chrome;
@@ -26776,9 +26983,9 @@ define('editor-manager',['require','angular','joint','shapes-factory','propertie
 
 	var angular = require('angular');
 	var joint = require('joint');
-	var shapesFactory = require('shapes-factory');
-	var createProperties = require('properties-manager');
-	var createEventManager = require('event-manager');
+	var shapesFactory = require('common/shapes-factory');
+	var createProperties = require('common/properties-manager');
+	var createEventManager = require('common/event-manager');
 	
 	return ['$q', '$scope', '$timeout', '$http', '$log', '$injector', function($q, $scope, $timeout, $http, $log, $injector) {
 	
@@ -28406,292 +28613,250 @@ define('editor-manager',['require','angular','joint','shapes-factory','propertie
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-define('flo',['require','angular','dsl-editor','code-editor','palette-manager','editor-manager'],function(require) {
-	
-
-	require('angular');
+define('directives/graph-editor',['controllers/graph-editor'],function () {
     
-	var app = angular.module('spring.flo', []);
-	
-	app.directive('dslEditor', function() {
-		return {
-			restrict: 'A',
-			scope: true,
-			controller: require('dsl-editor'),
-			link: function(scope, element, attrs) {
-				if (attrs.contentAssistServiceName) {
-					scope.contentAssistServiceName = attrs.contentAssistServiceName;
-				}
-				scope.init(element.context);
-			}
-		};
-	});
-	
-	app.directive('codeEditor', function() {
-		return {
-			restrict: 'A',
-			controller: require('code-editor'),
-			link: function(scope, element, attrs) {
-				scope.init(element.context, attrs);
-			},
-			scope: {
-				language: '=codeLanguage',
-				text: '=codeText',
-				decodeFunction: '&',
-				encodeFunction: '&'
-			}
-		};
-	});
-	
-	app.directive('floPalette', function() {
-		return {
-			restrict: 'E',
-			scope: true,
-			link: function(scope, element, attrs) {
-				if (attrs.metamodelServiceName) {
-					scope.metamodelServiceName = attrs.metamodelServiceName;
-				}
-				scope.init(element.context, attrs);
-			},
-			controller: require('palette-manager'),
-			controllerAs: 'floPalette',
-			template: 
-				'<div id="palette-filter" class="palette-filter">' +
-					'<input type="text" id="palette-filter-textfield" ng-model="filterText" ng-change="filterTextUpdated()" class="palette-filter-textfield" ng-model-options="{ debounce: 500 }"/>' +
-				'</div>' +
-				'<div id="palette-paper-container" style="height:calc(100% - 46px); width:100%; overflow:auto;">' +
-					'<div id="palette-paper" class="palette-paper" style="overflow:hidden;"></div>' +
-				'</div>'
-		};
-	});
-	
-	// Div for resizing the palette
-	app.directive('resizer', function($document) {
 
-	    return function($scope, $element, $attrs) {
+    return [function () {
 
-	        function resize(size) {
-	            if ($attrs.resizer === 'vertical') {
-	                // Handle vertical resizer
-	                var x = size;
-	                
-	                if ($attrs.resizerMax && x > $attrs.resizerMax) {
-	                    x = parseInt($attrs.resizerMax);
-	                }
+        return {
+            restrict: 'E',
+            link: function(scope, element, attrs) {
+                if (attrs.metamodelServiceName) {
+                    scope.metamodelServiceName = attrs.metamodelServiceName;
+                }
 
-	                $element.css({
-	                    left: x + 'px'
-	                });
+                if (attrs.renderServiceName) {
+                    scope.renderServiceName = attrs.renderServiceName;
+                }
 
-	                $($attrs.resizerLeft).css({
-	                    width: x + 'px'
-	                });
-	                $($attrs.resizerRight).css({
-	                    left: (x + parseInt($attrs.resizerWidth)) + 'px'
-	                });
-	            } else {
-	                // Handle horizontal resizer
-	                var y = size;
+                if (attrs.editorServiceName) {
+                    scope.editorServiceName = attrs.editorServiceName;
+                }
 
-	                $element.css({
-	                    bottom: y + 'px'
-	                });
+                if (attrs.paletteSize) {
+                    scope.flo.paletteSize = Number(attrs.paletteSize);
+                }
 
-	                $($attrs.resizerTop).css({
-	                    bottom: (y + parseInt($attrs.resizerHeight)) + 'px'
-	                });
-	                $($attrs.resizerBottom).css({
-	                    height: y + 'px'
-	                });
-	            }
-	        }
-	        
-	        function mousemove(event) {
-	        	var size;
-	            if ($attrs.resizer === 'vertical') {
-	                // Handle vertical resizer. Calculate new size relative to palette container DOM node
-	                size = event.pageX - $($attrs.resizerLeft).offset().left;
-	            } else {
-	                // Handle horizontal resizer Calculate new size relative to palette container DOM node
-	            	size = window.innerHeight - event.pageY - $($attrs.resizerTop).offset().top;
-	            }
-            	$scope.flo.paletteSize = size;
-            	// Apply changes to the scope such that various watchers can react to palette size change
-            	$scope.$apply();
-	        }
+                if (attrs.paperPadding) {
+                    scope.paperPadding = Number(attrs.paperPadding);
+                }
 
-			function mouseup() {
-				$document.unbind('mousemove', mousemove);
-				$document.unbind('mouseup', mouseup);
-			}
+                scope.init(element.context, attrs);
+                element.find('#paper').bind('keydown', function(e) {
+                    if (e.which === 8 || e.which === 46) {
+                        if (!scope.flo.readOnly() /*&& scope.flo.getSelection()*/) {
+                            scope.flo.deleteSelectedNode();
+                            e.preventDefault();
+                        }
+                    }
+                });
+            },
+            controller: require('controllers/graph-editor'),
+            controllerAs: 'floModel',
+            transclude: true,
+            template:
+                '<ng-transclude></ng-transclude>' +
+                '<div id="flow-view" class="flow-view" style="position:relative;">' +
+                    '<div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">' +
+                        '<div id="palette-container" class="palette-container" ng-if="!flo.noPalette" style="overflow:hidden;">' +
+                            '<flo-palette></flo-palette>' +
+                        '</div>' +
+                        '<div id="sidebar-resizer" ng-if="!flo.noPalette"' +
+                            'resizer="vertical"' +
+                            'resizer-width="6"' +
+                            'resizer-left="#palette-container"' +
+                            'resizer-right="#paper-container">' +
+                        '</div>' +
 
-			$element.on('mousedown', function(event) {
-				event.preventDefault();
+                        '<div id="paper-container">' +
+                            '<div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>' +
+                            '<span class="canvas-controls-container" ng-if="canvasControls">' +
+                                '<table ng-if="canvasControls.zoom" class="canvas-control zoom-canvas-control"><tbody><tr>' +
+                                    '<td><input class="zoom-canvas-input canvas-control zoom-canvas-control" type="text" data-inline="true" ng-model="flo.zoomPercent" ng-model-options="{ getterSetter: true, updateOn: \'blur change\' }" size="3"></input>' +
+                                    '<label class="canvas-control zoom-canvas-label">%</label></td>' +
+                                    '<td><input type="range" data-inline="true" ng-model="flo.zoomPercent" ng-model-options="{ getterSetter: true }" step="{{flo.getZoomStep()}}" max="{{flo.getMaxZoom()}}" min="{{flo.getMinZoom()}}" data-type="range" name="range" class="canvas-control zoom-canvas-control"></input></td>' +
+                                '</tr></tbody></table>' +
+                            '</span>' +
+                            '<div id="properties" class="properties" style="position:absolute; bottom:0; width:100%; overflow:auto;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div id="hook"></div>' +
+                    '<div id="dialogs"></div>' +
+                '</div>'
+        };
+        
+    }];
+});
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-				$document.on('mousemove', mousemove);
-				$document.on('mouseup', mouseup);
-			});
+/**
+ * Definition of directives
+ *
+ * @author Alex Boyko
+ */
+define('floDirectives',['require','angular','directives/resizer','directives/synced-dsl-editor','directives/code-editor','directives/palette','directives/graph-editor'],function(require) {
+    
 
-			// Adjust DOM node sizes based on palette size model value
-	        $scope.$watch(function() {
-	        	return $scope.flo.paletteSize;
-	        }, function(newValue) {
-	        	resize(newValue);
-	        });
-	        
-	        if ($scope.flo.paletteSize) {
-	        	resize($scope.flo.paletteSize);
-	        }
-	    };
-	});
-	
-	app.directive('floEditor', function() {
-		return {
-			restrict: 'E',
-			link: function(scope, element, attrs) {
-				if (attrs.metamodelServiceName) {
-					scope.metamodelServiceName = attrs.metamodelServiceName;
-				}
+    var angular = require('angular');
 
-				if (attrs.renderServiceName) {
-					scope.renderServiceName = attrs.renderServiceName;
-				}
+    return angular.module('flo.directives', [])
+        .directive('resizer', require('directives/resizer'))
+        .directive('dslEditor', require('directives/synced-dsl-editor'))
+        .directive('codeEditor', require('directives/code-editor'))
+        .directive('floPalette', require('directives/palette'))
+        .directive('floEditor', require('directives/graph-editor'));
+});
 
-				if (attrs.editorServiceName) {
-					scope.editorServiceName = attrs.editorServiceName;
-				}
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-				if (attrs.paletteSize) {
-					scope.flo.paletteSize = Number(attrs.paletteSize);
-				}
 
-				if (attrs.paperPadding) {
-					scope.paperPadding = Number(attrs.paperPadding);
-				}
+/**
+ * Services
+ *
+ * @author Alex Boyko
+ */
+define('floServices',['angular'], function (angular) {
+    
 
-				scope.init(element.context, attrs);
-				element.find('#paper').bind('keydown', function(e) {
-					if (e.which === 8 || e.which === 46) {
-						if (!scope.flo.readOnly() /*&& scope.flo.getSelection()*/) {
-							scope.flo.deleteSelectedNode();
-							e.preventDefault();							
-						}
-					}						
-				});
-			},
-			controller: require('editor-manager'),
-			controllerAs: 'floModel',
-			transclude: true,
-			template:
-					'<ng-transclude></ng-transclude>' +
-					'<div id="flow-view" class="flow-view" style="position:relative;">' +
-						'<div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">' +
-							'<div id="palette-container" class="palette-container" ng-if="!flo.noPalette" style="overflow:hidden;">' +
-								'<flo-palette></flo-palette>' +
-							'</div>' +
-							'<div id="sidebar-resizer" ng-if="!flo.noPalette"' + 
-								'resizer="vertical"' + 
-						  		'resizer-width="6"' + 
-						  		'resizer-left="#palette-container"' + 
-						  		'resizer-right="#paper-container">' +
-						  	'</div>' +
-							
-		 					'<div id="paper-container">' +
-								'<div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>' +
-								'<span class="canvas-controls-container" ng-if="canvasControls">' +
-									'<table ng-if="canvasControls.zoom" class="canvas-control zoom-canvas-control"><tbody><tr>' +
-										'<td><input class="zoom-canvas-input canvas-control zoom-canvas-control" type="text" data-inline="true" ng-model="flo.zoomPercent" ng-model-options="{ getterSetter: true, updateOn: \'blur change\' }" size="3"></input>' +
-										'<label class="canvas-control zoom-canvas-label">%</label></td>' +
-										'<td><input type="range" data-inline="true" ng-model="flo.zoomPercent" ng-model-options="{ getterSetter: true }" step="{{flo.getZoomStep()}}" max="{{flo.getMaxZoom()}}" min="{{flo.getMinZoom()}}" data-type="range" name="range" class="canvas-control zoom-canvas-control"></input></td>' +
-									'</tr></tbody></table>' +
-								'</span>' +
-								'<div id="properties" class="properties" style="position:absolute; bottom:0; width:100%; overflow:auto;"></div>' +
-							'</div>' +
-						'</div>' +
-						'<div id="hook"></div>' +
-						'<div id="dialogs"></div>' +
-					'</div>' 
-		};
-	});
-	
-	app.factory('MetamodelUtils', ['$q', function($q) {
-		
-		return {
+    return angular.module('flo.services', [])
+        .factory('MetamodelUtils', ['$q', function ($q) {
 
-			/**
-			 * Return the metadata for a particular palette entry in a particular group.
-			 * @param {String} name - name of the palette entry
-			 * @param {string} group - group in which the palette entry should exist (e.g. sinks)
-			 * @return {{name:string,group:string,unresolved:Boolean}}
-			 */
-			getMetadata: function(metamodel, name, group) {
-				if (name && group && metamodel[group][name]) {
-					return metamodel[group][name];
-				} else {
-					return {
-						name: name,
-						group: group,
-						unresolved: true,
-						get: function() {
-							var deferred = $q.defer();
-							deferred.resolve();
-							return deferred.promise;
-						}
-					};
-				}
-			},
+            return {
 
-			matchGroup: function(metamodel, type, incoming, outgoing) {
-				incoming = typeof incoming === 'number' ? incoming : 0;
-				outgoing = typeof outgoing === 'number' ? outgoing : 0;
-				var matches = [];
-				var i;
-				if (type) {
-					for (i in metamodel) {
-						if (metamodel[i][type]) {
-							matches.push(metamodel[i][type]);
-						}
-					}
-				}
-				var group;
-				var score = Number.MIN_VALUE;
-				for (i = 0; i < matches.length; i++) {
-					var constraints = matches[i].constraints;
-					if (constraints) {
-						var failedConstraintsNumber = 0;
-						if (typeof constraints.maxOutgoingLinksNumber === 'number' && constraints.maxOutgoingLinksNumber < outgoing) {
-							failedConstraintsNumber++;
-						}
-						if (typeof constraints.minOutgoingLinksNumber === 'number' && constraints.minOutgoingLinksNumber > outgoing) {
-							failedConstraintsNumber++;
-						}
-						if (typeof constraints.maxIncomingLinksNumber === 'number' && constraints.maxIncomingLinksNumber < incoming) {
-							failedConstraintsNumber++;
-						}
-						if (typeof constraints.minIncomingLinksNumber === 'number' && constraints.minIncomingLinksNumber > incoming) {
-							failedConstraintsNumber++;
-						}
+                /**
+                 * Return the metadata for a particular palette entry in a particular group.
+                 * @param {String} name - name of the palette entry
+                 * @param {string} group - group in which the palette entry should exist (e.g. sinks)
+                 * @return {{name:string,group:string,unresolved:Boolean}}
+                 */
+                getMetadata: function (metamodel, name, group) {
+                    if (name && group && metamodel[group][name]) {
+                        return metamodel[group][name];
+                    } else {
+                        return {
+                            name: name,
+                            group: group,
+                            unresolved: true,
+                            get: function () {
+                                var deferred = $q.defer();
+                                deferred.resolve();
+                                return deferred.promise;
+                            }
+                        };
+                    }
+                },
 
-						if (failedConstraintsNumber === 0) {
-							return matches[i].group;
-						} else if (failedConstraintsNumber > score) {
-							score = failedConstraintsNumber;
-							group = matches[i].group;
-						}
-					} else {
-						return matches[i].group;
-					}
-				}
-				return group;
-			}
-		};
+                matchGroup: function (metamodel, type, incoming, outgoing) {
+                    incoming = typeof incoming === 'number' ? incoming : 0;
+                    outgoing = typeof outgoing === 'number' ? outgoing : 0;
+                    var matches = [];
+                    var i;
+                    if (type) {
+                        for (i in metamodel) {
+                            if (metamodel[i][type]) {
+                                matches.push(metamodel[i][type]);
+                            }
+                        }
+                    }
+                    var group;
+                    var score = Number.MIN_VALUE;
+                    for (i = 0; i < matches.length; i++) {
+                        var constraints = matches[i].constraints;
+                        if (constraints) {
+                            var failedConstraintsNumber = 0;
+                            if (typeof constraints.maxOutgoingLinksNumber === 'number' && constraints.maxOutgoingLinksNumber < outgoing) {
+                                failedConstraintsNumber++;
+                            }
+                            if (typeof constraints.minOutgoingLinksNumber === 'number' && constraints.minOutgoingLinksNumber > outgoing) {
+                                failedConstraintsNumber++;
+                            }
+                            if (typeof constraints.maxIncomingLinksNumber === 'number' && constraints.maxIncomingLinksNumber < incoming) {
+                                failedConstraintsNumber++;
+                            }
+                            if (typeof constraints.minIncomingLinksNumber === 'number' && constraints.minIncomingLinksNumber > incoming) {
+                                failedConstraintsNumber++;
+                            }
 
-	}]);
-	
-	return app;
+                            if (failedConstraintsNumber === 0) {
+                                return matches[i].group;
+                            } else if (failedConstraintsNumber > score) {
+                                score = failedConstraintsNumber;
+                                group = matches[i].group;
+                            }
+                        } else {
+                            return matches[i].group;
+                        }
+                    }
+                    return group;
+                }
+            };
+
+        }]);
 
 });
 
+/*
+ * Copyright 2016 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-require(["flo"]);
+/**
+ * Flo Angular app module
+ *
+ * @author Alex Boyko
+ */
+define('flo', ['require','angular','floDirectives','floServices'],function(require) {
+    
+
+    require('angular');
+    require('floDirectives');
+    require('floServices');
+
+    return angular.module('spring.flo', [
+        'flo.services',
+        'flo.directives'
+    ]);
+});
+
+require(['flo']);
+define("app", function(){});
+
