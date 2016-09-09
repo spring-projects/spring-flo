@@ -20,7 +20,7 @@ define(function () {
         return {
             restrict: 'A',
             scope: true,
-            controller: require('controllers/synced-dsl-editor'),
+            controller: require('controllers/dsl-editor'),
             link: function (scope, element, attrs) {
                 if (attrs.contentAssistServiceName) {
                     scope.contentAssistServiceName = attrs.contentAssistServiceName;

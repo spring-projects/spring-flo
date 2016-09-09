@@ -9363,7 +9363,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
  */
 
 
-define('controllers/synced-dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint'],function(require) {
+define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint'],function(require) {
 	
 
 	var angular = require('angular');
@@ -9530,14 +9530,14 @@ define('controllers/synced-dsl-editor',['require','angular','codemirror','codemi
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('directives/synced-dsl-editor',['controllers/synced-dsl-editor'],function () {
+define('directives/dsl-editor',['controllers/dsl-editor'],function () {
     
 
     return [function () {
         return {
             restrict: 'A',
             scope: true,
-            controller: require('controllers/synced-dsl-editor'),
+            controller: require('controllers/dsl-editor'),
             link: function (scope, element, attrs) {
                 if (attrs.contentAssistServiceName) {
                     scope.contentAssistServiceName = attrs.contentAssistServiceName;
@@ -28708,14 +28708,14 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
  *
  * @author Alex Boyko
  */
-define('floDirectives',['require','angular','directives/resizer','directives/synced-dsl-editor','directives/code-editor','directives/palette','directives/graph-editor'],function(require) {
+define('floDirectives',['require','angular','directives/resizer','directives/dsl-editor','directives/code-editor','directives/palette','directives/graph-editor'],function(require) {
     
 
     var angular = require('angular');
 
     return angular.module('flo.directives', [])
         .directive('resizer', require('directives/resizer'))
-        .directive('dslEditor', require('directives/synced-dsl-editor'))
+        .directive('dslEditor', require('directives/dsl-editor'))
         .directive('codeEditor', require('directives/code-editor'))
         .directive('floPalette', require('directives/palette'))
         .directive('floEditor', require('directives/graph-editor'));

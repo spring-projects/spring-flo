@@ -26,7 +26,7 @@ define(function(require) {
 
     return angular.module('flo.directives', [])
         .directive('resizer', require('directives/resizer'))
-        .directive('dslEditor', require('directives/synced-dsl-editor'))
+        .directive('dslEditor', require('directives/dsl-editor'))
         .directive('codeEditor', require('directives/code-editor'))
         .directive('floPalette', require('directives/palette'))
         .directive('floEditor', require('directives/graph-editor'));
