@@ -40,6 +40,7 @@ define(function(require) {
 	require('codemirror/addon/mode/loadmode');
 	require('codemirror/addon/edit/matchbrackets');
 	require('codemirror/addon/edit/closebrackets');
+	require('codemirror/addon/display/placeholder');	
 	
 	// languages
 	require('codemirror/mode/groovy/groovy');

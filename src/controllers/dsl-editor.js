@@ -29,8 +29,10 @@ define(function(require) {
 	
 	require('codemirror/addon/lint/lint');
 	require('codemirror/addon/hint/show-hint');
+	require('codemirror/addon/display/placeholder');
 
-    /**
+
+		/**
      * Control graph-to-text syncing. When it is active the graph will be automatically
      * updated as the text is modified.
      */
