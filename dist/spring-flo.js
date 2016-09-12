@@ -28764,22 +28764,17 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('directives/generic-dsl-editor',['angular','underscore','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder'],function () {
+define('directives/generic-dsl-editor',['underscore','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder'],function () {
     
 
-    var angular = require('angular');
     var _ = require('underscore');
 
-    return ['$injector', function($injector) {
+    return [ function() {
 
         var CodeMirror = require('codemirror');
 
         var doc;
         
-        var contentAssistService;
-
-        var lintService;
-
         var debounce;
 
         require('codemirror/addon/lint/lint');
@@ -28789,49 +28784,56 @@ define('directives/generic-dsl-editor',['angular','underscore','codemirror','cod
         return {
             restrict: 'A',
             scope: {
-                dsl: '='
+                dsl: '=',
+                hint: '=',
+                lint: '='
             },
             link: function (scope, element, attrs) {
-
-                if (attrs.contentAssistServiceName) {
-                    contentAssistService = $injector.get(attrs.contentAssistServiceName);
-                }
-
-                if (attrs.lintServiceName) {
-                    lintService = $injector.get(attrs.lintServiceName);
-                }
 
                 if (attrs.debounce) {
                     debounce = parseInt(attrs.debounce);
                 }
 
-                doc = CodeMirror.fromTextArea(element.context, {
+                var options = {
                     value: scope.dsl,
                     gutters: ['CodeMirror-lint-markers'],
-                    lint: lintService && angular.isFunction(lintService.getAnnotations) ? {
-                        async: true,
-                        getAnnotations: lintService.getAnnotations
-                    } : undefined,
                     extraKeys: {'Ctrl-Space': 'autocomplete'},
-                    hintOptions: {
-                        async: 'true',
-                        hint: contentAssistService && angular.isFunction(contentAssistService.complete) ? contentAssistService.complete : undefined
-                    },
                     lineNumbers: attrs.lineNumbers && attrs.lineNumbers.toLowerCase() === 'true',
                     lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true'
-                });
+                };
+
+                if (scope.lint) {
+                    options.lint = scope.lint;
+                }
+
+                if (scope.hint) {
+                    options.hintOptions = scope.hint;
+                }
+
+                doc = CodeMirror.fromTextArea(element.context, options);
+
                 var dslChangedHandler = function () {
                     scope.$apply(function() {
                         scope.dsl = doc.getValue();
                     });
                 };
+
                 doc.on('change', debounce ? _.debounce(dslChangedHandler, debounce) : dslChangedHandler);
+
                 scope.$watch('dsl', function (newValue) {
                     if (newValue!==doc.getValue()) {
                         var cursorPosition = doc.getCursor();
                         doc.setValue(newValue ? newValue : '');
                         doc.setCursor(cursorPosition);
                     }
+                });
+
+                scope.$watch('hint', function(newValue) {
+                    doc.setOption('hintOptions', newValue);
+                });
+
+                scope.$watch('lint', function(newValue) {
+                    doc.setOption('lint', newValue);
                 });
             }
         };
