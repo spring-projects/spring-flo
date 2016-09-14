@@ -29,6 +29,7 @@ define(function () {
         require('codemirror/addon/lint/lint');
         require('codemirror/addon/hint/show-hint');
         require('codemirror/addon/display/placeholder');
+        require('codemirror/addon/scroll/annotatescrollbar');
 
         return {
             restrict: 'A',
