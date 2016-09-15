@@ -114,6 +114,7 @@ module.exports = function(grunt) {
         		        './bower_components/codemirror/lib/codemirror.css',
         		        './bower_components/codemirror/addon/lint/lint.css',
         		        './bower_components/codemirror/addon/hint/show-hint.css',
+					    './bower_components/codemirror/addon/scroll/simplescrollbars.css',
         		        './lib/joint/joint.css',
         		        './css/flo.css'
         		  ],

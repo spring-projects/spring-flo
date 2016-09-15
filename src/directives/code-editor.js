@@ -28,7 +28,9 @@ define(function () {
                 text: '=codeText',
                 decodeFunction: '&',
                 encodeFunction: '&',
-                placeholder: '@'
+                placeholder: '@',
+                scrollbarStyle: '@',
+                overviewRuler: '@'
             }
         };
     }];

@@ -42,6 +42,8 @@ define(function (require) {
         require('codemirror/addon/edit/closebrackets');
         require('codemirror/addon/display/placeholder');
         require('codemirror/addon/scroll/annotatescrollbar');
+        require('codemirror/addon/scroll/simplescrollbars');
+
 
         // languages
         require('codemirror/mode/groovy/groovy');
@@ -69,16 +71,18 @@ define(function (require) {
                 onUpdateLinting: function (annotations) {
                     var warnings = [];
                     var errors = [];
-                    if (angular.isArray(annotations)) {
-                        annotations.forEach(function(a) {
-                            if (a.to && a.from && a.from.line >= 0 && a.from.ch >= 0 && a.to.line >= a.from.line && a.from.ch >= 0) {
-                                if (a.severity === 'error') {
-                                    errors.push(a);
-                                } else if (a.severity === 'warning') {
-                                    warnings.push(a);
+                    if ($scope.overviewRuler) {
+                        if (angular.isArray(annotations)) {
+                            annotations.forEach(function (a) {
+                                if (a.to && a.from && a.from.line >= 0 && a.from.ch >= 0 && a.to.line >= a.from.line && a.from.ch >= 0) {
+                                    if (a.severity === 'error') {
+                                        errors.push(a);
+                                    } else if (a.severity === 'warning') {
+                                        warnings.push(a);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     warningRuler.update(warnings);
                     errorRuler.update(errors);
@@ -93,8 +97,12 @@ define(function (require) {
                 lineNumbers: true,
                 lineWrapping: true,
                 matchBrackets: true,
-                autoCloseBrackets: true,
+                autoCloseBrackets: true
             });
+
+            if ($scope.scrollbarStyle) {
+                doc.setOption('scrollbarStyle', $scope.scrollbarStyle);
+            }
 
             // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
             // Thus, set the correct placeholder value in case value is angular expression.

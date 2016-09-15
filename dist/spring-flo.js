@@ -9506,6 +9506,148 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   };
 });
 
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define('codemirror/addon/scroll/simplescrollbars',["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  
+
+  function Bar(cls, orientation, scroll) {
+    this.orientation = orientation;
+    this.scroll = scroll;
+    this.screen = this.total = this.size = 1;
+    this.pos = 0;
+
+    this.node = document.createElement("div");
+    this.node.className = cls + "-" + orientation;
+    this.inner = this.node.appendChild(document.createElement("div"));
+
+    var self = this;
+    CodeMirror.on(this.inner, "mousedown", function(e) {
+      if (e.which != 1) return;
+      CodeMirror.e_preventDefault(e);
+      var axis = self.orientation == "horizontal" ? "pageX" : "pageY";
+      var start = e[axis], startpos = self.pos;
+      function done() {
+        CodeMirror.off(document, "mousemove", move);
+        CodeMirror.off(document, "mouseup", done);
+      }
+      function move(e) {
+        if (e.which != 1) return done();
+        self.moveTo(startpos + (e[axis] - start) * (self.total / self.size));
+      }
+      CodeMirror.on(document, "mousemove", move);
+      CodeMirror.on(document, "mouseup", done);
+    });
+
+    CodeMirror.on(this.node, "click", function(e) {
+      CodeMirror.e_preventDefault(e);
+      var innerBox = self.inner.getBoundingClientRect(), where;
+      if (self.orientation == "horizontal")
+        where = e.clientX < innerBox.left ? -1 : e.clientX > innerBox.right ? 1 : 0;
+      else
+        where = e.clientY < innerBox.top ? -1 : e.clientY > innerBox.bottom ? 1 : 0;
+      self.moveTo(self.pos + where * self.screen);
+    });
+
+    function onWheel(e) {
+      var moved = CodeMirror.wheelEventPixels(e)[self.orientation == "horizontal" ? "x" : "y"];
+      var oldPos = self.pos;
+      self.moveTo(self.pos + moved);
+      if (self.pos != oldPos) CodeMirror.e_preventDefault(e);
+    }
+    CodeMirror.on(this.node, "mousewheel", onWheel);
+    CodeMirror.on(this.node, "DOMMouseScroll", onWheel);
+  }
+
+  Bar.prototype.moveTo = function(pos, update) {
+    if (pos < 0) pos = 0;
+    if (pos > this.total - this.screen) pos = this.total - this.screen;
+    if (pos == this.pos) return;
+    this.pos = pos;
+    this.inner.style[this.orientation == "horizontal" ? "left" : "top"] =
+      (pos * (this.size / this.total)) + "px";
+    if (update !== false) this.scroll(pos, this.orientation);
+  };
+
+  Bar.prototype.update = function(scrollSize, clientSize, barSize) {
+    this.screen = clientSize;
+    this.total = scrollSize;
+    this.size = barSize;
+
+    // FIXME clip to min size?
+    this.inner.style[this.orientation == "horizontal" ? "width" : "height"] =
+      this.screen * (this.size / this.total) + "px";
+    this.inner.style[this.orientation == "horizontal" ? "left" : "top"] =
+      this.pos * (this.size / this.total) + "px";
+  };
+
+  function SimpleScrollbars(cls, place, scroll) {
+    this.addClass = cls;
+    this.horiz = new Bar(cls, "horizontal", scroll);
+    place(this.horiz.node);
+    this.vert = new Bar(cls, "vertical", scroll);
+    place(this.vert.node);
+    this.width = null;
+  }
+
+  SimpleScrollbars.prototype.update = function(measure) {
+    if (this.width == null) {
+      var style = window.getComputedStyle ? window.getComputedStyle(this.horiz.node) : this.horiz.node.currentStyle;
+      if (style) this.width = parseInt(style.height);
+    }
+    var width = this.width || 0;
+
+    var needsH = measure.scrollWidth > measure.clientWidth + 1;
+    var needsV = measure.scrollHeight > measure.clientHeight + 1;
+    this.vert.node.style.display = needsV ? "block" : "none";
+    this.horiz.node.style.display = needsH ? "block" : "none";
+
+    if (needsV) {
+      this.vert.update(measure.scrollHeight, measure.clientHeight,
+                       measure.viewHeight - (needsH ? width : 0));
+      this.vert.node.style.display = "block";
+      this.vert.node.style.bottom = needsH ? width + "px" : "0";
+    }
+    if (needsH) {
+      this.horiz.update(measure.scrollWidth, measure.clientWidth,
+                        measure.viewWidth - (needsV ? width : 0) - measure.barLeft);
+      this.horiz.node.style.right = needsV ? width + "px" : "0";
+      this.horiz.node.style.left = measure.barLeft + "px";
+    }
+
+    return {right: needsV ? width : 0, bottom: needsH ? width : 0};
+  };
+
+  SimpleScrollbars.prototype.setScrollTop = function(pos) {
+    this.vert.moveTo(pos, false);
+  };
+
+  SimpleScrollbars.prototype.setScrollLeft = function(pos) {
+    this.horiz.moveTo(pos, false);
+  };
+
+  SimpleScrollbars.prototype.clear = function() {
+    var parent = this.horiz.node.parentNode;
+    parent.removeChild(this.horiz.node);
+    parent.removeChild(this.vert.node);
+  };
+
+  CodeMirror.scrollbarModel.simple = function(place, scroll) {
+    return new SimpleScrollbars("CodeMirror-simplescroll", place, scroll);
+  };
+  CodeMirror.scrollbarModel.overlay = function(place, scroll) {
+    return new SimpleScrollbars("CodeMirror-overlayscroll", place, scroll);
+  };
+});
+
 /*
  * Copyright 2016 the original author or authors.
  *
@@ -9523,169 +9665,178 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
  */
 
 
-define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar'],function(require) {
-	
+define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars'],function (require) {
+    
 
-	var angular = require('angular');
+    var angular = require('angular');
 
     return ['$scope', '$http', '$injector', '$log', function ($scope, $http, $injector, $log) {
 
-	var CodeMirror = require('codemirror');
-	var enableTextToGraphSyncing = false;
-	
-	var doc;
+        var CodeMirror = require('codemirror');
+        var enableTextToGraphSyncing = false;
 
-	var errorMarkerRuler;
+        var doc;
 
-	require('codemirror/addon/lint/lint');
-	require('codemirror/addon/hint/show-hint');
-	require('codemirror/addon/display/placeholder');
-	require('codemirror/addon/scroll/annotatescrollbar');
+        var errorMarkerRuler;
 
+        require('codemirror/addon/lint/lint');
+        require('codemirror/addon/hint/show-hint');
+        require('codemirror/addon/display/placeholder');
+        require('codemirror/addon/scroll/annotatescrollbar');
+        require('codemirror/addon/scroll/simplescrollbars');
 
-	/**
-     * Control graph-to-text syncing. When it is active the graph will be automatically
-     * updated as the text is modified.
-     */
-	function enableGraphToTextSyncing(enable) {
-		$scope.flo.enableSyncing(enable);
-		enableTextToGraphSyncing = !enable;
-	}
+        /**
+         * Control graph-to-text syncing. When it is active the graph will be automatically
+         * updated as the text is modified.
+         */
+        function enableGraphToTextSyncing(enable) {
+            $scope.flo.enableSyncing(enable);
+            enableTextToGraphSyncing = !enable;
+        }
 
-	//TODO: using a controller to setup codemirror is probably not the 'nice'
-	// way to do that. (angular docs say that dom manipulations are not the job of a controller
-	// so probably this should be a directive rather than a controller.
+        //TODO: using a controller to setup codemirror is probably not the 'nice'
+        // way to do that. (angular docs say that dom manipulations are not the job of a controller
+        // so probably this should be a directive rather than a controller.
 
-    // A bit dirty, we store the callback for codemirror linter here.
-	// that way we can update markers each time error objects are
-	// changed.
-	var updateLinting; 
-    
-    /**
-     * If new parse errors are discovered, this will create markers against
-     * the editor text for them and call code mirror to update those markers.
-     */
-	function refreshMarkers() {
-		var markers = [];
-		var parseErrors = $scope.definition.parseError;
-		if (parseErrors && parseErrors.length) {
-			for (var i = 0; i < parseErrors.length; i++) {
-				var parseError = parseErrors[i];
-				if (parseError.message && parseError.range) {
-					var range = parseError.range;
-					markers.push({
-						from: range.start,
-						to: range.end,
-						message: parseError.message.split(/\r?\n/)[0],
-						severity: 'error'
-					});
-				}
-			}
-		}
-		updateLinting(doc, markers);
-		errorMarkerRuler.update(markers);
-	}
-	
-	function isDelimiter(c) {
-		return c && (/\s|\|/).test(c);
-	}
-	
-	function findLast(string, predicate, start) {
-		var pos = start || string.length-1;
-		while (pos>=0 && !predicate(string[pos])) {
-			pos--;
-		}
-		return pos;
-	}
-	
-	/**
-	 * The suggestions provided by rest api are very long and include the whole command typed
-	 * from the start of the line. This function determines the start of the 'interesting' part
-	 * at the end of the prefix, so that we can use it to chop-off the suggestion there.
-	 */
-	function interestingPrefixStart(prefix, completions) {
-		var cursor = prefix.length;
-		if (completions.every(function (completion) { return isDelimiter(completion[cursor]);})) {
-			return cursor;
-		}
-		return findLast(prefix, isDelimiter);
-	}
-	
-	function contentAssist(doc, callback) {
-		var cursor = doc.getCursor();
-		var startOfLine = {line: cursor.line, ch: 0};
-		var prefix = doc.getRange(startOfLine, cursor);
-		
-		if ($scope.contentAssistServiceName) {
-			var caService = $injector.get($scope.contentAssistServiceName);
-			if (caService && angular.isFunction(caService.getProposals)) {
-				return caService.getProposals(prefix).then(function(completions) {
-					var chopAt = interestingPrefixStart(prefix, completions); 
-					return callback({
-						list: completions.map(function (longCompletion) {
-							var text = typeof longCompletion === 'string' ? longCompletion : longCompletion.text;
-							return text.substring(chopAt);
-						}),
-						from: {line: startOfLine.line, ch:chopAt},
-						to: cursor
-					});
-				}, function(err) {
-					$log.error('Cannot get content assist: ' + err);
-				});
-			}
-		} 
-	}
-		
-	$scope.init = function(textarea) {
-		contentAssist.async = true;
-		doc = CodeMirror.fromTextArea(textarea, {
-			gutters: ['CodeMirror-lint-markers'],
-			lint: {
-				async: true,
-				getAnnotations: function (text, updateFun) {
-					if (!updateLinting) {
-						updateLinting = updateFun;
-						$scope.$watch('definition.parseError', refreshMarkers);
-					}
-				}
-			},
-			extraKeys: {'Ctrl-Space': 'autocomplete'},
-			hintOptions: {
-				async: 'true',
-				hint: contentAssist
-			},
-		    lineNumbers: true,
-		    lineWrapping: true
-		});
+        // A bit dirty, we store the callback for codemirror linter here.
+        // that way we can update markers each time error objects are
+        // changed.
+        var updateLinting;
 
-		// CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
-		// Thus, set the correct placeholder value in case value is angular expression.
-		if (angular.isString($scope.placeholder)) {
-			doc.setOption('placeholder', $scope.placeholder);
-		}
-		
-		doc.on('change', function () {
-			if (enableTextToGraphSyncing) {
-				$scope.definition.text = doc.getValue();
-				$scope.flo.scheduleUpdateGraphRepresentation();
-			}
-		});
-		doc.on('focus', function () {
-			enableGraphToTextSyncing(false);
-		});
-		doc.on('blur', function () {
-			enableGraphToTextSyncing(true);
-		});
-		errorMarkerRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
-		$scope.$watch('definition.text', function (newValue) {
-			if (newValue!==doc.getValue()) {
-				var cursorPosition = doc.getCursor();
-				doc.setValue(newValue);
-				doc.setCursor(cursorPosition);
-			}
-		});
-	};
-		
+        /**
+         * If new parse errors are discovered, this will create markers against
+         * the editor text for them and call code mirror to update those markers.
+         */
+        function refreshMarkers() {
+            var markers = [];
+            var parseErrors = $scope.definition.parseError;
+            if (parseErrors && parseErrors.length) {
+                for (var i = 0; i < parseErrors.length; i++) {
+                    var parseError = parseErrors[i];
+                    if (parseError.message && parseError.range) {
+                        var range = parseError.range;
+                        markers.push({
+                            from: range.start,
+                            to: range.end,
+                            message: parseError.message.split(/\r?\n/)[0],
+                            severity: 'error'
+                        });
+                    }
+                }
+            }
+            updateLinting(doc, markers);
+            errorMarkerRuler.update($scope.overviewRuler ? markers : []);
+        }
+
+        function isDelimiter(c) {
+            return c && (/\s|\|/).test(c);
+        }
+
+        function findLast(string, predicate, start) {
+            var pos = start || string.length - 1;
+            while (pos >= 0 && !predicate(string[pos])) {
+                pos--;
+            }
+            return pos;
+        }
+
+        /**
+         * The suggestions provided by rest api are very long and include the whole command typed
+         * from the start of the line. This function determines the start of the 'interesting' part
+         * at the end of the prefix, so that we can use it to chop-off the suggestion there.
+         */
+        function interestingPrefixStart(prefix, completions) {
+            var cursor = prefix.length;
+            if (completions.every(function (completion) {
+                    return isDelimiter(completion[cursor]);
+                })) {
+                return cursor;
+            }
+            return findLast(prefix, isDelimiter);
+        }
+
+        function contentAssist(doc, callback) {
+            var cursor = doc.getCursor();
+            var startOfLine = {line: cursor.line, ch: 0};
+            var prefix = doc.getRange(startOfLine, cursor);
+
+            if ($scope.contentAssistServiceName) {
+                var caService = $injector.get($scope.contentAssistServiceName);
+                if (caService && angular.isFunction(caService.getProposals)) {
+                    return caService.getProposals(prefix).then(function (completions) {
+                        var chopAt = interestingPrefixStart(prefix, completions);
+                        return callback({
+                            list: completions.map(function (longCompletion) {
+                                var text = typeof longCompletion === 'string' ? longCompletion : longCompletion.text;
+                                return text.substring(chopAt);
+                            }),
+                            from: {line: startOfLine.line, ch: chopAt},
+                            to: cursor
+                        });
+                    }, function (err) {
+                        $log.error('Cannot get content assist: ' + err);
+                    });
+                }
+            }
+        }
+
+        $scope.init = function (textarea) {
+            contentAssist.async = true;
+
+            var options =  {
+                gutters: ['CodeMirror-lint-markers'],
+                lint: {
+                    async: true,
+                    getAnnotations: function (text, updateFun) {
+                        if (!updateLinting) {
+                            updateLinting = updateFun;
+                            $scope.$watch('definition.parseError', refreshMarkers);
+                        }
+                    }
+                },
+                extraKeys: {'Ctrl-Space': 'autocomplete'},
+                hintOptions: {
+                    async: 'true',
+                    hint: contentAssist
+                },
+                lineNumbers: true,
+                lineWrapping: true
+            };
+
+            if ($scope.scrollbarStyle) {
+                options.scrollbarStyle = $scope.scrollbarStyle;
+            }
+
+            doc = CodeMirror.fromTextArea(textarea, options);
+
+            // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+            // Thus, set the correct placeholder value in case value is angular expression.
+            if (angular.isString($scope.placeholder)) {
+                doc.setOption('placeholder', $scope.placeholder);
+            }
+
+            doc.on('change', function () {
+                if (enableTextToGraphSyncing) {
+                    $scope.definition.text = doc.getValue();
+                    $scope.flo.scheduleUpdateGraphRepresentation();
+                }
+            });
+            doc.on('focus', function () {
+                enableGraphToTextSyncing(false);
+            });
+            doc.on('blur', function () {
+                enableGraphToTextSyncing(true);
+            });
+            errorMarkerRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
+            $scope.$watch('definition.text', function (newValue) {
+                if (newValue !== doc.getValue()) {
+                    var cursorPosition = doc.getCursor();
+                    doc.setValue(newValue);
+                    doc.setCursor(cursorPosition);
+                }
+            });
+        };
+
     }];
 
 });
@@ -9718,6 +9869,12 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
                 }
                 if (attrs.placeholder) {
                     scope.placeholder = $interpolate(attrs.placeholder)(scope);
+                }
+                if (attrs.scrollbarStyle) {
+                    scope.scrollbarStyle = $interpolate(attrs.scrollbarStyle)(scope);
+                }
+                if (attrs.overviewRuler) {
+                    scope.overviewRuler = $interpolate(attrs.overviewRuler)(scope);
                 }
                 scope.init(element.context);
             }
@@ -24918,7 +25075,7 @@ define("jshint", ["lodash"], function(){});
  * benefit from the use of a real editor that can provide features like syntax highlighting and mark
  * errors/warnings.
  */
-define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function (require) {
+define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function (require) {
     
 
     return ['$scope', function ($scope) {
@@ -24934,6 +25091,8 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
         require('codemirror/addon/edit/closebrackets');
         require('codemirror/addon/display/placeholder');
         require('codemirror/addon/scroll/annotatescrollbar');
+        require('codemirror/addon/scroll/simplescrollbars');
+
 
         // languages
         require('codemirror/mode/groovy/groovy');
@@ -24961,16 +25120,18 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
                 onUpdateLinting: function (annotations) {
                     var warnings = [];
                     var errors = [];
-                    if (angular.isArray(annotations)) {
-                        annotations.forEach(function(a) {
-                            if (a.to && a.from && a.from.line >= 0 && a.from.ch >= 0 && a.to.line >= a.from.line && a.from.ch >= 0) {
-                                if (a.severity === 'error') {
-                                    errors.push(a);
-                                } else if (a.severity === 'warning') {
-                                    warnings.push(a);
+                    if ($scope.overviewRuler) {
+                        if (angular.isArray(annotations)) {
+                            annotations.forEach(function (a) {
+                                if (a.to && a.from && a.from.line >= 0 && a.from.ch >= 0 && a.to.line >= a.from.line && a.from.ch >= 0) {
+                                    if (a.severity === 'error') {
+                                        errors.push(a);
+                                    } else if (a.severity === 'warning') {
+                                        warnings.push(a);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                     warningRuler.update(warnings);
                     errorRuler.update(errors);
@@ -24985,8 +25146,12 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
                 lineNumbers: true,
                 lineWrapping: true,
                 matchBrackets: true,
-                autoCloseBrackets: true,
+                autoCloseBrackets: true
             });
+
+            if ($scope.scrollbarStyle) {
+                doc.setOption('scrollbarStyle', $scope.scrollbarStyle);
+            }
 
             // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
             // Thus, set the correct placeholder value in case value is angular expression.
@@ -25098,7 +25263,9 @@ define('directives/code-editor',['controllers/code-editor'],function () {
                 text: '=codeText',
                 decodeFunction: '&',
                 encodeFunction: '&',
-                placeholder: '@'
+                placeholder: '@',
+                scrollbarStyle: '@',
+                overviewRuler: '@'
             }
         };
     }];
@@ -28915,7 +29082,7 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('directives/generic-dsl-editor',['underscore','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar'],function () {
+define('directives/generic-dsl-editor',['underscore','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars'],function () {
     
 
     var _ = require('underscore');
@@ -28933,6 +29100,7 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
         require('codemirror/addon/hint/show-hint');
         require('codemirror/addon/display/placeholder');
         require('codemirror/addon/scroll/annotatescrollbar');
+        require('codemirror/addon/scroll/simplescrollbars');
 
         return {
             restrict: 'A',
@@ -28940,7 +29108,8 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
                 dsl: '=',
                 hint: '=',
                 lint: '=',
-                placeholder: '@'
+                placeholder: '@',
+                scrollbarStyle: '@'
             },
             link: function (scope, element, attrs) {
 
@@ -28953,8 +29122,12 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
                     gutters: ['CodeMirror-lint-markers'],
                     extraKeys: {'Ctrl-Space': 'autocomplete'},
                     lineNumbers: attrs.lineNumbers && attrs.lineNumbers.toLowerCase() === 'true',
-                    lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true'
+                    lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true',
                 };
+
+                if (scope.scrollbarStyle) {
+                    options.scrollbarStyle = scope.scrollbarStyle;
+                }
 
                 if (scope.lint) {
                     options.lint = scope.lint;

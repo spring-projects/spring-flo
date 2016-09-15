@@ -31,6 +31,7 @@ define(function () {
         require('codemirror/addon/hint/show-hint');
         require('codemirror/addon/display/placeholder');
         require('codemirror/addon/scroll/annotatescrollbar');
+        require('codemirror/addon/scroll/simplescrollbars');
 
         return {
             restrict: 'A',
@@ -38,7 +39,8 @@ define(function () {
                 dsl: '=',
                 hint: '=',
                 lint: '=',
-                placeholder: '@'
+                placeholder: '@',
+                scrollbarStyle: '@'
             },
             link: function (scope, element, attrs) {
 
@@ -51,8 +53,12 @@ define(function () {
                     gutters: ['CodeMirror-lint-markers'],
                     extraKeys: {'Ctrl-Space': 'autocomplete'},
                     lineNumbers: attrs.lineNumbers && attrs.lineNumbers.toLowerCase() === 'true',
-                    lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true'
+                    lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true',
                 };
+
+                if (scope.scrollbarStyle) {
+                    options.scrollbarStyle = scope.scrollbarStyle;
+                }
 
                 if (scope.lint) {
                     options.lint = scope.lint;

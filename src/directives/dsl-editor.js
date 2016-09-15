@@ -28,6 +28,12 @@ define(function () {
                 if (attrs.placeholder) {
                     scope.placeholder = $interpolate(attrs.placeholder)(scope);
                 }
+                if (attrs.scrollbarStyle) {
+                    scope.scrollbarStyle = $interpolate(attrs.scrollbarStyle)(scope);
+                }
+                if (attrs.overviewRuler) {
+                    scope.overviewRuler = $interpolate(attrs.overviewRuler)(scope);
+                }
                 scope.init(element.context);
             }
         };
