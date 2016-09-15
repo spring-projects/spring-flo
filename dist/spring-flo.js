@@ -9405,6 +9405,107 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   }
 });
 
+// CodeMirror, copyright (c) by Marijn Haverbeke and others
+// Distributed under an MIT license: http://codemirror.net/LICENSE
+
+(function(mod) {
+  if (typeof exports == "object" && typeof module == "object") // CommonJS
+    mod(require("../../lib/codemirror"));
+  else if (typeof define == "function" && define.amd) // AMD
+    define('codemirror/addon/scroll/annotatescrollbar',["../../lib/codemirror"], mod);
+  else // Plain browser env
+    mod(CodeMirror);
+})(function(CodeMirror) {
+  
+
+  CodeMirror.defineExtension("annotateScrollbar", function(options) {
+    if (typeof options == "string") options = {className: options};
+    return new Annotation(this, options);
+  });
+
+  CodeMirror.defineOption("scrollButtonHeight", 0);
+
+  function Annotation(cm, options) {
+    this.cm = cm;
+    this.options = options;
+    this.buttonHeight = options.scrollButtonHeight || cm.getOption("scrollButtonHeight");
+    this.annotations = [];
+    this.doRedraw = this.doUpdate = null;
+    this.div = cm.getWrapperElement().appendChild(document.createElement("div"));
+    this.div.style.cssText = "position: absolute; right: 0; top: 0; z-index: 7; pointer-events: none";
+    this.computeScale();
+
+    function scheduleRedraw(delay) {
+      clearTimeout(self.doRedraw);
+      self.doRedraw = setTimeout(function() { self.redraw(); }, delay);
+    }
+
+    var self = this;
+    cm.on("refresh", this.resizeHandler = function() {
+      clearTimeout(self.doUpdate);
+      self.doUpdate = setTimeout(function() {
+        if (self.computeScale()) scheduleRedraw(20);
+      }, 100);
+    });
+    cm.on("markerAdded", this.resizeHandler);
+    cm.on("markerCleared", this.resizeHandler);
+    if (options.listenForChanges !== false)
+      cm.on("change", this.changeHandler = function() {
+        scheduleRedraw(250);
+      });
+  }
+
+  Annotation.prototype.computeScale = function() {
+    var cm = this.cm;
+    var hScale = (cm.getWrapperElement().clientHeight - cm.display.barHeight - this.buttonHeight * 2) /
+      cm.heightAtLine(cm.lastLine() + 1, "local");
+    if (hScale != this.hScale) {
+      this.hScale = hScale;
+      return true;
+    }
+  };
+
+  Annotation.prototype.update = function(annotations) {
+    this.annotations = annotations;
+    this.redraw();
+  };
+
+  Annotation.prototype.redraw = function(compute) {
+    if (compute !== false) this.computeScale();
+    var cm = this.cm, hScale = this.hScale;
+
+    var frag = document.createDocumentFragment(), anns = this.annotations;
+    if (cm.display.barWidth) for (var i = 0, nextTop; i < anns.length; i++) {
+      var ann = anns[i];
+      var top = nextTop || cm.charCoords(ann.from, "local").top * hScale;
+      var bottom = cm.charCoords(ann.to, "local").bottom * hScale;
+      while (i < anns.length - 1) {
+        nextTop = cm.charCoords(anns[i + 1].from, "local").top * hScale;
+        if (nextTop > bottom + .9) break;
+        ann = anns[++i];
+        bottom = cm.charCoords(ann.to, "local").bottom * hScale;
+      }
+      if (bottom == top) continue;
+      var height = Math.max(bottom - top, 3);
+
+      var elt = frag.appendChild(document.createElement("div"));
+      elt.style.cssText = "position: absolute; right: 0px; width: " + Math.max(cm.display.barWidth - 1, 2) + "px; top: "
+        + (top + this.buttonHeight) + "px; height: " + height + "px";
+      elt.className = this.options.className;
+    }
+    this.div.textContent = "";
+    this.div.appendChild(frag);
+  };
+
+  Annotation.prototype.clear = function() {
+    this.cm.off("refresh", this.resizeHandler);
+    this.cm.off("markerAdded", this.resizeHandler);
+    this.cm.off("markerCleared", this.resizeHandler);
+    if (this.changeHandler) this.cm.off("change", this.changeHandler);
+    this.div.parentNode.removeChild(this.div);
+  };
+});
+
 /*
  * Copyright 2016 the original author or authors.
  *
@@ -9422,7 +9523,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
  */
 
 
-define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder'],function(require) {
+define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar'],function(require) {
 	
 
 	var angular = require('angular');
@@ -9433,13 +9534,16 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 	var enableTextToGraphSyncing = false;
 	
 	var doc;
-	
+
+	var errorMarkerRuler;
+
 	require('codemirror/addon/lint/lint');
 	require('codemirror/addon/hint/show-hint');
 	require('codemirror/addon/display/placeholder');
+	require('codemirror/addon/scroll/annotatescrollbar');
 
 
-		/**
+	/**
      * Control graph-to-text syncing. When it is active the graph will be automatically
      * updated as the text is modified.
      */
@@ -9479,6 +9583,7 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 			}
 		}
 		updateLinting(doc, markers);
+		errorMarkerRuler.update(markers);
 	}
 	
 	function isDelimiter(c) {
@@ -9564,6 +9669,7 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 		doc.on('blur', function () {
 			enableGraphToTextSyncing(true);
 		});
+		errorMarkerRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
 		$scope.$watch('definition.text', function (newValue) {
 			if (newValue!==doc.getValue()) {
 				var cursorPosition = doc.getCursor();
@@ -24797,127 +24903,155 @@ define("jshint", ["lodash"], function(){});
  *
  * Note: instead of language and code text it's likely the code will be changed to have getters and setters
  * for the code text which will avoid having encode and decode functions.
- * 
+ *
  * This editor is typically used for properties where the property value is a script/code like value and
  * benefit from the use of a real editor that can provide features like syntax highlighting and mark
  * errors/warnings.
  */
-define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/addon/display/placeholder','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function(require) {
-	
+define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function (require) {
     
+
     return ['$scope', function ($scope) {
 
-	var angular = require('angular');
-	var CodeMirror = require('codemirror');
-	
-	require('codemirror/mode/meta');
-	require('codemirror/addon/lint/lint');
-	require('codemirror/addon/hint/show-hint');
-	require('codemirror/addon/mode/loadmode');
-	require('codemirror/addon/edit/matchbrackets');
-	require('codemirror/addon/edit/closebrackets');
-	require('codemirror/addon/display/placeholder');	
-	
-	// languages
-	require('codemirror/mode/groovy/groovy');
-	require('codemirror/mode/javascript/javascript');
-	require('codemirror/mode/python/python');
-	require('codemirror/mode/ruby/ruby');
-	require('codemirror/mode/clike/clike');
-	
-	// Lint support
-	require('jshint');
-	require('codemirror/addon/lint/javascript-lint');
-	
-	CodeMirror.modeURL = 'codemirror/mode/%N/%N';
-	
-	var LINT_MAP = {
-		'javascript': true
-	};
-	
-	var defaultText = '';
-	var defaultLanguage = 'Plain Text';
-	
-	$scope.init = function(textarea, attrs) {
+        var angular = require('angular');
+        var CodeMirror = require('codemirror');
 
-		var doc = CodeMirror.fromTextArea(textarea, {
-			gutters: ['CodeMirror-lint-markers'],
-			lineNumbers: true,
-			lineWrapping: true,
-			matchBrackets: true,
-			autoCloseBrackets: true
-		});
+        require('codemirror/mode/meta');
+        require('codemirror/addon/lint/lint');
+        require('codemirror/addon/hint/show-hint');
+        require('codemirror/addon/mode/loadmode');
+        require('codemirror/addon/edit/matchbrackets');
+        require('codemirror/addon/edit/closebrackets');
+        require('codemirror/addon/display/placeholder');
+        require('codemirror/addon/scroll/annotatescrollbar');
 
-		function getLintOption(modeName) {
-			var lint = LINT_MAP[modeName.toLowerCase()];
-			return lint ? lint : false;
-		}
-		
-		function updateScopeText() {
-			var text = doc.getValue();
-			var result;
-			var encodeFunc = $scope.encodeFunction();
-			if (angular.isFunction(encodeFunc)) {
-				result = encodeFunc.call(null, text);
-			}
-			if (typeof result === 'string') {
-				text = result;					
-			}
-			if (text === defaultText) {
-				$scope.text = undefined;
-			} else {
-				$scope.text = text;				
-			}
-			$scope.$apply();
-		}
-		
-		function updateMode() {
-			var language = $scope.language && typeof $scope.language === 'string' ? $scope.language : defaultLanguage;			
-			if (language) {
-				var info = CodeMirror.findModeByName(language);
-				
-				// Set proper editor mode
-				doc.setOption('mode', info.mime);
-				CodeMirror.autoLoadMode(doc, info.mode);
-				
-				// Set proper Lint mode
-				doc.setOption('lint', getLintOption(info.name));
-			}
-		}
-		
-		if (attrs.defaultText) {
-			defaultText = attrs.defaultText;
-		}
-		
-		if (attrs.defaultLanguage) {
-			defaultLanguage = attrs.defaultLanguage.toLowerCase();
-		}
-		
-		updateMode();
-		
-		var text = $scope.text ? $scope.text : defaultText;
-		var result;
-		var decodeFunc = $scope.decodeFunction();
-		if (angular.isFunction(decodeFunc)) {
-			result = decodeFunc.call(this, text);
-		}
-		if (typeof result === 'string') {
-			text = result;				
-		}
-		doc.setValue(text);
+        // languages
+        require('codemirror/mode/groovy/groovy');
+        require('codemirror/mode/javascript/javascript');
+        require('codemirror/mode/python/python');
+        require('codemirror/mode/ruby/ruby');
+        require('codemirror/mode/clike/clike');
 
-		doc.on('changes', function () {
-			updateScopeText();
-		});		
-		doc.on('blur', function () {
-			updateScopeText();
-		});
-		$scope.$watch('language', function() {
-			updateMode();
-		});
-	};
-	
-}];});
+        // Lint support
+        require('jshint');
+        require('codemirror/addon/lint/javascript-lint');
+
+        CodeMirror.modeURL = 'codemirror/mode/%N/%N';
+
+
+        var defaultText = '';
+        var defaultLanguage = 'Plain Text';
+
+        var doc;
+        var errorRuler;
+        var warningRuler;
+
+        var LINT_MAP = {
+            'javascript': {
+                onUpdateLinting: function (annotations) {
+                    var warnings = [];
+                    var errors = [];
+                    if (angular.isArray(annotations)) {
+                        annotations.forEach(function(a) {
+                            if (a.to && a.from && a.from.line >= 0 && a.from.ch >= 0 && a.to.line >= a.from.line && a.from.ch >= 0) {
+                                if (a.severity === 'error') {
+                                    errors.push(a);
+                                } else if (a.severity === 'warning') {
+                                    warnings.push(a);
+                                }
+                            }
+                        });
+                    }
+                    warningRuler.update(warnings);
+                    errorRuler.update(errors);
+                }
+            }
+        };
+
+        $scope.init = function (textarea, attrs) {
+
+            doc = CodeMirror.fromTextArea(textarea, {
+                gutters: ['CodeMirror-lint-markers'],
+                lineNumbers: true,
+                lineWrapping: true,
+                matchBrackets: true,
+                autoCloseBrackets: true
+            });
+
+            warningRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-warning');
+            errorRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
+
+            function getLintOption(modeName) {
+                var lint = LINT_MAP[modeName.toLowerCase()];
+                return lint ? lint : false;
+            }
+
+            function updateScopeText() {
+                var text = doc.getValue();
+                var result;
+                var encodeFunc = $scope.encodeFunction();
+                if (angular.isFunction(encodeFunc)) {
+                    result = encodeFunc.call(null, text);
+                }
+                if (typeof result === 'string') {
+                    text = result;
+                }
+                if (text === defaultText) {
+                    $scope.text = undefined;
+                } else {
+                    $scope.text = text;
+                }
+                $scope.$apply();
+            }
+
+            function updateMode() {
+                var language = $scope.language && typeof $scope.language === 'string' ? $scope.language : defaultLanguage;
+                if (language) {
+                    var info = CodeMirror.findModeByName(language);
+
+                    // Set proper editor mode
+                    doc.setOption('mode', info.mime);
+                    CodeMirror.autoLoadMode(doc, info.mode);
+
+                    // Set proper Lint mode
+                    doc.setOption('lint', getLintOption(info.name));
+                }
+            }
+
+            if (attrs.defaultText) {
+                defaultText = attrs.defaultText;
+            }
+
+            if (attrs.defaultLanguage) {
+                defaultLanguage = attrs.defaultLanguage.toLowerCase();
+            }
+
+            updateMode();
+
+            var text = $scope.text ? $scope.text : defaultText;
+            var result;
+            var decodeFunc = $scope.decodeFunction();
+            if (angular.isFunction(decodeFunc)) {
+                result = decodeFunc.call(this, text);
+            }
+            if (typeof result === 'string') {
+                text = result;
+            }
+            doc.setValue(text);
+
+            doc.on('changes', function () {
+                updateScopeText();
+            });
+            doc.on('blur', function () {
+                updateScopeText();
+            });
+            $scope.$watch('language', function () {
+                updateMode();
+            });
+        };
+
+    }];
+});
 /*
  * Copyright 2016 the original author or authors.
  *
@@ -28749,107 +28883,6 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
         
     }];
 });
-// CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
-
-(function(mod) {
-  if (typeof exports == "object" && typeof module == "object") // CommonJS
-    mod(require("../../lib/codemirror"));
-  else if (typeof define == "function" && define.amd) // AMD
-    define('codemirror/addon/scroll/annotatescrollbar',["../../lib/codemirror"], mod);
-  else // Plain browser env
-    mod(CodeMirror);
-})(function(CodeMirror) {
-  
-
-  CodeMirror.defineExtension("annotateScrollbar", function(options) {
-    if (typeof options == "string") options = {className: options};
-    return new Annotation(this, options);
-  });
-
-  CodeMirror.defineOption("scrollButtonHeight", 0);
-
-  function Annotation(cm, options) {
-    this.cm = cm;
-    this.options = options;
-    this.buttonHeight = options.scrollButtonHeight || cm.getOption("scrollButtonHeight");
-    this.annotations = [];
-    this.doRedraw = this.doUpdate = null;
-    this.div = cm.getWrapperElement().appendChild(document.createElement("div"));
-    this.div.style.cssText = "position: absolute; right: 0; top: 0; z-index: 7; pointer-events: none";
-    this.computeScale();
-
-    function scheduleRedraw(delay) {
-      clearTimeout(self.doRedraw);
-      self.doRedraw = setTimeout(function() { self.redraw(); }, delay);
-    }
-
-    var self = this;
-    cm.on("refresh", this.resizeHandler = function() {
-      clearTimeout(self.doUpdate);
-      self.doUpdate = setTimeout(function() {
-        if (self.computeScale()) scheduleRedraw(20);
-      }, 100);
-    });
-    cm.on("markerAdded", this.resizeHandler);
-    cm.on("markerCleared", this.resizeHandler);
-    if (options.listenForChanges !== false)
-      cm.on("change", this.changeHandler = function() {
-        scheduleRedraw(250);
-      });
-  }
-
-  Annotation.prototype.computeScale = function() {
-    var cm = this.cm;
-    var hScale = (cm.getWrapperElement().clientHeight - cm.display.barHeight - this.buttonHeight * 2) /
-      cm.heightAtLine(cm.lastLine() + 1, "local");
-    if (hScale != this.hScale) {
-      this.hScale = hScale;
-      return true;
-    }
-  };
-
-  Annotation.prototype.update = function(annotations) {
-    this.annotations = annotations;
-    this.redraw();
-  };
-
-  Annotation.prototype.redraw = function(compute) {
-    if (compute !== false) this.computeScale();
-    var cm = this.cm, hScale = this.hScale;
-
-    var frag = document.createDocumentFragment(), anns = this.annotations;
-    if (cm.display.barWidth) for (var i = 0, nextTop; i < anns.length; i++) {
-      var ann = anns[i];
-      var top = nextTop || cm.charCoords(ann.from, "local").top * hScale;
-      var bottom = cm.charCoords(ann.to, "local").bottom * hScale;
-      while (i < anns.length - 1) {
-        nextTop = cm.charCoords(anns[i + 1].from, "local").top * hScale;
-        if (nextTop > bottom + .9) break;
-        ann = anns[++i];
-        bottom = cm.charCoords(ann.to, "local").bottom * hScale;
-      }
-      if (bottom == top) continue;
-      var height = Math.max(bottom - top, 3);
-
-      var elt = frag.appendChild(document.createElement("div"));
-      elt.style.cssText = "position: absolute; right: 0px; width: " + Math.max(cm.display.barWidth - 1, 2) + "px; top: "
-        + (top + this.buttonHeight) + "px; height: " + height + "px";
-      elt.className = this.options.className;
-    }
-    this.div.textContent = "";
-    this.div.appendChild(frag);
-  };
-
-  Annotation.prototype.clear = function() {
-    this.cm.off("refresh", this.resizeHandler);
-    this.cm.off("markerAdded", this.resizeHandler);
-    this.cm.off("markerCleared", this.resizeHandler);
-    if (this.changeHandler) this.cm.off("change", this.changeHandler);
-    this.div.parentNode.removeChild(this.div);
-  };
-});
-
 /*
  * Copyright 2016 the original author or authors.
  *

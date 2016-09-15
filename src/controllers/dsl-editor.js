@@ -26,13 +26,16 @@ define(function(require) {
 	var enableTextToGraphSyncing = false;
 	
 	var doc;
-	
+
+	var errorMarkerRuler;
+
 	require('codemirror/addon/lint/lint');
 	require('codemirror/addon/hint/show-hint');
 	require('codemirror/addon/display/placeholder');
+	require('codemirror/addon/scroll/annotatescrollbar');
 
 
-		/**
+	/**
      * Control graph-to-text syncing. When it is active the graph will be automatically
      * updated as the text is modified.
      */
@@ -72,6 +75,7 @@ define(function(require) {
 			}
 		}
 		updateLinting(doc, markers);
+		errorMarkerRuler.update(markers);
 	}
 	
 	function isDelimiter(c) {
@@ -157,6 +161,7 @@ define(function(require) {
 		doc.on('blur', function () {
 			enableGraphToTextSyncing(true);
 		});
+		errorMarkerRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
 		$scope.$watch('definition.text', function (newValue) {
 			if (newValue!==doc.getValue()) {
 				var cursorPosition = doc.getCursor();
