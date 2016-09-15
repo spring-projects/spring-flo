@@ -16,7 +16,7 @@
 define(function () {
     'use strict';
 
-    return [function () {
+    return ['$interpolate', function ($interpolate) {
         return {
             restrict: 'A',
             scope: true,
@@ -24,6 +24,9 @@ define(function () {
             link: function (scope, element, attrs) {
                 if (attrs.contentAssistServiceName) {
                     scope.contentAssistServiceName = attrs.contentAssistServiceName;
+                }
+                if (attrs.placeholder) {
+                    scope.placeholder = $interpolate(attrs.placeholder)(scope);
                 }
                 scope.init(element.context);
             }

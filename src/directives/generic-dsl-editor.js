@@ -17,6 +17,7 @@ define(function () {
     'use strict';
 
     var _ = require('underscore');
+    var angular = require('angular');
 
     return [ function() {
 
@@ -36,7 +37,8 @@ define(function () {
             scope: {
                 dsl: '=',
                 hint: '=',
-                lint: '='
+                lint: '=',
+                placeholder: '@'
             },
             link: function (scope, element, attrs) {
 
@@ -61,6 +63,12 @@ define(function () {
                 }
 
                 doc = CodeMirror.fromTextArea(element.context, options);
+
+                // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+                // Thus, set the correct placeholder value in case value is angular expression.
+                if (angular.isString(scope.placeholder)) {
+                    doc.setOption('placeholder', scope.placeholder);
+                }
 
                 var dslChangedHandler = function () {
                     scope.$apply(function() {

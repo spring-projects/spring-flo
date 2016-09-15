@@ -93,8 +93,14 @@ define(function (require) {
                 lineNumbers: true,
                 lineWrapping: true,
                 matchBrackets: true,
-                autoCloseBrackets: true
+                autoCloseBrackets: true,
             });
+
+            // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+            // Thus, set the correct placeholder value in case value is angular expression.
+            if (angular.isString($scope.placeholder)) {
+                doc.setOption('placeholder', $scope.placeholder);
+            }
 
             warningRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-warning');
             errorRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');

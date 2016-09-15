@@ -149,6 +149,13 @@ define(function(require) {
 		    lineNumbers: true,
 		    lineWrapping: true
 		});
+
+		// CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+		// Thus, set the correct placeholder value in case value is angular expression.
+		if (angular.isString($scope.placeholder)) {
+			doc.setOption('placeholder', $scope.placeholder);
+		}
+		
 		doc.on('change', function () {
 			if (enableTextToGraphSyncing) {
 				$scope.definition.text = doc.getValue();

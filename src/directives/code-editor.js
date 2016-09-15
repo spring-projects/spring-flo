@@ -27,7 +27,8 @@ define(function () {
                 language: '=codeLanguage',
                 text: '=codeText',
                 decodeFunction: '&',
-                encodeFunction: '&'
+                encodeFunction: '&',
+                placeholder: '@'
             }
         };
     }];

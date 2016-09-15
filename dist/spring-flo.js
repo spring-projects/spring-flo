@@ -9657,6 +9657,13 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 		    lineNumbers: true,
 		    lineWrapping: true
 		});
+
+		// CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+		// Thus, set the correct placeholder value in case value is angular expression.
+		if (angular.isString($scope.placeholder)) {
+			doc.setOption('placeholder', $scope.placeholder);
+		}
+		
 		doc.on('change', function () {
 			if (enableTextToGraphSyncing) {
 				$scope.definition.text = doc.getValue();
@@ -9700,7 +9707,7 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 define('directives/dsl-editor',['controllers/dsl-editor'],function () {
     
 
-    return [function () {
+    return ['$interpolate', function ($interpolate) {
         return {
             restrict: 'A',
             scope: true,
@@ -9708,6 +9715,9 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
             link: function (scope, element, attrs) {
                 if (attrs.contentAssistServiceName) {
                     scope.contentAssistServiceName = attrs.contentAssistServiceName;
+                }
+                if (attrs.placeholder) {
+                    scope.placeholder = $interpolate(attrs.placeholder)(scope);
                 }
                 scope.init(element.context);
             }
@@ -24975,8 +24985,14 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
                 lineNumbers: true,
                 lineWrapping: true,
                 matchBrackets: true,
-                autoCloseBrackets: true
+                autoCloseBrackets: true,
             });
+
+            // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+            // Thus, set the correct placeholder value in case value is angular expression.
+            if (angular.isString($scope.placeholder)) {
+                doc.setOption('placeholder', $scope.placeholder);
+            }
 
             warningRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-warning');
             errorRuler = doc.annotateScrollbar('CodeMirror-vertical-ruler-error');
@@ -25081,7 +25097,8 @@ define('directives/code-editor',['controllers/code-editor'],function () {
                 language: '=codeLanguage',
                 text: '=codeText',
                 decodeFunction: '&',
-                encodeFunction: '&'
+                encodeFunction: '&',
+                placeholder: '@'
             }
         };
     }];
@@ -28898,10 +28915,11 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-define('directives/generic-dsl-editor',['underscore','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar'],function () {
+define('directives/generic-dsl-editor',['underscore','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar'],function () {
     
 
     var _ = require('underscore');
+    var angular = require('angular');
 
     return [ function() {
 
@@ -28921,7 +28939,8 @@ define('directives/generic-dsl-editor',['underscore','codemirror','codemirror/ad
             scope: {
                 dsl: '=',
                 hint: '=',
-                lint: '='
+                lint: '=',
+                placeholder: '@'
             },
             link: function (scope, element, attrs) {
 
@@ -28946,6 +28965,12 @@ define('directives/generic-dsl-editor',['underscore','codemirror','codemirror/ad
                 }
 
                 doc = CodeMirror.fromTextArea(element.context, options);
+
+                // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
+                // Thus, set the correct placeholder value in case value is angular expression.
+                if (angular.isString(scope.placeholder)) {
+                    doc.setOption('placeholder', scope.placeholder);
+                }
 
                 var dslChangedHandler = function () {
                     scope.$apply(function() {
