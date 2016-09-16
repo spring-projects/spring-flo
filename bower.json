@@ -13,7 +13,7 @@
     "backbone": "1.2.1",
     "joint": "0.9.6",
     "lodash": "2.4.2",
-    "codemirror": "5.0.0",
+    "codemirror": "5.18.2",
     "jshint": "2.6.3"
   },
   "devDependencies": {

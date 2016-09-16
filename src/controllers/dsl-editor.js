@@ -140,7 +140,14 @@ define(function (require) {
                     getAnnotations: function (text, updateFun) {
                         if (!updateLinting) {
                             updateLinting = updateFun;
-                            $scope.$watch('definition.parseError', refreshMarkers);
+                            $scope.$watch('definition.parseError', function() {
+                                // HACK!!!
+                                // CodeMirror syncs linting requests by id.
+                                // Hence can't simply call refreshMarkers without adjusting the waiting id
+                                // The first timeit's called the waitingFor id is equal to 1, hence reset it every time
+                                doc.state.lint.waitingFor = 1;
+                                refreshMarkers();
+                            });
                         }
                     }
                 },
