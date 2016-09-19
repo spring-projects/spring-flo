@@ -329,6 +329,13 @@
 .CodeMirror-hint {
 	max-width: 38em;
 }
+.CodeMirror-vertical-ruler-error {
+	background-color: rgba(188, 0, 0, 0.5);
+}
+.CodeMirror-vertical-ruler-warning {
+	background-color: rgba(255, 188, 0, 0.5);
+}
+
 
 /* Code Mirror related styles END */
 

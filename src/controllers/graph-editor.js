@@ -29,9 +29,9 @@ define(function(require) {
 
 	var angular = require('angular');
 	var joint = require('joint');
-	var shapesFactory = require('shapes-factory');
-	var createProperties = require('properties-manager');
-	var createEventManager = require('event-manager');
+	var shapesFactory = require('common/shapes-factory');
+	var createProperties = require('common/properties-manager');
+	var createEventManager = require('common/event-manager');
 	
 	return ['$q', '$scope', '$timeout', '$http', '$log', '$injector', function($q, $scope, $timeout, $http, $log, $injector) {
 	
