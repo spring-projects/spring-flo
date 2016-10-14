@@ -1,0 +1,90 @@
+[
+{
+  'name':'general', 'group':'general', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'service-activator', 'group':'messaging-endpoints', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'message-handler', 'group':'messaging-endpoints', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'gateway', 'group':'messaging-endpoints', 'description':'Gateway',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'splitter', 'group':'routing', 'description':'Splitter',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+ }
+,
+{
+  'name':'router', 'group':'routing', 'description':'Router',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'transformer', 'group':'transformation', 'description':'Transformer',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'bridge', 'group':'routing', 'description':'Bridge',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'channel', 'group':'connectors', 'description':'Channel',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'publish-subscribe-channel', 'group':'connectors', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'test-producer', 'group':'producers', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'BareHandler', 'group':'producers', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+},
+{
+  'name':'filter', 'group':'routing', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'aggregator', 'group':'routing', 'description':'Produce an output message after correlating some set of incoming messages',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'logging-channel-adapter', 'group':'connectors', 'description':'?',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'chain', 'group':'messaging-endpoints', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'inbound-channel-adapter', 'group':'messaging-endpoints', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+,
+{
+  'name':'outbound-channel-adapter', 'group':'messaging-endpoints', 'description':'',
+  'constraints':{ 'maxIncomingLinksNumber':10, 'maxOutgoingLinksNumber':10 }
+}
+]

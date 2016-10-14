@@ -1,0 +1,189 @@
+
+.header {
+	font-weight: 400;
+	font-family: "Roboto",sans-serif;
+	font-size: 36px;
+	color: #ffffff;
+	padding: 2px;
+	background-color: #283E49;
+	border: none;
+/*	border-top: 4px solid #6db33f; */
+	z-index: 1;
+}
+
+.input-label-div {
+	font-family: "Roboto",sans-serif;
+	font-size: 18px;
+	color: #ffffff;
+	 display: inline-block;
+}
+
+#labelpath {
+	width: 200px;
+}
+
+#refreshrate {
+	width: 100px;
+}
+
+.inputfield {
+	font-family: "Roboto",sans-serif;
+	font-size: 18px;
+}
+
+#endpoint {
+	font-family: "Roboto",sans-serif;
+	font-size: 18px;
+	width: 400px;
+}
+
+#endpoint-button {
+	font-family: "Roboto",sans-serif;
+	font-size: 18px;
+	height:80px;
+}
+
+body {
+	background-color: #283E49;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+.control-button {
+	width: 16px;
+	height: 16px;
+}
+
+.header-small {
+	font: 300 24px "Helvetica Neue";
+}
+
+pre {
+	font-size: 18px;
+}
+
+.border-selected {
+  stroke: #34302d;
+  stroke-width: 3;
+}
+
+.controls {
+	border-radius: 2px;
+	border: solid;
+	border-color: #283E49;
+	padding: 5px;
+	margin-top: 3px;
+	background-color: #283E49;
+	border-width: 1px;
+}
+
+.button {
+	color: #ffffff;
+	background-image: none;
+	border-radius: 2px;
+	background-color: #00B0A7;
+	font-size: 18px;
+	line-height: 14px;
+	font-family: "Roboto",sans-serif;
+	border: 2px solid #00B0A7;
+	padding: 5px 20px;
+	text-shadow: none;
+}
+
+.button span {
+	background-color: #34302d;
+	background-image: none;
+	border-radius: 2px;
+	color: #f1f1f1;
+	font-size: 14px;
+	line-height: 14px;
+	font-family: Montserrat,sans-serif;
+	border: 2px solid #6db33f;
+	padding: 5px 20px;
+	text-shadow: none;
+}
+
+.button input {
+	background-color: #34302d;
+	background-image: none;
+	color: #f1f1f1;
+	font-size: 14px;
+	font-family: Montserrat,sans-serif;
+	text-shadow: none;
+	border: 0px;
+	text-align:right;
+}
+
+button.off {
+    background-color: #00B0A7;
+	color: #283E49;
+}
+
+.flow-definition-container {
+	display: none;
+	border: 1px solid;
+	border-color: #283E49;
+	border-radius: 2px;
+	margin-top: 3px;
+	background-color: #ffffff;
+	font-family: monospace;
+	z-index: 2;
+	width:100%;	
+	height:100px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+textarea:input {
+	outline: none;
+	border: 1px solid #6db33f;
+}
+
+textarea:input:focus {
+	outline: none;
+	border: 1px solid #000000;
+}
+.canvas {
+	border-color: #283E49;
+}
+.flow-definition {
+	border: 5px;
+	height:100%;
+	width:100%;
+	font-size: 16px;
+	resize: none;
+	-webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+/* The text label on the nodes */
+
+.label {
+	font-family: 'Ubuntu Mono';
+	font-size: 12px;
+	color: black;
+}
+
+
+/* The class for the 'icon/unicode_char' on the nodes */
+.label2 {
+	font-size: 18px;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
+.box {
+	stroke: #283e49;
+}
+
+
+.node-tooltip-option-name {
+	font-family: 'Ubuntu Mono', monospace;
+}

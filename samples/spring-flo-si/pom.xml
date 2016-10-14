@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.springframework</groupId>
+	<artifactId>spring-flo-sample-si</artifactId>
+	<version>0.0.1.BUILD-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>spring-flo-sample</name>
+	<description>Spring Flo Sample</description>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.3.2.RELEASE</version>
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
+	<!-- TODO maybe adjust flos dependencies so this configuration isn't so complicated -->
+        <dependencyManagement>
+           <dependencies>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>codemirror</artifactId>
+			<version>5.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>angular</artifactId>
+			<version>1.3.8</version> <!-- flo wants 1.3.5 -->
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jshint</artifactId>
+			<version>2.8.0</version> <!-- flo wants 2.6.3 -->
+		</dependency>
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>requirejs</artifactId>
+		    <version>2.1.18</version> <!--  flo wants 2.1.15 -->
+		</dependency>	
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>jquery</artifactId>
+		    <version>2.2.0</version> <!--  jointjs wants 2.0.3 -->
+		</dependency>	
+		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>lodash</artifactId>
+		    <version>3.10.1</version> <!--  jointjs -> graphlib -> wants 3.10.1-amd -->
+		</dependency>		
+	  </dependencies>	
+	</dependencyManagement>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+            		<groupId>org.webjars</groupId>
+            		<artifactId>webjars-locator</artifactId>
+            		<version>0.31</version>
+        	</dependency>
+   		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>requirejs-domready</artifactId>
+		    <version>2.0.1</version>
+		</dependency>
+   		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>requirejs-text</artifactId>
+		    <version>2.0.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>jointjs</artifactId>
+			<version>0.9.7</version> <!-- flo wants 0.9.6 -->
+		</dependency>
+   		<dependency>
+		    <groupId>org.webjars.bower</groupId>
+		    <artifactId>json5</artifactId>
+		    <version>0.4.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars.bower</groupId>
+			<artifactId>spring-flo</artifactId>
+			<version>0.5.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.webjars.bower</groupId>
+					<artifactId>joint</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<start-class>org.springframework.flo.Application</start-class>
+		<java.version>1.7</java.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

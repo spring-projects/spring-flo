@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+  <head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>Spring Integration Viewer</title>
+	<link href="http://fonts.googleapis.com/css?family=Open+Sans|Montserrat:400,700" rel="stylesheet" type="text/css" />
+	<link href="http://fonts.googleapis.com/css?family=Ubuntu+Mono|Montserrat:400,700" rel="stylesheet" type="text/css" />
+	<link href="http://fonts.googleapis.com/css?family=Roboto|Montserrat:400,700" rel="stylesheet" type="text/css" />
+	<link href="/webjars/spring-flo/dist/spring-flo.css" rel="stylesheet" />
+	<link href="css/flosi.css" rel="stylesheet" />
+  
+  <script data-main="js/main" src="/webjars/requirejs/require.js"></script>
+	</head>
+	<body>
+		<div id="header" class="header">
+			Spring Integration Viewer
+		</div>
+		<div class="input-label-div" ng-controller="SiController">
+			  Spring Integration Graph endpoint: 
+			  <input type="text" class="inputfield" name="endpoint" id="endpoint" ng-model="endpoint" ng-enter="load(endpoint)">
+			  <input type="submit" class="button" value="Load" ng-click="load(endpoint)">
+			  &nbsp;&nbsp;&nbsp;&nbsp;Link label path:
+			  <input type="text" class="inputfield" name="labelpath" id="labelpath" ng-model="labelpath" ng-enter="updateLabelPath(labelpath)">
+			  &nbsp;&nbsp;&nbsp;&nbsp;Refresh rate (ms):
+			  <input type="text" class="inputfield" name="refreshrate" id="refreshrate" ng-model="refreshrate" ng-enter="updateRefreshRate(refreshrate)">
+		</div>
+		<div id="flo-container">
+			<flo-editor ng-cloak metamodel-service-name="SampleMetamodelService" render-service-name="SampleRenderService" editor-service-name="SampleEditorService" palette-size="170" 
+			min-zoom="10" max-zoom="300" zoom-step="10" ng-init="canvasControls={zoom:true};flo.noPalette=true;">
+				<div id="controls" class="controls">
+					<button class="button" id="performLayout" ng-click="flo.performLayout(); flo.fitToPage();">Reset Layout</button>
+					<button class="button" id="readOnly" ng-click="flo.readOnlyCanvas(!flo.readOnlyCanvas())" ng-class="{off:!flo.readOnlyCanvas()}">Read-Only</button>
+				</div>
+				<div class="flow-definition-container">
+					<textarea ng-if="editor" dsl-editor="true" id="flow-definition" class="flow-definition"></textarea>
+					<textarea ng-if="!editor" id="flow-definition" class="flow-definition" placeholder="Enter stream definition..." 
+						ng-model="definition.text" ng-keyup="flo.scheduleUpdateGraphRepresentation(); $event.stopPropagation();" ng-blur="flo.enableSyncing(true)" ng-focus="flo.enableSyncing(false)"></textarea>
+				</div>
+			</flo-editor>
+		</div>
+	</body>
+</html>
