@@ -49,6 +49,7 @@
      "bower_components",
      "gruntfile.js",
      "css",
-     "src"
+     "src",
+     "samples"
   ]
 }
