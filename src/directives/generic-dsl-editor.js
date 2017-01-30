@@ -54,6 +54,8 @@ define(function () {
                     extraKeys: {'Ctrl-Space': 'autocomplete'},
                     lineNumbers: attrs.lineNumbers && attrs.lineNumbers.toLowerCase() === 'true',
                     lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true',
+                    electricChars: false,
+                    smartIndent: false
                 };
 
                 if (scope.scrollbarStyle) {

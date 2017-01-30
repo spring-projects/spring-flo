@@ -157,7 +157,9 @@ define(function (require) {
                     hint: contentAssist
                 },
                 lineNumbers: true,
-                lineWrapping: true
+                lineWrapping: true,
+                electricChars: false,
+                smartIndent: false
             };
 
             if ($scope.scrollbarStyle) {

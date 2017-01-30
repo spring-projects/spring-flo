@@ -10234,7 +10234,9 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
                     hint: contentAssist
                 },
                 lineNumbers: true,
-                lineWrapping: true
+                lineWrapping: true,
+                electricChars: false,
+                smartIndent: false
             };
 
             if ($scope.scrollbarStyle) {
@@ -29972,6 +29974,8 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
                     extraKeys: {'Ctrl-Space': 'autocomplete'},
                     lineNumbers: attrs.lineNumbers && attrs.lineNumbers.toLowerCase() === 'true',
                     lineWrapping: attrs.lineWrapping && attrs.lineWrapping.toLowerCase() === 'true',
+                    electricChars: false,
+                    smartIndent: false
                 };
 
                 if (scope.scrollbarStyle) {
