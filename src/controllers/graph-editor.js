@@ -1496,7 +1496,7 @@ define(function(require) {
 	}
 		
 	function initProperties(attrs) {
-		if (!attrs.disableProperties) {
+		if (!attrs.disableProperties || attrs.disableProperties.toLowerCase() !== 'true') {
 			propsMgr = createProperties(domContext, metamodelService);
 			
 			propsMgr.on('change',function() {
