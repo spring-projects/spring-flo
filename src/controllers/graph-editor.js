@@ -29,6 +29,7 @@ define(function(require) {
 
 	var angular = require('angular');
 	var joint = require('joint');
+	var jQuery = require('jquery');
 	var shapesFactory = require('common/shapes-factory');
 	var createProperties = require('common/properties-manager');
 	var createEventManager = require('common/event-manager');
@@ -185,7 +186,7 @@ define(function(require) {
 		if (newSelection && (newSelection.model.get('type') === joint.shapes.flo.DECORATION_TYPE || newSelection.model.get('type') === joint.shapes.flo.HANDLE_TYPE)) {
 			newSelection = paper.findViewByModel(graph.getCell(newSelection.model.get('parent')));
 		}
-		if (newSelection && !newSelection.model.attr('metadata')) {
+		if (newSelection && (!newSelection.model.attr('metadata') || newSelection.model.attr('metadata/metadata/unselectable'))) {
 			newSelection = null;
 		}
 		if (newSelection === selection || (!newSelection && !selection)) {
@@ -1310,6 +1311,9 @@ define(function(require) {
 				}
 			}
 		});
+		paper.findViewByModel(link).on('link:options', function() {
+			handleLinkEvent(paper, 'options', link);
+		});
 		if (readOnlyCanvas()) {
 			link.attr('.link-tools/display', 'none');
 		}
@@ -1398,8 +1402,18 @@ define(function(require) {
 		var scale = joint.V(paper.viewport).scale(); // jshint ignore:line
 		$(paper.svg).css('background-image', 'url("' + getGridBackgroundImage(paper.options.gridSize * scale.sx, paper.options.gridSize * scale.sy) + '")');
 	}
-	
-	function initPaperListeners() {
+
+    function _isCustomEvent(args) {
+        return args.length === 5 &&
+			angular.isString(args[0]) &&
+			(args[0].indexOf('link:') === 0 || args[0].indexOf('element:') === 0) &&
+			args[1] instanceof jQuery.Event &&
+			args[2] instanceof joint.dia.CellView &&
+			angular.isNumber(args[3]) &&
+			angular.isNumber(args[4]);
+    }
+
+    function initPaperListeners() {
 		// http://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
 		paper.on('cell:pointerclick',
 		    function(cellView, evt, x, y) { // jshint ignore:line
@@ -1427,13 +1441,19 @@ define(function(require) {
 				refreshGridVisuals();
 		    }
 		});
+
+		paper.on('all', function() {
+			if (_isCustomEvent(arguments)) {
+	            arguments[2].trigger.apply(arguments[2], [arguments[0], arguments[1], arguments[3], arguments[4]]);
+			}
+		});
 		
 		// JointJS now no longer grabs focus if working in a paper element - crude...
 		$('#flow-view', domContext).on('mousedown', function() {
 			$('#palette-filter-textfield', domContext).focus();
 		});
 	}
-	
+
 	function initPaper() {
 		// The paper is what will represent the graph on the screen
 		paper = new PaperExtended({ // http://www.jointjs.com/api#joint.dia.Paper
