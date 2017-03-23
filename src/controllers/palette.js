@@ -267,60 +267,46 @@ define(function(require) {
 
 			// The field closedGroups tells us which should not be shown
 			// Work out the list of active groups/nodes based on the filter text
-			Object.keys(metamodel).sort(function(g1, g2) {
-				var order = ['source', 'processor', 'sink', 'other', 'job'];
-				var idx1 = order.indexOf(g1);
-				var idx2 = order.indexOf(g2);
-				if (idx1 === -1) {
-					if (idx2 === -1) {
-						return g1.localeCompare(g2);
-					} else {
-						return 1;
-					}
-				} else {
-					if (idx2 === -1) {
-						return -1;
-					} else {
-						return idx1 - idx2;
-					}
+            var groups = metamodelService.groups && angular.isFunction(metamodelService.groups) ? metamodelService.groups() : Object.keys(metamodel);
+			groups.forEach(function(group) {
+				if (metamodel[group]) {
+                    Object.keys(metamodel[group]).sort().forEach(function(name) {
+                        var node = metamodel[group][name];
+                        var nodeActive = !node.noPaletteEntry;
+                        if (nodeActive && filterText) {
+                            nodeActive = false;
+                            if (name.toLowerCase().indexOf(filterText) !== -1) {
+                                nodeActive = true;
+                            }
+                            else if (group.toLowerCase().indexOf(filterText) !== -1) {
+                                nodeActive = true;
+                            }
+                            else if (node.description && node.description.toLowerCase().indexOf(filterText) !== -1) {
+                                nodeActive = true;
+                            }
+                            else if (node.properties) {
+                                Object.keys(node.properties).sort().forEach(function(propertyName) {
+                                    if (propertyName.toLowerCase().indexOf(filterText) !== -1 ||
+                                        (node.properties[propertyName].description &&
+                                        node.properties[propertyName].description.toLowerCase().indexOf(filterText) !== -1)) {
+                                        nodeActive=true;
+                                    }
+                                });
+                            }
+                        }
+                        if (nodeActive) {
+                            if (!groupAdded[group]) {
+                                var header = createPaletteGroup(group, !_.contains(closedGroups,group));
+                                header.set('size', {width: parentWidth, height: 30});
+                                paletteNodes.push(header);
+                                groupAdded[group] = true;
+                            }
+                            if (!_.contains(closedGroups,group)) {
+                                paletteNodes.push(createPaletteEntry(name, node));
+                            }
+                        }
+                    });
 				}
-			}).forEach(function(group) {
-				Object.keys(metamodel[group]).sort().forEach(function(name) {
-					var node = metamodel[group][name];
-					var nodeActive = !node.noPaletteEntry;
-					if (nodeActive && filterText) {
-						nodeActive = false;
-						if (name.toLowerCase().indexOf(filterText) !== -1) {
-							nodeActive = true;
-						}
-						else if (group.toLowerCase().indexOf(filterText) !== -1) {
-							nodeActive = true;
-						}
-						else if (node.description && node.description.toLowerCase().indexOf(filterText) !== -1) {
-							nodeActive = true;
-						}
-						else if (node.properties) {
-							Object.keys(node.properties).sort().forEach(function(propertyName) {
-								if (propertyName.toLowerCase().indexOf(filterText) !== -1 ||
-									(node.properties[propertyName].description &&
-									node.properties[propertyName].description.toLowerCase().indexOf(filterText) !== -1)) {
-									nodeActive=true;
-								}
-							});
-						}
-					}
-					if (nodeActive) {
-						if (!groupAdded[group]) {
-							var header = createPaletteGroup(group, !_.contains(closedGroups,group));
-							header.set('size', {width: parentWidth, height: 30});
-							paletteNodes.push(header);
-							groupAdded[group] = true;
-						}
-						if (!_.contains(closedGroups,group)) {
-							paletteNodes.push(createPaletteEntry(name, node));
-						}
-					}
-				});
 			});
 
 			var cellWidth = 0, cellHeight = 0;
