@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -633,7 +633,10 @@ define(function(require) {
 	function gridSize(size) {
 		if (size) {
 			if (!isNaN(size) && size >= 1) {
-				_gridSize = size; 
+				_gridSize = size;
+				if (paper) {
+                    paper.setGridSize(size);
+				}
 			}
 		}
 		return _gridSize;
@@ -1369,39 +1372,39 @@ define(function(require) {
 		graph.on('add remove change:source change:target change:vertices change:position', routingCall);
 	}   
         
-	function getGridBackgroundImage(gridX, gridY) {
-	    var canvas = document.createElement('canvas');
-	    canvas.width = gridX * 10;
-	    canvas.height = gridY * 10;
-
-	    if (gridX > 5 && gridY > 5) {
-
-	        var context = canvas.getContext('2d');
-	        context.beginPath();
-	        
-	        var ox = paper.options.origin.x;
-	        var oy = paper.options.origin.y;
-
-	        var startX = ox >= 0 ? ((ox * 100) % (gridX * 100)) / 100 : ((gridX * 100) + (ox * 100) % (gridX * 100) - 1 * 100) / 100;
-	        var startY = oy >= 0 ? ((oy * 100) % (gridY * 100)) / 100 : ((gridY * 100) + (oy * 100) % (gridY * 100) - 1 * 100) / 100;
-
-		    for (var i = 0; i < 10; i++) {
-		    	for (var j = 0; j < 10; j++) {
-			        context.rect(startX + gridX * i, startY + gridY * j, 1, 1);
-		    	}
-		    }
-		    
-	        context.fillStyle = 'black';
-	        context.fill();
-	    }
-	    
-	    return canvas.toDataURL('image/png');
-	}
+	// function getGridBackgroundImage(gridX, gridY) {
+	//     var canvas = document.createElement('canvas');
+	//     canvas.width = gridX * 10;
+	//     canvas.height = gridY * 10;
+    //
+	//     if (gridX > 5 && gridY > 5) {
+    //
+	//         var context = canvas.getContext('2d');
+	//         context.beginPath();
+	//
+	//         var ox = paper.options.origin.x;
+	//         var oy = paper.options.origin.y;
+    //
+	//         var startX = ox >= 0 ? ((ox * 100) % (gridX * 100)) / 100 : ((gridX * 100) + (ox * 100) % (gridX * 100) - 1 * 100) / 100;
+	//         var startY = oy >= 0 ? ((oy * 100) % (gridY * 100)) / 100 : ((gridY * 100) + (oy * 100) % (gridY * 100) - 1 * 100) / 100;
+    //
+	// 	    for (var i = 0; i < 10; i++) {
+	// 	    	for (var j = 0; j < 10; j++) {
+	// 		        context.rect(startX + gridX * i, startY + gridY * j, 1, 1);
+	// 	    	}
+	// 	    }
+	//
+	//         context.fillStyle = 'black';
+	//         context.fill();
+	//     }
+	//
+	//     return canvas.toDataURL('image/png');
+	// }
 	
-	function refreshGridVisuals() {
-		var scale = joint.V(paper.viewport).scale(); // jshint ignore:line
-		$(paper.svg).css('background-image', 'url("' + getGridBackgroundImage(paper.options.gridSize * scale.sx, paper.options.gridSize * scale.sy) + '")');
-	}
+	// function refreshGridVisuals() {
+	// 	var scale = joint.V(paper.viewport).scale(); // jshint ignore:line
+	// 	$(paper.svg).css('background-image', 'url("' + getGridBackgroundImage(paper.options.gridSize * scale.sx, paper.options.gridSize * scale.sy) + '")');
+	// }
 
     function _isCustomEvent(args) {
         return args.length === 5 &&
@@ -1433,14 +1436,14 @@ define(function(require) {
 			autosizePaper();
 		});
 
-		paper.on({
-		    scale: function(sx, sy) { // jshint ignore:line
-				refreshGridVisuals();
-		    },
-		    translate: function(ox, oy) { // jshint ignore:line
-				refreshGridVisuals();
-		    }
-		});
+		// paper.on({
+		//     scale: function(sx, sy) { // jshint ignore:line
+		// 		refreshGridVisuals();
+		//     },
+		//     translate: function(ox, oy) { // jshint ignore:line
+		// 		refreshGridVisuals();
+		//     }
+		// });
 
 		paper.on('all', function() {
 			if (_isCustomEvent(arguments)) {
@@ -1458,7 +1461,8 @@ define(function(require) {
 		// The paper is what will represent the graph on the screen
 		paper = new PaperExtended({ // http://www.jointjs.com/api#joint.dia.Paper
 		 	el: $('#paper', domContext),
-		 	gridSize: gridSize(),
+		 	gridSize: _gridSize,
+			drawGrid: true,
 		 	model: graph,
 		 	elementView: renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : mainElementView,
 		 	linkView: renderService && angular.isFunction(renderService.getLinkView) ? renderService.getLinkView() : joint.dia.LinkView,
@@ -1491,18 +1495,27 @@ define(function(require) {
 				}
 			},
 
+			highlighting: editorService && angular.isObject(editorService.highlighting) ? editorService.highlighting : {
+                'default': {
+                	name: 'addClass',
+                    options: {
+                        className: 'highlighted'
+                    }
+                }
+		 	},
+
 		 	linkConnectionPoint: renderService && angular.isFunction(renderService.getLinkAnchorPoint) ? renderService.getLinkAnchorPoint : undefined,
-	        markAvailable: true
+	        markAvailable: true,
 		});
 		
-		refreshGridVisuals();
+		// refreshGridVisuals();
 		
-		$scope.$watch(function() {
-			return $scope.flo.gridSize();
-		}, function(newValue) {
-			paper.options.gridSize = newValue;
-			refreshGridVisuals();
-		});
+		// $scope.$watch(function() {
+		// 	return $scope.flo.gridSize();
+		// }, function(newValue) {
+		// 	paper.options.gridSize = newValue;
+		// 	refreshGridVisuals();
+		// });
 		
 		// Watch for palette presence model variable changes
 		$scope.$watch(function() {

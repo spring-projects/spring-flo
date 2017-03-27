@@ -13,7 +13,7 @@ requirejs.config({
         angular: '/base/lib/angular/angular',
         jquery: '/base/lib/jquery/jquery',
         bootstrap: '/base/lib/bootstrap/bootstrap',
-        lodash: '/base/lib/lodash/lodash.compat',
+        lodash: '/base/lib/lodash/lodash',
         dagre: '/base/lib/dagre/dagre.core.min',
         graphlib: '/base/lib/graphlib/graphlib.core',
         angularMocks: '/base/lib/angular-mocks/angular-mocks',

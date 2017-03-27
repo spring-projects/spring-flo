@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 define('directives/resizer',[],function () {
-    
+    'use strict';
 
     return ['$document', function($document) {
 
@@ -114,7 +114,7 @@ define('directives/resizer',[],function () {
   else // Plain browser env
     (this || window).CodeMirror = mod();
 })(function() {
-  
+  "use strict";
 
   // BROWSER SNIFFING
 
@@ -9072,7 +9072,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
   var GUTTER_ID = "CodeMirror-lint-markers";
 
   function showTooltip(e, content) {
@@ -9312,7 +9312,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
 
   var HINT_ELEMENT_CLASS        = "CodeMirror-hint";
   var ACTIVE_HINT_ELEMENT_CLASS = "CodeMirror-hint-active";
@@ -9814,7 +9814,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
 
   CodeMirror.defineExtension("annotateScrollbar", function(options) {
     if (typeof options == "string") options = {className: options};
@@ -9933,7 +9933,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
 
   function Bar(cls, orientation, scroll) {
     this.orientation = orientation;
@@ -10093,7 +10093,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
 
 
 define('controllers/dsl-editor',['require','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars'],function (require) {
-    
+    'use strict';
 
     var angular = require('angular');
 
@@ -10277,7 +10277,7 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
 
 });
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -10292,7 +10292,7 @@ define('controllers/dsl-editor',['require','angular','codemirror','codemirror/ad
  * limitations under the License.
  */
 define('directives/dsl-editor',['controllers/dsl-editor'],function () {
-    
+    'use strict';
 
     return ['$interpolate', function ($interpolate) {
         return {
@@ -10312,7 +10312,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
                 if (attrs.overviewRuler) {
                     scope.overviewRuler = $interpolate(attrs.overviewRuler)(scope);
                 }
-                scope.init(element.context);
+                scope.init(element[0]);
             }
         };
     }];
@@ -10328,7 +10328,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
 
   CodeMirror.modeInfo = [
     {name: "APL", mime: "text/apl", mode: "apl", ext: ["dyalog", "apl"]},
@@ -10921,7 +10921,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-
+"use strict";
 
 CodeMirror.defineMode("groovy", function(config) {
   function words(str) {
@@ -11152,7 +11152,7 @@ CodeMirror.defineMIME("text/x-groovy", "groovy");
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-
+"use strict";
 
 function expressionAllowed(stream, state, backUp) {
   return /^(?:operator|sof|keyword c|case|new|[\[{}\(,;:]|=>)$/.test(state.lastType) ||
@@ -11915,7 +11915,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
 
   function wordRegexp(words) {
     return new RegExp("^((" + words.join(")|(") + "))\\b");
@@ -12256,7 +12256,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-
+"use strict";
 
 CodeMirror.defineMode("ruby", function(config) {
   function wordObj(words) {
@@ -12542,7 +12542,7 @@ CodeMirror.defineMIME("text/x-ruby", "ruby");
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-
+"use strict";
 
 function Context(indented, column, type, info, align, prev) {
   this.indented = indented;
@@ -18011,7 +18011,7 @@ exports.Lexer = Lexer;
 exports.Context = Context;
 
 },{"../data/ascii-identifier-data.js":1,"../data/non-ascii-identifier-part-only.js":2,"../data/non-ascii-identifier-start.js":3,"./reg.js":17,"./state.js":18,"events":5,"underscore":12}],14:[function(require,module,exports){
-
+"use strict";
 
 var _ = require("underscore");
 
@@ -18244,7 +18244,7 @@ _.each(info, function(desc, code) {
 });
 
 },{"underscore":12}],15:[function(require,module,exports){
-
+"use strict";
 
 function NameStack() {
   this._stack = [];
@@ -18320,7 +18320,7 @@ NameStack.prototype.infer = function() {
 module.exports = NameStack;
 
 },{}],16:[function(require,module,exports){
-
+"use strict";
 
 // These are the JSHint boolean options.
 exports.bool = {
@@ -19309,7 +19309,7 @@ exports.fallsThrough = /^\s*\/\*\s*falls?\sthrough\s*\*\/\s*$/;
 exports.maxlenException = /^(?:(?:\/\/|\/\*|\*) ?)?[^ ]+$/;
 
 },{}],18:[function(require,module,exports){
-
+"use strict";
 var NameStack = require("./name-stack.js");
 
 var state = {
@@ -19342,7 +19342,7 @@ var state = {
 exports.state = state;
 
 },{"./name-stack.js":15}],19:[function(require,module,exports){
-
+"use strict";
 
 exports.register = function(linter) {
   // Check for properties named __proto__. This special property was
@@ -20255,7 +20255,7 @@ var console = require("console-browserify");
 // the JSHINT function itself.
 
 var JSHINT = (function() {
-  
+  "use strict";
 
   var api, // Extension API
 
@@ -25772,7 +25772,7 @@ define("jshint", ["lodash"], function(){});
   else // Plain browser env
     mod(CodeMirror);
 })(function(CodeMirror) {
-  
+  "use strict";
   // declare global: JSHINT
 
   var bogus = [ "Dangerous comment" ];
@@ -25927,7 +25927,7 @@ define("jshint", ["lodash"], function(){});
  * errors/warnings.
  */
 define('controllers/code-editor',['require','angular','codemirror','codemirror/mode/meta','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/ruby/ruby','codemirror/mode/clike/clike','jshint','codemirror/addon/lint/javascript-lint'],function (require) {
-    
+    'use strict';
 
     return ['$scope', function ($scope) {
 
@@ -26085,7 +26085,7 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
     }];
 });
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26100,14 +26100,14 @@ define('controllers/code-editor',['require','angular','codemirror','codemirror/m
  * limitations under the License.
  */
 define('directives/code-editor',['controllers/code-editor'],function () {
-    
+    'use strict';
 
     return [function () {
         return {
             restrict: 'A',
             controller: require('controllers/code-editor'),
             link: function(scope, element, attrs) {
-                scope.init(element.context, attrs);
+                scope.init(element[0], attrs);
             },
             scope: {
                 language: '=codeLanguage',
@@ -26142,7 +26142,7 @@ define('directives/code-editor',['controllers/code-editor'],function () {
  * functions to create them.
  */
 define('common/shapes-factory',['joint', 'underscore'],function(joint, _) {
-	
+	'use strict';
 
 	var isChrome = !!window.chrome;
 	var isFF = typeof InstallTrigger !== 'undefined';
@@ -26749,7 +26749,7 @@ define('common/shapes-factory',['joint', 'underscore'],function(joint, _) {
  */
 
 define('controllers/palette',['require','jquery','joint','common/shapes-factory','angular'],function(require) {
-	
+	'use strict';
 
 	var $ = require('jquery');
 	var joint = require('joint');
@@ -27269,7 +27269,7 @@ define('controllers/palette',['require','jquery','joint','common/shapes-factory'
 });
 
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27284,7 +27284,7 @@ define('controllers/palette',['require','jquery','joint','common/shapes-factory'
  * limitations under the License.
  */
 define('directives/palette',['controllers/palette'],function () {
-    
+    'use strict';
 
     return [function () {
 
@@ -27295,7 +27295,7 @@ define('directives/palette',['controllers/palette'],function () {
                 if (attrs.metamodelServiceName) {
                     scope.metamodelServiceName = attrs.metamodelServiceName;
                 }
-                scope.init(element.context, attrs);
+                scope.init(element[0], attrs);
             },
             controller: require('controllers/palette'),
             controllerAs: 'floPalette',
@@ -27334,7 +27334,7 @@ define('directives/palette',['controllers/palette'],function () {
  * 'change' - something changed!
  */
 define('common/properties-manager',['require','underscore','codemirror','codemirror/addon/mode/loadmode','codemirror/addon/edit/matchbrackets','codemirror/addon/edit/closebrackets','codemirror/mode/groovy/groovy','codemirror/mode/javascript/javascript','codemirror/mode/python/python','codemirror/mode/clike/clike'],function(require) {
-	
+	'use strict';
 
 	var _ = require('underscore');
     
@@ -28126,7 +28126,7 @@ define('common/properties-manager',['require','underscore','codemirror','codemir
  */
 
 define('common/event-manager',[],function() {
-	
+	'use strict';
 
 	return function() {
 		
@@ -28170,7 +28170,7 @@ define('common/event-manager',[],function() {
 	
 });
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28193,7 +28193,7 @@ define('common/event-manager',[],function() {
  * Note: controller contains some DOM manipulation logic that will be moved to the corresponding directive link function
  */
 define('controllers/graph-editor',['require','angular','joint','jquery','common/shapes-factory','common/properties-manager','common/event-manager'],function(require) {
-	
+	'use strict';
 	
 	var isChrome = !!window.chrome;
 	var isFF = typeof InstallTrigger !== 'undefined';
@@ -28804,7 +28804,10 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 	function gridSize(size) {
 		if (size) {
 			if (!isNaN(size) && size >= 1) {
-				_gridSize = size; 
+				_gridSize = size;
+				if (paper) {
+                    paper.setGridSize(size);
+				}
 			}
 		}
 		return _gridSize;
@@ -29540,39 +29543,39 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		graph.on('add remove change:source change:target change:vertices change:position', routingCall);
 	}   
         
-	function getGridBackgroundImage(gridX, gridY) {
-	    var canvas = document.createElement('canvas');
-	    canvas.width = gridX * 10;
-	    canvas.height = gridY * 10;
-
-	    if (gridX > 5 && gridY > 5) {
-
-	        var context = canvas.getContext('2d');
-	        context.beginPath();
-	        
-	        var ox = paper.options.origin.x;
-	        var oy = paper.options.origin.y;
-
-	        var startX = ox >= 0 ? ((ox * 100) % (gridX * 100)) / 100 : ((gridX * 100) + (ox * 100) % (gridX * 100) - 1 * 100) / 100;
-	        var startY = oy >= 0 ? ((oy * 100) % (gridY * 100)) / 100 : ((gridY * 100) + (oy * 100) % (gridY * 100) - 1 * 100) / 100;
-
-		    for (var i = 0; i < 10; i++) {
-		    	for (var j = 0; j < 10; j++) {
-			        context.rect(startX + gridX * i, startY + gridY * j, 1, 1);
-		    	}
-		    }
-		    
-	        context.fillStyle = 'black';
-	        context.fill();
-	    }
-	    
-	    return canvas.toDataURL('image/png');
-	}
+	// function getGridBackgroundImage(gridX, gridY) {
+	//     var canvas = document.createElement('canvas');
+	//     canvas.width = gridX * 10;
+	//     canvas.height = gridY * 10;
+    //
+	//     if (gridX > 5 && gridY > 5) {
+    //
+	//         var context = canvas.getContext('2d');
+	//         context.beginPath();
+	//
+	//         var ox = paper.options.origin.x;
+	//         var oy = paper.options.origin.y;
+    //
+	//         var startX = ox >= 0 ? ((ox * 100) % (gridX * 100)) / 100 : ((gridX * 100) + (ox * 100) % (gridX * 100) - 1 * 100) / 100;
+	//         var startY = oy >= 0 ? ((oy * 100) % (gridY * 100)) / 100 : ((gridY * 100) + (oy * 100) % (gridY * 100) - 1 * 100) / 100;
+    //
+	// 	    for (var i = 0; i < 10; i++) {
+	// 	    	for (var j = 0; j < 10; j++) {
+	// 		        context.rect(startX + gridX * i, startY + gridY * j, 1, 1);
+	// 	    	}
+	// 	    }
+	//
+	//         context.fillStyle = 'black';
+	//         context.fill();
+	//     }
+	//
+	//     return canvas.toDataURL('image/png');
+	// }
 	
-	function refreshGridVisuals() {
-		var scale = joint.V(paper.viewport).scale(); // jshint ignore:line
-		$(paper.svg).css('background-image', 'url("' + getGridBackgroundImage(paper.options.gridSize * scale.sx, paper.options.gridSize * scale.sy) + '")');
-	}
+	// function refreshGridVisuals() {
+	// 	var scale = joint.V(paper.viewport).scale(); // jshint ignore:line
+	// 	$(paper.svg).css('background-image', 'url("' + getGridBackgroundImage(paper.options.gridSize * scale.sx, paper.options.gridSize * scale.sy) + '")');
+	// }
 
     function _isCustomEvent(args) {
         return args.length === 5 &&
@@ -29604,14 +29607,14 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 			autosizePaper();
 		});
 
-		paper.on({
-		    scale: function(sx, sy) { // jshint ignore:line
-				refreshGridVisuals();
-		    },
-		    translate: function(ox, oy) { // jshint ignore:line
-				refreshGridVisuals();
-		    }
-		});
+		// paper.on({
+		//     scale: function(sx, sy) { // jshint ignore:line
+		// 		refreshGridVisuals();
+		//     },
+		//     translate: function(ox, oy) { // jshint ignore:line
+		// 		refreshGridVisuals();
+		//     }
+		// });
 
 		paper.on('all', function() {
 			if (_isCustomEvent(arguments)) {
@@ -29629,7 +29632,8 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		// The paper is what will represent the graph on the screen
 		paper = new PaperExtended({ // http://www.jointjs.com/api#joint.dia.Paper
 		 	el: $('#paper', domContext),
-		 	gridSize: gridSize(),
+		 	gridSize: _gridSize,
+			drawGrid: true,
 		 	model: graph,
 		 	elementView: renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : mainElementView,
 		 	linkView: renderService && angular.isFunction(renderService.getLinkView) ? renderService.getLinkView() : joint.dia.LinkView,
@@ -29662,18 +29666,27 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 				}
 			},
 
+			highlighting: editorService && angular.isObject(editorService.highlighting) ? editorService.highlighting : {
+                'default': {
+                	name: 'addClass',
+                    options: {
+                        className: 'highlighted'
+                    }
+                }
+		 	},
+
 		 	linkConnectionPoint: renderService && angular.isFunction(renderService.getLinkAnchorPoint) ? renderService.getLinkAnchorPoint : undefined,
-	        markAvailable: true
+	        markAvailable: true,
 		});
 		
-		refreshGridVisuals();
+		// refreshGridVisuals();
 		
-		$scope.$watch(function() {
-			return $scope.flo.gridSize();
-		}, function(newValue) {
-			paper.options.gridSize = newValue;
-			refreshGridVisuals();
-		});
+		// $scope.$watch(function() {
+		// 	return $scope.flo.gridSize();
+		// }, function(newValue) {
+		// 	paper.options.gridSize = newValue;
+		// 	refreshGridVisuals();
+		// });
 		
 		// Watch for palette presence model variable changes
 		$scope.$watch(function() {
@@ -29836,7 +29849,7 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 });
 
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29851,7 +29864,7 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
  * limitations under the License.
  */
 define('directives/graph-editor',['controllers/graph-editor'],function () {
-    
+    'use strict';
 
     return [function () {
 
@@ -29878,7 +29891,7 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
                     scope.paperPadding = Number(attrs.paperPadding);
                 }
 
-                scope.init(element.context, attrs);
+                scope.init(element[0], attrs);
                 element.find('#paper').bind('keydown', function(e) {
                     if (e.which === 8 || e.which === 46) {
                         if (!scope.flo.readOnly() /*&& scope.flo.getSelection()*/) {
@@ -29925,7 +29938,7 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
     }];
 });
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29940,7 +29953,7 @@ define('directives/graph-editor',['controllers/graph-editor'],function () {
  * limitations under the License.
  */
 define('directives/generic-dsl-editor',['underscore','angular','codemirror','codemirror/addon/lint/lint','codemirror/addon/hint/show-hint','codemirror/addon/display/placeholder','codemirror/addon/scroll/annotatescrollbar','codemirror/addon/scroll/simplescrollbars'],function () {
-    
+    'use strict';
 
     var _ = require('underscore');
     var angular = require('angular');
@@ -29996,7 +30009,7 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
                     options.hintOptions = scope.hint;
                 }
 
-                doc = CodeMirror.fromTextArea(element.context, options);
+                doc = CodeMirror.fromTextArea(element[0], options);
 
                 // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
                 // Thus, set the correct placeholder value in case value is angular expression.
@@ -30053,7 +30066,7 @@ define('directives/generic-dsl-editor',['underscore','angular','codemirror','cod
  * @author Alex Boyko
  */
 define('floDirectives',['require','angular','directives/resizer','directives/dsl-editor','directives/code-editor','directives/palette','directives/graph-editor','directives/generic-dsl-editor'],function(require) {
-    
+    'use strict';
 
     var angular = require('angular');
 
@@ -30089,7 +30102,7 @@ define('floDirectives',['require','angular','directives/resizer','directives/dsl
  * @author Alex Boyko
  */
 define('floServices',['angular'], function (angular) {
-    
+    'use strict';
 
     return angular.module('flo.services', [])
         .factory('MetamodelUtils', ['$q', function ($q) {
@@ -30190,7 +30203,7 @@ define('floServices',['angular'], function (angular) {
  * @author Alex Boyko
  */
 define('flo', ['require','angular','floDirectives','floServices'],function(require) {
-    
+    'use strict';
 
     require('angular');
     require('floDirectives');

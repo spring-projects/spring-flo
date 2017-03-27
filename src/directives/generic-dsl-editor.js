@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 the original author or authors.
+ * Copyright 2016-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ define(function () {
                     options.hintOptions = scope.hint;
                 }
 
-                doc = CodeMirror.fromTextArea(element.context, options);
+                doc = CodeMirror.fromTextArea(element[0], options);
 
                 // CodeMirror would set 'placeholder` value at construction time based on the string value of placeholder attribute in the DOM
                 // Thus, set the correct placeholder value in case value is angular expression.

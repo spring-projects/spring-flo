@@ -346,12 +346,12 @@
 	outline: none;
 }
 
-.element.highlighted rect {
+.joint-element.highlighted rect {
 	stroke: #34302d;
 	stroke-width: 3;
 }
 
-.handle {
+.joint-type-handle {
 	cursor: pointer;
 }
 
