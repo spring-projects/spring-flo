@@ -28412,89 +28412,100 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		return _readOnlyCanvas;
 	}
 	
-	function flashNode(node) {
-		node.set('__animationDirection', !node.get('__animationDirection'));
-		var color = node.get('__animationDirection') ? '#6db33f' : '#ffffff';
-		node.transition('attrs/.border/stroke', color, {
-			delay: 0,
-			duration: 1000,
-			valueFunction: joint.util.interpolate.hexColor,
-			timingFunction: joint.util.timing.linear
+	// function flashNode(node) {
+	// 	node.set('__animationDirection', !node.get('__animationDirection'));
+	// 	var color = node.get('__animationDirection') ? '#6db33f' : '#ffffff';
+	// 	node.transition('attrs/.border/stroke', color, {
+	// 		delay: 0,
+	// 		duration: 1000,
+	// 		valueFunction: joint.util.interpolate.hexColor,
+	// 		timingFunction: joint.util.timing.linear
+	// 	});
+	// }
+	//
+	// function startFlashingNode(node) {
+	// 	if (node.getTransitions().indexOf('attrs/.border/stroke') < 0) {
+	// 		// No active transition, store original values and start one
+	// 		node.set('__initStrokeWidth', node.attr('.border/stroke-width'));
+	// 		node.set('__initStroke', node.attr('.border/stroke'));
+	// 		node.on('transition:start', function() {
+	// 			node.off('transition:start');
+	// 			node.attr('.border/stroke-width', 5);
+	// 			node.attr('.border/stroke', '#ffffff');
+	// 		});
+	// 		node.on('transition:end', flashNode);
+	// 		flashNode(node);
+	// 	} else {
+	// 		// There is active transition, stop it and start over
+	// 		node.stopTransitions('attrs/.border/stroke');
+	// 		node.on('transition:start', function() {
+	// 			node.off('transition:start');
+	// 			node.set('__animationDirection', undefined);
+	// 			node.attr('.border/stroke-width', 5);
+	// 			node.attr('.border/stroke', '#ffffff');
+	// 		});
+	// 		node.on('transition:end', flashNode);
+	// 		flashNode(node);
+	// 	}
+	// }
+	//
+	// function stopFlashingNode(node) {
+	// 	node.attr('.border/stroke-width', node.get('__initStrokeWidth'));
+	// 	if (node.getTransitions().indexOf('attrs/.border/stroke') >= 0) {
+	// 		// there is active transition, end by starting a very short transition to original color
+	// 		node.off('transition:end');
+	// 		node.transition('attrs/.border/stroke', node.get('__initStroke'), {
+	// 			delay: 0,
+	// 			duration: 5,
+	// 			valueFunction: joint.util.interpolate.hexColor,
+	// 			timingFunction: joint.util.timing.linear
+	// 		});
+	// 	} else {
+	// 		// no transition yet? wait for it to start and stop it then
+	// 		node.on('transition:start', function() {
+	// 			node.off('transition:start');
+	// 			stopFlashingNode(node);
+	// 		});
+	// 	}
+	// }
+	
+	// function highlight(element, selector) {
+	// 	if (element instanceof joint.dia.Element) {
+	// 		startFlashingNode(element);
+	// 		if (selector) {
+	// 			var attribute = selector + '/transform';
+	// 			var value = element.attr(attribute) ? element.attr(attribute) : '';
+	// 			// Double port size
+	// 			element.attr(attribute, value.replace(/scale\(\d*\)/g, '') + 'scale(2)');
+	// 		}
+	// 	} else if (element instanceof joint.dia.Link) {
+	// 		// TODO figure out highlighting for the link
+	// 	}
+	// }
+	
+	// function unhighlight(element, selector) {
+	// 	if (element instanceof joint.dia.Element) {
+	// 		stopFlashingNode(element);
+	// 		if (selector) {
+	// 			var attribute = selector + '/transform';
+	// 			var value = element.attr(attribute) ? element.attr(attribute) : '';
+	// 			// Return port size to normal
+	// 			element.attr(attribute, value.replace(/scale\(\d*\)/g, ''));
+	// 		}
+	// 	} else if (element instanceof joint.dia.Link) {
+	// 		// TODO figure out unhighlighting for the link
+	// 	}
+	// }
+
+	function _findMagnetByClass(view, className) {
+		if (className && angular.isString(className)) {
+			if (className.startsWith('.')) {
+				className = className.substr(1);
+			}
+		}
+        return view.$('[magnet]').toArray().find(function(magnet) {
+        	return magnet.getAttribute('class').split(/\s+/).indexOf(className) >= 0;
 		});
-	}
-	
-	function startFlashingNode(node) {
-		if (node.getTransitions().indexOf('attrs/.border/stroke') < 0) {
-			// No active transition, store original values and start one
-			node.set('__initStrokeWidth', node.attr('.border/stroke-width'));
-			node.set('__initStroke', node.attr('.border/stroke'));
-			node.on('transition:start', function() {
-				node.off('transition:start');
-				node.attr('.border/stroke-width', 5);
-				node.attr('.border/stroke', '#ffffff');
-			});
-			node.on('transition:end', flashNode);
-			flashNode(node);
-		} else {
-			// There is active transition, stop it and start over
-			node.stopTransitions('attrs/.border/stroke');
-			node.on('transition:start', function() {
-				node.off('transition:start');
-				node.set('__animationDirection', undefined);
-				node.attr('.border/stroke-width', 5);
-				node.attr('.border/stroke', '#ffffff');
-			});
-			node.on('transition:end', flashNode);
-			flashNode(node);
-		}
-	}
-	
-	function stopFlashingNode(node) {
-		node.attr('.border/stroke-width', node.get('__initStrokeWidth'));
-		if (node.getTransitions().indexOf('attrs/.border/stroke') >= 0) {
-			// there is active transition, end by starting a very short transition to original color
-			node.off('transition:end');
-			node.transition('attrs/.border/stroke', node.get('__initStroke'), {
-				delay: 0,
-				duration: 5,
-				valueFunction: joint.util.interpolate.hexColor,
-				timingFunction: joint.util.timing.linear
-			});
-		} else {
-			// no transition yet? wait for it to start and stop it then
-			node.on('transition:start', function() {
-				node.off('transition:start');
-				stopFlashingNode(node);
-			});
-		}
-	}
-	
-	function highlight(element, selector) {
-		if (element instanceof joint.dia.Element) {
-			startFlashingNode(element);
-			if (selector) {
-				var attribute = selector + '/transform';
-				var value = element.attr(attribute) ? element.attr(attribute) : '';
-				// Double port size
-				element.attr(attribute, value.replace(/scale\(\d*\)/g, '') + 'scale(2)');
-			}
-		} else if (element instanceof joint.dia.Link) {
-			// TODO figure out highlighting for the link
-		}
-	}
-	
-	function unhighlight(element, selector) {
-		if (element instanceof joint.dia.Element) {
-			stopFlashingNode(element);
-			if (selector) {
-				var attribute = selector + '/transform';
-				var value = element.attr(attribute) ? element.attr(attribute) : '';
-				// Return port size to normal
-				element.attr(attribute, value.replace(/scale\(\d*\)/g, ''));
-			}
-		} else if (element instanceof joint.dia.Link) {
-			// TODO figure out unhighlighting for the link
-		}
 	}
 
 	/**
@@ -28507,9 +28518,26 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		if (editorService && angular.isFunction(editorService.showDragFeedback)) {
 			editorService.showDragFeedback($scope.flo, dragDescriptor);
 		} else {
-			if (dragDescriptor.source && dragDescriptor.target) {
-				highlight(dragDescriptor.source.cell, dragDescriptor.source.selector);
-				highlight(dragDescriptor.target.cell, dragDescriptor.target.selector);
+			var magnet;
+			if (dragDescriptor.source && dragDescriptor.source.view) {
+                joint.V(dragDescriptor.source.view.el).addClass('dnd-source-feedback');
+                if (dragDescriptor.source.selector) {
+                    magnet = _findMagnetByClass(dragDescriptor.source.view, dragDescriptor.source.selector);
+                    if (magnet) {
+                    	joint.V(magnet).addClass('dnd-source-feedback');
+					}
+				}
+			}
+			if (dragDescriptor.target && dragDescriptor.target.view) {
+                joint.V(dragDescriptor.target.view.el).addClass('dnd-target-feedback');
+                if (dragDescriptor.target.selector) {
+                    magnet = _findMagnetByClass(dragDescriptor.target.view, dragDescriptor.target.selector);
+                    if (magnet) {
+                        joint.V(magnet).addClass('dnd-target-feedback');
+                    }
+                }
+				// highlight(dragDescriptor.source.cell, dragDescriptor.source.selector);
+				// highlight(dragDescriptor.target.cell, dragDescriptor.target.selector);
 			}
 		}
 	}
@@ -28524,9 +28552,26 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		if (editorService && angular.isFunction(editorService.hideDragFeedback)) {
 			editorService.hideDragFeedback($scope.flo, dragDescriptor);
 		} else {
-			if (dragDescriptor.source && dragDescriptor.target) {
-				unhighlight(dragDescriptor.source.cell, dragDescriptor.source.selector);
-				unhighlight(dragDescriptor.target.cell, dragDescriptor.target.selector);
+			var magnet;
+			if (dragDescriptor.source && dragDescriptor.source.view) {
+                joint.V(dragDescriptor.source.view.el).removeClass('dnd-source-feedback');
+                if (dragDescriptor.source.selector) {
+                    magnet = _findMagnetByClass(dragDescriptor.source.view, dragDescriptor.source.selector);
+                    if (magnet) {
+                        joint.V(magnet).removeClass('dnd-source-feedback');
+                    }
+                }
+			}
+			if (dragDescriptor.target && dragDescriptor.target.view) {
+                joint.V(dragDescriptor.target.view.el).removeClass('dnd-target-feedback');
+                if (dragDescriptor.target.selector) {
+                    magnet = _findMagnetByClass(dragDescriptor.target.view, dragDescriptor.target.selector);
+                    if (magnet) {
+                        joint.V(magnet).removeClass('dnd-target-feedback');
+                    }
+                }
+				// unhighlight(dragDescriptor.source.cell, dragDescriptor.source.selector);
+				// unhighlight(dragDescriptor.target.cell, dragDescriptor.target.selector);
 			}
 		}
 	}
