@@ -98,7 +98,8 @@ define(function(require) {
 					floatergraph.attributes.type = joint.shapes.flo.FEEDBACK_TYPE;
 					var floaterpaper = new joint.dia.Paper({
 						el: $('#palette-floater'),
-						gridSize:10,
+                        elementView: renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : joint.dia.ElementView,
+                        gridSize:10,
 						model: floatergraph,
 						height: 400,
 						width: 200,
