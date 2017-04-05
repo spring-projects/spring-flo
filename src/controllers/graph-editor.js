@@ -1385,7 +1385,9 @@ define(function(require) {
 			} else if (element instanceof joint.dia.Element) {
 				handleNodeCreation(element);
 			}
-			paper.trigger('resync-required');
+			if (element.get('type') === joint.shapes.flo.NODE_TYPE || element.get('type') === joint.shapes.flo.LINK_TYPE) {
+                paper.trigger('resync-required');
+			}
 			autosizePaper();
 		});
 		
@@ -1404,7 +1406,7 @@ define(function(require) {
 			}
 			if (element.isLink()) {
 				setTimeout(function() {paper.trigger('resync-required');},100);
-			} else {
+			} else if (element.get('type') === joint.shapes.flo.NODE_TYPE) {
 				paper.trigger('resync-required');
 			}
 			autosizePaper();
