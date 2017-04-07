@@ -29893,6 +29893,12 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 
 	$scope.flo._handleNodeDropping = handleNodeDropping;
 
+	$scope.flo._postValidation = function(ids) {
+		$timeout(function() {
+			postValidation(ids);
+        });
+    };
+
 	}];
 });
 

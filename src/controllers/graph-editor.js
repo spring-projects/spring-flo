@@ -1721,5 +1721,11 @@ define(function(require) {
 
 	$scope.flo._handleNodeDropping = handleNodeDropping;
 
+	$scope.flo._postValidation = function(ids) {
+		$timeout(function() {
+			postValidation(ids);
+        });
+    };
+
 	}];
 });
