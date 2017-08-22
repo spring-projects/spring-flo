@@ -1,6 +1,6 @@
 import { Flo } from 'spring-flo';
-const { convertGraphToText } = require('./graph-to-text');
-const { convertTextToGraph } = require('./text-to-graph');
+import { convertGraphToText } from './graph-to-text';
+import { convertTextToGraph } from './text-to-graph';
 
 const metamodelData: Array<RawMetadata> = [{
   name: 'http', group: 'source', description: 'Receive HTTP input',

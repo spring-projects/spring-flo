@@ -99,7 +99,7 @@ class TextToGraphConverter {
           let sourceMagnet = Flo.findMagnetByClass(sourceView, '.output-port');
           let sourceEnd : Flo.LinkEnd = {
             id: lastNode.id,
-            selector: sourceView.getSelector(sourceMagnet, null),
+            selector: sourceView.getSelector(sourceMagnet, undefined),
           };
           if (sourceMagnet.getAttribute('port')) {
             sourceEnd.port = sourceMagnet.getAttribute('port');
@@ -108,12 +108,12 @@ class TextToGraphConverter {
           let targetMagnet = Flo.findMagnetByClass(targetView, '.input-port');
           let targetEnd : Flo.LinkEnd = {
             id: newNode.id,
-            selector: targetView.getSelector(targetMagnet, null),
+            selector: targetView.getSelector(targetMagnet, undefined),
           };
           if (targetMagnet.getAttribute('port')) {
             targetEnd.port = targetMagnet.getAttribute('port');
           }
-          this.flo.createLink(sourceEnd, targetEnd, null, null);
+          this.flo.createLink(sourceEnd, targetEnd);
         }
         lastNode = newNode;
       })

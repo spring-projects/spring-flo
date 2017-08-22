@@ -182,7 +182,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       }
 
       clearGraph() {
-        self.selection = null;
+        self.selection = undefined;
         self.graph.clear();
         if (self.metamodel && self.metamodel.load && self.editor && self.editor.setDefaultContent) {
           return self.metamodel.load().then(data => self.editor.setDefaultContent(this, data));
@@ -221,11 +221,11 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         self.fitToPage();
       }
 
-      createNode(metadata : Flo.ElementMetadata, props : Map<string, any>, position : dia.Point) : dia.Element {
+      createNode(metadata : Flo.ElementMetadata, props? : Map<string, any>, position? : dia.Point) : dia.Element {
         return self.createNode(metadata, props, position);
       }
 
-      createLink(source : Flo.LinkEnd, target : Flo.LinkEnd, metadata : Flo.ElementMetadata, props : Map<string, any>) : dia.Link {
+      createLink(source : Flo.LinkEnd, target : Flo.LinkEnd, metadata? : Flo.ElementMetadata, props? : Map<string, any>) : dia.Link {
         return self.createLink(source, target, metadata, props);
       }
 
@@ -243,13 +243,11 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
             self.editor.preDelete(self.editorContext, self.selection.model);
           } else {
             if (self.selection.model instanceof joint.dia.Element) {
-              self.graph.getConnectedLinks(self.selection.model).forEach(function(l) {
-                l.remove();
-              });
+              self.graph.getConnectedLinks(self.selection.model).forEach((l : dia.Link) => l.remove());
             }
           }
           self.selection.model.remove();
-          self.selection = null;
+          self.selection = undefined;
         }
       }
 
@@ -367,7 +365,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       newSelection = this.paper.findViewByModel(this.graph.getCell(newSelection.model.get('parent')));
     }
     if (newSelection && (!newSelection.model.attr('metadata') || newSelection.model.attr('metadata/metadata/unselectable'))) {
-      newSelection = null;
+      newSelection = undefined;
     }
     if (newSelection === this._selection || (!newSelection && !this._selection)) {
       if (this._selection /*&& propsMgr*/) {
@@ -407,10 +405,10 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     }
 
     if (value) {
-      this.selection = null;
+      this.selection = undefined;
     }
     if (this.graph) {
-      this.graph.getLinks().forEach((link) => {
+      this.graph.getLinks().forEach((link : dia.Link) => {
         if (value) {
             link.attr('.link-tools/display', 'none');
             link.attr('.marker-vertices/display', 'none');
@@ -507,7 +505,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
    * @param dragDescriptor DnD info object. Has on info on graph node being dragged (drag source) and what it is
    * being dragged over at the moment (drop target)
    */
-  setDragDescriptor(dragDescriptor : Flo.DnDDescriptor) : void {
+  setDragDescriptor(dragDescriptor? : Flo.DnDDescriptor) : void {
     if (this.highlighted === dragDescriptor) {
       return;
     }
@@ -557,7 +555,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     if (this.highlighted && this.editor && this.editor.handleNodeDropping) {
       this.editor.handleNodeDropping(this.editorContext, this.highlighted);
     }
-    this.setDragDescriptor(null);
+    this.setDragDescriptor(undefined);
   }
 
   /**
@@ -681,7 +679,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     let evt = event.event;
     if (this.paper.el === evt.target || $.contains(this.paper.el, <any>evt.target)) {
       if (this.readOnlyCanvas) {
-        this.setDragDescriptor(null);
+        this.setDragDescriptor(undefined);
       } else {
         let metadata = cellview.model.attr('metadata');
         let props = cellview.model.attr('props');
@@ -770,7 +768,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       this.editor
         .validate(this.graph)
         .then(allMarkers => this.graph.getCells()
-          .forEach(cell => this.markElement(cell, allMarkers.has(cell.id) ? allMarkers.get(cell.id) : [])));
+          .forEach((cell : dia.Cell) => this.markElement(cell, allMarkers.has(cell.id) ? allMarkers.get(cell.id) : [])));
     }
   }
 
@@ -793,7 +791,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
     let errorMessages = markers.map(m => m.message);
 
-    let errorCell = cell.getEmbeddedCells().find(e => e.attr('./kind') === Constants.ERROR_DECORATION_KIND);
+    let errorCell = cell.getEmbeddedCells().find((e : dia.Cell) => e.attr('./kind') === Constants.ERROR_DECORATION_KIND);
     if (errorCell) {
       if (errorMessages.length === 0) {
         errorCell.remove();
@@ -904,7 +902,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     if (node.attr('metadata')) {
 
       node.on('change:attrs', (cell : dia.Element, attrs : any, changeData : any) => {
-        let propertyPath = changeData ? changeData.propertyPath : null;
+        let propertyPath = changeData ? changeData.propertyPath : undefined;
         if (propertyPath) {
           let propAttr = propertyPath.substr(propertyPath.indexOf('/') + 1);
           if (propAttr.indexOf('metadata') === 0 ||
@@ -973,7 +971,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     link.on('change:vertices', this._resizeHandler);
 
     link.on('change:attrs', (cell : dia.Link, attrs : any, changeData : any) => {
-      let propertyPath = changeData ? changeData.propertyPath : null;
+      let propertyPath = changeData ? changeData.propertyPath : undefined;
       if (propertyPath) {
         let propAttr = propertyPath.substr(propertyPath.indexOf('/') + 1);
         if (propAttr.indexOf('metadata') === 0 ||
@@ -1023,7 +1021,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         this.postValidation();
       }
       if (this.selection && this.selection.model === element) {
-        this.selection = null;
+        this.selection = undefined;
         // if (propsMgr) {
         //   propsMgr.updatePropertiesView();
         // }
@@ -1058,7 +1056,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     );
 
     this.paper.on('blank:pointerclick', () => {
-      this.selection = null;
+      this.selection = undefined;
     });
 
     this.paper.on('scale', this._resizeHandler);
@@ -1108,15 +1106,15 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
               id: cellView.model.id
             }
             if (magnet) {
-              linkEnd.selector = cellView.getSelector(magnet, null);
+              linkEnd.selector = cellView.getSelector(magnet, undefined);
             }
             if (magnet.getAttribute('port')) {
               linkEnd.port = magnet.getAttribute('port');
             }
             if (magnet.getAttribute('port') === 'input') {
-              return this.renderer.createLink(null, linkEnd, null, null);
+              return this.renderer.createLink(undefined, linkEnd);
             } else {
-              return this.renderer.createLink(linkEnd, null, null, null)
+              return this.renderer.createLink(linkEnd, undefined);
             }
           } else {
             return new joint.shapes.flo.Link();

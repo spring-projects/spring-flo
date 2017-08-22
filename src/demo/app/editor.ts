@@ -17,8 +17,9 @@
 import { Flo, Constants, Properties } from 'spring-flo';
 import { dia } from 'jointjs';
 import { BsModalService } from 'ngx-bootstrap';
-const { PropertiesDialogComponent } = require('./properties.dialog.component');
-const joint = require('jointjs');
+import { PropertiesDialogComponent } from './properties.dialog.component';
+import * as _joint from 'jointjs';
+const joint : any = _joint;
 
 /**
  * @author Alex Boyko

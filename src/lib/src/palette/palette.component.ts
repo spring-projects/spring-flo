@@ -141,9 +141,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
             view: this.viewBeingDragged,
             event : evt
           });
-          this.viewBeingDragged = null;
+          this.viewBeingDragged = undefined;
         }
-        this.clickedElement = null;
+        this.clickedElement = undefined;
         $('#palette-floater').remove();
     });
 

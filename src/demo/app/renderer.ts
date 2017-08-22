@@ -17,8 +17,11 @@
 import { Flo, Constants } from 'spring-flo';
 import { dia } from 'jointjs';
 
-const joint = require('jointjs');
+import * as _joint from 'jointjs';
 const dagre = require('dagre');
+
+const joint : any = _joint;
+
 
 const HANDLE_ICON_MAP = new Map<string, string>()
   .set(Constants.REMOVE_HANDLE_TYPE, 'icons/delete.svg')
@@ -106,14 +109,14 @@ export class Renderer implements Flo.Renderer {
 
         let nodes = graph.getElements();
 
-        nodes.forEach(node => {
+        nodes.forEach((node : dia.Element) => {
           if (node.get('type') === joint.shapes.flo.NODE_TYPE) {
             g.setNode(node.id, node.get('size'));
           }
         });
 
         let links = graph.getLinks();
-        links.forEach(link => {
+        links.forEach((link : dia.Link) => {
           if (link.get('type') === joint.shapes.flo.LINK_TYPE) {
             let options = {
               minlen: 1.5
@@ -133,7 +136,7 @@ export class Renderer implements Flo.Renderer {
         g.nodes().forEach((v : any) => {
           let node : any = graph.getCell(v);
           if (node) {
-            var bbox = node.getBBox();
+            let bbox = node.getBBox();
             node.translate(g.node(v).x - bbox.x, g.node(v).y - bbox.y);
           }
         });
