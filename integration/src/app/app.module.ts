@@ -1,11 +1,11 @@
 import { NgModule }      from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { LibModule } from 'spring-flo';
+import { FloModule } from 'spring-flo';
 
 import { AppComponent }  from './app.component';
 
 @NgModule({
-  imports:      [ BrowserModule, LibModule],
+  imports:      [ BrowserModule, FloModule],
   declarations: [ AppComponent ],
   bootstrap:    [ AppComponent ]
 })

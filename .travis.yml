@@ -15,5 +15,6 @@ install:
   - npm install
 script:
   - npm run lint
-  - npm run test:once
-  - npm run integration
+#  - npm run test:once
+#  - npm run integration
+  - npm run build

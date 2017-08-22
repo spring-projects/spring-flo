@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { LibService } from 'spring-flo';
+import {  } from 'spring-flo';
 
 @Component({
   selector: 'integration-app',
