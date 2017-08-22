@@ -32,46 +32,46 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
    * Metamodel. Retrieves metadata about elements that can be shown in Flo
    */
   @Input()
-  private metamodel: Flo.Metamodel;
+  metamodel: Flo.Metamodel;
 
   /**
    * Renders elements.
    */
   @Input()
-  private renderer: Flo.Renderer;
+  renderer: Flo.Renderer;
 
   /**
    * Editor. Provides domain specific editing capabilities on top of standard Flo features
    */
   @Input()
-  private editor: Flo.Editor;
+  editor: Flo.Editor;
 
   /**
    * Size (Width) of the palette
    */
   @Input()
-  private paletteSize: number;
+  paletteSize: number;
 
   /**
    * Min zoom percent value
    */
   @Input()
-  private minZoom: number = 5;
+  minZoom: number = 5;
 
   /**
    * Max zoom percent value
    */
   @Input()
-  private maxZoom: number = 400;
+  maxZoom: number = 400;
 
   /**
    * Zoom percent increment/decrement step
    */
   @Input()
-  private zoomStep: number = 5;
+  zoomStep: number = 5;
 
   @Input()
-  private paperPadding : number = 0;
+  paperPadding : number = 0;
 
   @Output()
   floApi = new EventEmitter<Flo.EditorContext>();
