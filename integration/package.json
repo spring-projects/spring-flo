@@ -31,7 +31,7 @@
     "@angular/core": "^4.1.3",
     "@angular/platform-browser": "^4.1.3",
     "@angular/platform-browser-dynamic": "^4.1.3",
-    "spring-flo": "../dist/",
+    "spring-flo": "../",
     "core-js": "^2.4.1",
     "rxjs": "5.0.1",
     "systemjs": "0.19.40",
