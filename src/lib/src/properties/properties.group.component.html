@@ -1,0 +1,5 @@
+<div *ngIf="propertiesGroupModel && !propertiesGroupModel.isLoading" class="properties-group-container" [formGroup]="form">
+  <div *ngFor="let model of propertiesGroupModel.getControlsModels()" class="form-row">
+    <df-property [model]="model" [form]="form"></df-property>
+  </div>
+</div>

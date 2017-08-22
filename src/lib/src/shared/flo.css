@@ -1,0 +1,381 @@
+flo-view {
+  width:100%;
+  height:100%;
+  margin: 0;
+  background-color: #eeeeee;
+  font-family: "Varela Round",sans-serif;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.canvas {
+  border: 1px solid;
+  border-color: #6db33f;
+  border-radius: 2px;
+  margin-top: 3px;
+}
+
+/* Canvas contains the palette on the left and the paper on the right */
+
+.paper {
+  padding: 0px;
+  background-color: #ffffff;
+  /* 	height: 100%;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+   *//* 	margin-left: 400px; */
+}
+
+#sidebar-resizer {
+  background-color: #34302d;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  cursor: e-resize;
+}
+
+#palette-container {
+  background-color: #EEE;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+}
+
+#paper-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  overflow: hidden;
+  color: #FFF;
+}
+
+/* Joint JS paper for drawing palette -> canvas DnD visual feedback START */
+
+#palette-floater {
+  /* TODO size relative to paper that goes on it? */
+  width:170px;
+  height:60px;
+  opacity: 0.75;
+  /*
+    background-color: #6db33f;
+    */
+  float:left;
+  position: absolute;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+/* Joint JS paper for drawing palette -> canvas DnD visual feedback END */
+
+/* Palette START */
+
+.palette-filter {
+  border: 3px solid #6db33f;
+}
+
+.palette-filter-textfield {
+  width: 100%;
+  font-size:24px;
+  /* border: 3px solid #6db33f;
+ */	font-family: "Varela Round",sans-serif;
+  /* 	padding: 2px; */
+}
+
+.palette-paper {
+  background-color: #eeeeee;
+  height: 100%;
+  /*
+    border-right: 7px solid;
+    */
+  border-color: #6db33f;
+  /* 	width: 170px;
+        height:100%;
+            float: left;
+     */
+}
+
+/* Palette END */
+
+/* Tooltip START */
+
+.node-tooltip .tooltip-description {
+  margin-top: 5px;
+  margin-left: 0px;
+  margin-bottom: 5px;
+}
+
+.node-tooltip {
+  display:none;
+  position:absolute;
+  border:1px solid #333;
+  background-color:#34302d;/*#161616;*/
+  border-radius:5px;
+  padding:5px;
+  color:#fff;
+  /*	font-size:12px Arial;*/
+  font-family: "Varela Round",sans-serif;
+  font-size: 19px;
+  z-index: 100;
+}
+
+.tooltip-title-type {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.tooltip-title-group {
+  padding-left: 5px;
+  font-size: 20px;
+  font-style: italic;
+}
+
+.node-tooltip-option-name {
+  font-family: monospace;/*"Varela Round",sans-serif;*/
+  font-size: 17px;
+  font-weight: bold;
+  padding-right: 20px;
+
+}
+
+.node-tooltip-option-description {
+  font-family: "Varela Round",sans-serif;
+  font-size: 18px;
+}
+
+/* Tooltip END */
+
+/* Properties DIV Start */
+
+.properties td {
+  border-top: 1px solid #34302d;
+}
+
+.properties {
+  /* 	opacity: 0.5; */
+  border: 8px #eeeeee;
+  /*	border-radius: 2px;*/
+  /* 	border: 2px solid;
+     */	border-color: #6db33f;
+  margin-top: 3px;
+  background-color: #eeeeee;
+  /* 	height: 115px;
+     */	font-family: monospace;
+  z-index: 2;
+  /*	padding-top:1px; */
+  position: absolute;
+  /* 	left: 850px;
+        top: 386px;
+        width:360px;
+        height:0px;
+        overflow-y:auto;
+     */}
+.properties-node-name {
+
+  width: 100%;
+  /*	background-color: #eeeeee; */
+  background: #34302d;
+  color: #ffffff;
+  padding-left:2px;
+  border:0px;
+  font-size: 18px;
+  font-family: "Varela Round",sans-serif;
+  font-weight: bold;
+}
+.properties-node-name-row {
+  /*
+    background: #34302d;
+    color: #ffffff;
+    */background: #34302d;
+  width: 100%;
+  padding-left:2px;
+}
+
+.properties-row-even {
+  width: 100%;
+  border-top: 1px #34302d;
+  background-color: #ffffff;
+}
+
+
+.properties-row-odd {
+  width: 100%;
+  border-top: 1px #34302d;
+  background-color: #eeeeee;
+}
+
+.properties-row-text-even {
+  background-color: #ffffff;
+  border-left:0px;
+  border-right:0px;
+  border-bottom:0px;
+  border-top:1px #34302d;
+}
+
+.properties-row-text-odd {
+  background-color: #eeeeee;
+  border-left:0px;
+  border-right:0px;
+  border-bottom:0px;
+  border-top:1px #34302d;
+}
+
+.properties-input {
+  width: 100%;
+  font-size: 18px;
+  font-family: "Varela Round",sans-serif;
+}
+
+.properties-key {
+  width: 30%;
+  padding-left:2px;
+  padding-right:4px;
+}
+
+.properties-value {
+  width: 70%;
+  padding-left:2px;
+  padding-right:2px;
+}
+
+.properties-table {
+  border: 1px solid #d1d1d1;
+  padding: 3px;
+}
+
+.properties-new-property {
+  color: #888888;
+}
+
+/* Properties DIV END */
+
+/* Validation Error Marker on Canvas START */
+
+.error-tooltip p {
+  margin-top: 5px;
+  margin-left: 0px;
+  margin-bottom: 5px;
+  color:#fff;
+}
+.error-tooltip {
+  display:none;
+  position:absolute;
+  border:1px solid #333;
+  background-color:red;/*#161616;*/
+  border-radius:5px;
+  padding:5px;
+  color:#fff;
+  /*	font-size:12px Arial;*/
+  font-family: "Varela Round",sans-serif;
+  font-size: 20px;
+  z-index: 100;
+}
+
+/* Validation Error Marker on Canvas END */
+
+/* Controls on Canvas START */
+
+.canvas-controls-container {
+  position: absolute;
+  right: 15px;
+  top: 5px;
+}
+
+.canvas-control {
+  background: transparent;
+  font-family: "Varela Round",sans-serif;
+  font-size: 11px;
+  vertical-align: middle;
+  margin: 0px;
+}
+
+.zoom-canvas-control {
+  border: 0px;
+  padding: 0px;
+  margin: 0px;
+  outline: none;
+}
+
+.zoom-canvas-input {
+  text-align: right;
+  font-weight:bold;
+  color: black;
+}
+
+.zoom-canvas-label {
+  padding-right: 4px;
+  color: black;
+}
+
+/* Controls on Canvas END */
+
+
+
+
+/* START - FLO CANVAS STYLES - override joint js styles */
+
+.highlighted {
+  outline: none;
+}
+
+.joint-element.highlighted rect {
+  stroke: #34302d;
+  stroke-width: 3;
+}
+
+.joint-type-handle {
+  cursor: pointer;
+}
+
+.available-magnet {
+  stroke-width: 3;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+.link-tools .tool-options {
+  display: none;       /* by default, we don't display link options tool */
+}
+
+/* Make transparent the circle around the link-tools (cog) icon. It'll allow shape to have a circle clicking area */
+.link-tools .tool-options circle {
+  fill: transparent;
+  stroke: transparent;
+}
+
+.link-tools .tool-options path {
+  fill: black;
+  stroke: black;
+}
+
+.link-tools .tool-remove circle {
+  fill: red;
+  stroke: red;
+}
+
+.link-tools .tool-remove path {
+  fill: white;
+  stroke: white;
+}
+
+.link-tools-container {
+  stroke-width: 0;
+  fill: transparent;
+}
+
+
+/* END - FLO CANVAS STYLES */

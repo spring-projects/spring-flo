@@ -1,0 +1,21 @@
+<div [formGroup]="form">
+
+  <label [attr.for]="model.id" class="df-form-label">{{model.name}}</label>
+
+  <div [ngSwitch]="model.type" class="df-property-container">
+
+    <label *ngSwitchCase="types.CHECKBOX" class="df-property-checkbox">
+      <input type="checkbox" [id]="model.id" [(ngModel)]="model.value" [formControlName]="model.id">
+      {{model.value ? 'True' : 'False' }}
+    </label>
+
+    <input *ngSwitchDefault class="df-property-text" type="text" [id]="model.id" [formControlName]="model.id" [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+
+  </div>
+
+  <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="!control.valid"></span>
+  <p class="help-block">{{model.description}}</p>
+  <p *ngFor="let e of errorData" class="validation-error-block">{{e.message}}</p>
+
+</div>
+
