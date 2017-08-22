@@ -1,14 +1,19 @@
+dist: trusty
+sudo: false
 language: node_js
 node_js:
-  - '6.10'
-before_script:
-  - 'npm install -g bower grunt-cli'
-  - 'bower install'
-script: grunt 
-
-notifications:
-  email:
-    - aclement@pivotal.io
-    - aboyko@pivotal.io
-    - sanandan@pivotal.io
-  on_failure: always
+  - "6"
+os:
+  - linux
+before_install:
+  # Use a virtual display.
+  - export DISPLAY=:99.0
+  - sh -e /etc/init.d/xvfb start
+  # Install latest chrome.
+  - export CHROME_BIN=chromium-browser
+install:
+  - npm install
+script:
+  - npm run lint
+  - npm run test:once
+  - npm run integration

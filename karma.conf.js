@@ -1,64 +1,89 @@
-// Karma configuration
-// http://karma-runner.github.io/0.10/config/configuration-file.html
-
 module.exports = function (config) {
-  'use strict';
-  config.set({
-    // base path, that will be used to resolve files and exclude
-    basePath: '',
 
-    // testing framework to use (jasmine/mocha/qunit/...)
-    frameworks: ['jasmine', 'requirejs'],
-    
-    // list of files / patterns to load in the browser
-    files: [
-      {pattern: 'src/**/*.js', included: false},
-      {pattern: 'lib/**/*.js', included: false},
-      {pattern: 'tests/spec/**/*.js', included: false},
-      {pattern: 'dist/**/*.js', included: false},
-      {pattern: 'tests/resources/**/*', included: false},
-      'tests/karma-test-main.js'
-    ],
+  var libBase = 'src/lib/';       // transpiled app JS and map files
+
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine'],
 
     plugins: [
-              'karma-junit-reporter',
-              'karma-chrome-launcher',
-              'karma-firefox-launcher',
-              'karma-jasmine',
-              'karma-phantomjs-launcher',
-              'karma-requirejs',
-              'karma-jasmine-html-reporter',
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter')
     ],
-    
-//    reporters: [
-//                'html'
-//    ],
-    
-    // list of files / patterns to exclude
+
+    client: {
+      builtPaths: [libBase], // add more spec base paths as needed
+      clearContext: false // leave Jasmine Spec Runner output visible in browser
+    },
+
+    customLaunchers: {
+      // From the CLI. Not used here but interesting
+      // chrome setup for travis CI using chromium
+      Chrome_travis_ci: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
+
+    files: [
+      // System.js for module loading
+      'node_modules/systemjs/dist/system.src.js',
+
+      // Polyfills
+      'node_modules/core-js/client/shim.js',
+
+      // zone.js
+      'node_modules/zone.js/dist/zone.js',
+      'node_modules/zone.js/dist/long-stack-trace-zone.js',
+      'node_modules/zone.js/dist/proxy.js',
+      'node_modules/zone.js/dist/sync-test.js',
+      'node_modules/zone.js/dist/jasmine-patch.js',
+      'node_modules/zone.js/dist/async-test.js',
+      'node_modules/zone.js/dist/fake-async-test.js',
+
+      // RxJs
+      { pattern: 'node_modules/rxjs/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/rxjs/**/*.js.map', included: false, watched: false },
+
+      // Paths loaded via module imports:
+      // Angular itself
+      { pattern: 'node_modules/@angular/**/*.js', included: false, watched: false },
+      { pattern: 'node_modules/@angular/**/*.js.map', included: false, watched: false },
+
+      { pattern: 'src/demo/systemjs-angular-loader.js', included: false, watched: false },
+
+      'karma-test-shim.js', // optionally extend SystemJS mapping e.g., with barrels
+
+      // transpiled application & spec code paths loaded via module imports
+      { pattern: libBase + '**/*.js', included: false, watched: true },
+
+      // Asset (HTML & CSS) paths loaded via Angular's component compiler
+      // (these paths need to be rewritten, see proxies section)
+      { pattern: libBase + '**/*.html', included: false, watched: true },
+      { pattern: libBase + '**/*.css', included: false, watched: true },
+
+      // Paths for debugging with source maps in dev tools
+      { pattern: libBase + '**/*.ts', included: false, watched: false },
+      { pattern: libBase + '**/*.js.map', included: false, watched: false }
+    ],
+
+    // Proxied base paths for loading assets
+    proxies: {
+      // required for modules fetched by SystemJS
+      '/base/src/lib/node_modules/': '/base/node_modules/',
+      '/base/src/lib/demo/': '/base/src/demo/'
+    },
+
     exclude: [],
+    preprocessors: {},
+    reporters: ['progress', 'kjhtml'],
 
-    // web server port
-    port: 7070,
-
-    // level of logging
-    // possible values: LOG_DISABLE || LOG_ERROR || LOG_WARN || LOG_INFO || LOG_DEBUG
+    port: 9876,
+    colors: true,
     logLevel: config.LOG_INFO,
-
-    // enable / disable watching file and executing tests whenever any file changes
     autoWatch: true,
-
-    // Start these browsers, currently available:
-    // - Chrome
-    // - ChromeCanary
-    // - Firefox
-    // - Opera
-    // - Safari (only Mac)
-    // - PhantomJS
-    // - IE (only Windows)
-    browsers: ['Firefox', 'Chrome'],
-
-    // Continuous Integration mode
-    // if true, it capture browsers, run tests and exit
+    browsers: ['Chrome'],
     singleRun: false
-  });
-};
+  })
+}

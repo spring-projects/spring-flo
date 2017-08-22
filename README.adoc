@@ -14,12 +14,7 @@ Refer to the https://github.com/spring-projects/spring-flo/wiki[wiki] for more i
 
 ## Build
 
-Spring Flo is built using Grunt. Grunt commands can be run directly or indirectly through maven. Simplest way to build is via `mvn clean package` to build the project and run the tests.  Build results are produced under the __dist__ folder. Contents of the folder are 
-
-* __spring-flo.js__ that contains all JS code from various JS dev modules (produced by development build)
-* __spring-flo.min.js__ a minified version of __flo.js__ (produced by production build)
-* __spring-flo.css__ concatenated CSS file for Flo Editor
-* __spring-flo.min.css__ minified version of the CSS above
+Spring Flo is built using NPM commands. Simplest way to build is via `npm run build` to build the project and run the tests (Prerequisite for th build is `npm install` executed before the build command is). Build results are produced under the __dist__ folder.
 
 ## Getting Help
 
@@ -27,7 +22,7 @@ If you have any questions, issues, feedback or feature request please https://gi
 
 ## Samples
 
-A small self contained sample usage of Spring Flo is now available in the https://github.com/spring-projects/spring-flo/tree/master/samples/spring-flo-sample[samples] sub folder. It includes a README that describes running it and where you might want to customize it. The https://github.com/spring-cloud/spring-cloud-dataflow-ui[Spring Cloud Data Flow UI] at github shows a larger scale usage of Spring Flo.
+A small self contained sample usage of Spring Flo is available in the https://github.com/spring-projects/spring-flo/tree/master/src/demo[demo] sub folder. It includes a README that describes running it and where you might want to customize it. The https://github.com/spring-cloud/spring-cloud-dataflow-ui[Spring Cloud Data Flow UI] at github shows a larger scale usage of Spring Flo.
 
 ## Contributing
 
