@@ -22,9 +22,9 @@ export namespace Flo {
   }
 
   export interface ExtraMetadata {
-    readonly titleProperty : string;
-    readonly noEditableProps : boolean;
-    readonly noPaletteEntry : boolean;
+    readonly titleProperty? : string;
+    readonly noEditableProps? : boolean;
+    readonly noPaletteEntry? : boolean;
     readonly [propName : string] : any;
 
     readonly allowAdditionalProperties : boolean; //TODO: Verify it is still needed
