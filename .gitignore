@@ -6,6 +6,7 @@ npm-debug.log
 src/**/*.js
 src/**/*.d.ts
 !src/lib/typings.d.ts
+!src/demo/typings.d.ts
 !src/demo/systemjs.config.js
 !src/demo/systemjs.config.lib.js
 !**/*systemjs-angular-loader.js
