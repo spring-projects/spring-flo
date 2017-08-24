@@ -3,7 +3,9 @@ import { Flo } from './flo.common';
 import EditorDescriptor = Flo.ViewerDescriptor;
 import * as _ from 'lodash';
 import * as _joint from 'jointjs';
+import * as _$ from 'jquery';
 const joint : any = _joint;
+const $ : any = _$;
 
 const isChrome : boolean = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 const isFF : boolean = navigator.userAgent.indexOf("Firefox") > 0;
