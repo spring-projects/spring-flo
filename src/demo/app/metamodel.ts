@@ -34,6 +34,36 @@ const metamodelData: Array<RawMetadata> = [{
     {id: 'name', name: 'name', description: 'The name of the file to create'}
   ],
 }, {
+  name: 'end', group: 'sink', description: 'Writes messages to a file',
+  properties: [
+    {id: 'dir', name: 'dir', description: 'Absolute path to directory'},
+    {id: 'name', name: 'name', description: 'The name of the file to create'}
+  ],
+}, {
+  name: 'null', group: 'sink', description: 'Writes messages to a file',
+  properties: [
+    {id: 'dir', name: 'dir', description: 'Absolute path to directory'},
+    {id: 'name', name: 'name', description: 'The name of the file to create'}
+  ],
+}, {
+  name: 'console', group: 'sink', description: 'Writes messages to a file',
+  properties: [
+    {id: 'dir', name: 'dir', description: 'Absolute path to directory'},
+    {id: 'name', name: 'name', description: 'The name of the file to create'}
+  ],
+}, {
+  name: 'hdfs', group: 'sink', description: 'Writes messages to a file',
+  properties: [
+    {id: 'dir', name: 'dir', description: 'Absolute path to directory'},
+    {id: 'name', name: 'name', description: 'The name of the file to create'}
+  ],
+}, {
+  name: 'jdbc', group: 'sink', description: 'Writes messages to a file',
+  properties: [
+    {id: 'dir', name: 'dir', description: 'Absolute path to directory'},
+    {id: 'name', name: 'name', description: 'The name of the file to create'}
+  ],
+}, {
   name: 'ftp', group: 'sink', description: 'Send messages over FTP',
   properties: [
     {id: 'host', name: 'host', description: 'the host name for the FTP server'},

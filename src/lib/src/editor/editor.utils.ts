@@ -2,6 +2,8 @@ import { dia } from 'jointjs';
 import * as _ from 'lodash';
 import * as _joint from 'jointjs';
 const joint : any = _joint;
+import * as _$ from 'jquery';
+const $ : any = _$;
 
 
 export class Utils {
@@ -116,7 +118,7 @@ export class Utils {
     return args.length === 5 &&
       _.isString(args[0]) &&
       (args[0].indexOf('link:') === 0 || args[0].indexOf('element:') === 0) &&
-      args[1] instanceof jQuery.Event &&
+      args[1] instanceof $.Event &&
       args[2] instanceof joint.dia.CellView &&
       _.isNumber(args[3]) &&
       _.isNumber(args[4]);
