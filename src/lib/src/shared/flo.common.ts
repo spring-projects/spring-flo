@@ -27,7 +27,7 @@ export namespace Flo {
     readonly noPaletteEntry? : boolean;
     readonly [propName : string] : any;
 
-    readonly allowAdditionalProperties : boolean; //TODO: Verify it is still needed
+    readonly allowAdditionalProperties? : boolean; //TODO: Verify it is still needed
   }
 
   export interface ElementMetadata {
