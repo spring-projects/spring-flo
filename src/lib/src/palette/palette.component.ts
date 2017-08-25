@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject} from '@angular/core';
+import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject, ViewEncapsulation} from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
@@ -39,7 +39,8 @@ joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 @Component({
   selector: 'flo-palette',
   templateUrl: './palette.component.html',
-  styleUrls: ['./../shared/flo.css']
+  styleUrls: ['./../shared/flo.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class Palette implements OnInit, OnDestroy, OnChanges {
 
