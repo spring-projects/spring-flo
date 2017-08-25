@@ -35,7 +35,7 @@ export namespace Flo {
     readonly group : string;
     description?() : Promise<string>;
     get(property : String) : Promise<PropertyMetadata>;
-    properties() : Promise<Array<PropertyMetadata>>;
+    properties() : Promise<Map<string, PropertyMetadata>>;
     readonly metadata? : ExtraMetadata;
     readonly [propName : string] : any;
   }
@@ -218,7 +218,7 @@ export namespace Flo {
         group: group,
         unresolved: true,
         get: (property : String) => new Promise(resolve => resolve()),
-        properties: () => Promise.resolve([])
+        properties: () => Promise.resolve(new Map<string, PropertyMetadata>())
       };
     }
   }

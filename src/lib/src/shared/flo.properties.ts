@@ -123,7 +123,7 @@ export namespace Properties {
 
     protected createProperties() : Promise<Array<Property>> {
       let metadata : Flo.ElementMetadata = this.cell.attr('metadata');
-      return Promise.resolve(metadata.properties().then(propsMetadata => propsMetadata.map(m => this.createProperty(m))));
+      return Promise.resolve(metadata.properties().then(propsMetadata => Array.from(propsMetadata.values()).map(m => this.createProperty(m))));
     }
 
     protected createProperty(metadata : Flo.PropertyMetadata) : Property {
