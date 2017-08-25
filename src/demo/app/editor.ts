@@ -89,7 +89,7 @@ export class Editor implements Flo.Editor {
     }
 
     handleNodeDropping(context : Flo.EditorContext, dragDescriptor : Flo.DnDDescriptor) {
-      let relinking = dragDescriptor.context === Constants.PALETTE_CONTEXT;
+      let relinking = dragDescriptor.sourceComponent === Constants.PALETTE_CONTEXT;
       let graph = context.getGraph();
       let source = dragDescriptor.source ? dragDescriptor.source.view.model : undefined;
       let target = dragDescriptor.target ? dragDescriptor.target.view.model : undefined;
@@ -155,6 +155,7 @@ export class Editor implements Flo.Editor {
                 if (distance < range && distance < minDistance) {
                   minDistance = distance;
                   closestData = {
+                    sourceComponent: sourceComponent,
                     source: {
                       view: draggedView,
                       cssClassSelector: type === 'output' ? '.input-port' : '.output-port'
@@ -180,6 +181,7 @@ export class Editor implements Flo.Editor {
         sourceGroup === 'processor' &&
         graph.getConnectedLinks(source).length === 0) { // jshint ignore:line
         return {
+          sourceComponent: sourceComponent,
           source: {
             view: draggedView
           },
@@ -190,6 +192,7 @@ export class Editor implements Flo.Editor {
       }
 
       return {
+        sourceComponent: sourceComponent,
         source: {
           view: draggedView
         }

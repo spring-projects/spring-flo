@@ -3,7 +3,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
 import { Flo } from './../shared/flo.common';
-import { Shapes } from './../shared/shapes';
+import { Shapes, Constants } from './../shared/shapes';
 import { DOCUMENT } from '@angular/platform-browser'
 import * as _$ from 'jquery';
 import * as _joint from 'jointjs';
@@ -109,7 +109,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   constructor(private element: ElementRef, @Inject(DOCUMENT) private document : any) {
     this.paletteGraph = new joint.dia.Graph();
-    this.paletteGraph.set('type', joint.shapes.flo.PALETTE_TYPE);
+    this.paletteGraph.set('type', Constants.PALETTE_CONTEXT);
     this._filterText = '';
 
     this.closedGroups = new Set<string>();
@@ -471,7 +471,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         }).appendTo($('body'));
 
         let floatergraph : dia.Graph = new joint.dia.Graph();
-        floatergraph.attributes.type = joint.shapes.flo.FEEDBACK_TYPE;
+        floatergraph.set('type', Constants.FEEDBACK_CONTEXT);
 
         let floaterpaper : dia.Paper = new joint.dia.Paper({
           el: $('#palette-floater'),

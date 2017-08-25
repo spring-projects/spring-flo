@@ -24,10 +24,6 @@ joint.shapes.flo.LINK_TYPE = 'sinspctr.Link';
 joint.shapes.flo.DECORATION_TYPE = 'decoration';
 joint.shapes.flo.HANDLE_TYPE = 'handle';
 
-joint.shapes.flo.CANVAS_TYPE = 'canvas';
-joint.shapes.flo.PALETTE_TYPE = 'palette';
-joint.shapes.flo.FEEDBACK_TYPE = 'feedback';
-
 const HANDLE_ICON_MAP : Map<string, string>= new Map<string, string>();
 const REMOVE = 'remove';
 HANDLE_ICON_MAP.set(REMOVE, 'icons/delete.svg');
@@ -466,6 +462,7 @@ export namespace Constants {
 
   export const CANVAS_CONTEXT = 'canvas';
 
+  export const FEEDBACK_CONTEXT = 'feedback';
 
 }
 

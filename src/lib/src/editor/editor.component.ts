@@ -509,7 +509,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     if (this.highlighted === dragDescriptor) {
       return;
     }
-    if (this.highlighted && dragDescriptor && _.isEqual(this.highlighted.context, dragDescriptor.context)) {
+    if (this.highlighted && dragDescriptor && _.isEqual(this.highlighted.sourceComponent, dragDescriptor.sourceComponent)) {
       if (this.highlighted.source === dragDescriptor.source && this.highlighted.target === dragDescriptor.target) {
         return;
       }
@@ -888,7 +888,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   initGraph() {
     this.graph = new joint.dia.Graph();
-    this.graph.attributes.type = joint.shapes.flo.CANVAS_TYPE;
+    this.graph.set('type', Constants.CANVAS_CONTEXT);
   }
 
   postValidation() {

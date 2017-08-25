@@ -153,7 +153,7 @@ export namespace Flo {
   }
 
   export interface DnDDescriptor {
-    context? : string;
+    sourceComponent? : string;
     range?: number;
     source? : LinkEndDescriptor;
     target? : LinkEndDescriptor;
