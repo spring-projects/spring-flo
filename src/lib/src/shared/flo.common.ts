@@ -145,6 +145,7 @@ export namespace Flo {
     createLink(source : LinkEnd, target : LinkEnd, metadata? : ElementMetadata, props? : Map<string, any>) : dia.Link;
     deleteSelectedNode() : void;
     postValidation() : void;
+    [propName : string] : any;
   }
 
   export interface LinkEndDescriptor {
