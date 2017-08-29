@@ -17,8 +17,8 @@ import 'codemirror/addon/scroll/simplescrollbars';
   templateUrl: './dsl.editor.component.html',
   styleUrls: [
     './../../../../node_modules/codemirror/lib/codemirror.css',
-    './../../../../node_modules/codemirror/lib/addon/hint/show-hint.css',
-    './../../../../node_modules/codemirror/lib/addon/lint/lint.css',
+    './../../../../node_modules/codemirror/addon/hint/show-hint.css',
+    './../../../../node_modules/codemirror/addon/lint/lint.css',
     './dsl.editor.component.css', ],
   encapsulation: ViewEncapsulation.None
 })
