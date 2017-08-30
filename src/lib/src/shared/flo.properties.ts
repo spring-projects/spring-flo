@@ -23,7 +23,7 @@ export namespace Properties {
     description? : string;
     defaultValue? : any;
     value? : any;
-    readonly metadata : Flo.PropertyMetadata;
+    readonly metadata? : Flo.PropertyMetadata;
   }
 
   export interface SelectOption {
@@ -53,15 +53,9 @@ export namespace Properties {
     readonly validation? : Validation;
   }
 
-  // export interface Model {
-  //   loaded : EventEmitter<boolean>;
-  //   controls : EventEmitter<ControlModel>;
-  //   applyChanges() : void;
-  // }
-
   export class GenericControlModel<T> implements ControlModel<T> {
 
-    constructor(private _property : Property, public type : InputType) {}
+    constructor(private _property : Property, public type : InputType, public validation? : Validation) {}
 
     get id() {
       return this.property.id;
