@@ -18,6 +18,7 @@ export namespace Flo {
     readonly name : string;
     readonly description? : string;
     readonly defaultValue? : any;
+    readonly type? : string;
     readonly [propName : string] : any;
   }
 
@@ -218,7 +219,7 @@ export namespace Flo {
         name: name,
         group: group,
         unresolved: true,
-        get: (property : String) => new Promise(resolve => resolve()),
+        get: (property : string) => new Promise(resolve => resolve()),
         properties: () => Promise.resolve(new Map<string, PropertyMetadata>())
       };
     }
