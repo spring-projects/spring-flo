@@ -5,7 +5,7 @@
   </button>
 </div>
 <div class="modal-body">
-  <properties-group *ngIf="propertiesGroupModel" [propertiesGroupModel]="propertiesGroupModel" (form)="propertiesFormGroup=$event"></properties-group>
+  <properties-group *ngIf="propertiesGroupModel" [propertiesGroupModel]="propertiesGroupModel" [form]="propertiesFormGroup"></properties-group>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default" (click)="handleCancel()">Close</button>

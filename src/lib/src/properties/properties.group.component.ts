@@ -12,13 +12,10 @@ export class PropertiesGroupComponent implements OnInit {
   @Input()
   propertiesGroupModel : Properties.PropertiesGroupModel;
 
+  @Input()
   form : FormGroup;
 
-  @Output('form')
-  private formEventEmitter = new EventEmitter<FormGroup>();
-
   ngOnInit() {
-    this.form = new FormGroup({});
     if (this.propertiesGroupModel.isLoading) {
       let subscription = this.propertiesGroupModel.loadedSubject.subscribe(loaded => {
         if (loaded) {
@@ -29,7 +26,6 @@ export class PropertiesGroupComponent implements OnInit {
     } else {
       this.createGroupControls();
     }
-    this.formEventEmitter.emit(this.form);
   }
 
   createGroupControls() {

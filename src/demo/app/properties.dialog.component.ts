@@ -17,7 +17,9 @@ export class PropertiesDialogComponent {
 
   propertiesFormGroup : FormGroup;
 
-  constructor(private bsModalRef: BsModalRef) {}
+  constructor(private bsModalRef: BsModalRef) {
+    this.propertiesFormGroup = new FormGroup({});
+  }
 
   handleOk() {
     this.propertiesGroupModel.applyChanges();
