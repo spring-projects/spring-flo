@@ -189,3 +189,24 @@ textarea:input:focus {
 .dnd-target-feedback .connection {
   animation: flash-stroke-width 2s linear infinite;
 }
+
+.properties-group-container .property-row {
+  display: block;
+}
+
+.df-property-row {
+  width: 100%;
+  display:inline-table;
+}
+
+.df-property-label-cell {
+  width: 50%;
+}
+
+.df-property-container {
+  width: 100%
+}
+
+.df-property-control {
+  width: 100%;
+}

@@ -59,7 +59,7 @@ export class Editor implements Flo.Editor {
       //   }, Flo.PropertiesForm.InputType.TEXT));
       //   bsModalRef.content.addControlModels(models);
       // });
-      bsModalRef.content.propertiesGroupModel = new Properties.PropertiesGroupModel(cell);
+      bsModalRef.content.propertiesGroupModel = new SamplePropertiesGroupModel(cell);
     }
 
     validatePort(context : Flo.EditorContext, view : dia.ElementView, magnet : SVGElement) {
@@ -552,4 +552,39 @@ export class Editor implements Flo.Editor {
       return !noSwap;
     }
 
+}
+
+class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
+  protected createControlModel(property : Properties.Property) : Properties.ControlModel<any> {
+    let inputType = Properties.InputType.TEXT;
+    switch (property.metadata.type) {
+      case 'number':
+        inputType = Properties.InputType.NUMBER;
+        break;
+      case 'url':
+        inputType = Properties.InputType.URL;
+        break;
+      case 'password':
+        inputType = Properties.InputType.PASSWORD;
+        break;
+      case 'boolean':
+        inputType = Properties.InputType.CHECKBOX;
+        break;
+      case 'number':
+        inputType = Properties.InputType.EMAIL;
+        break;
+      case 'enum':
+        if (Array.isArray(property.metadata.options)) {
+          return new Properties.SelectControlModel(property, Properties.InputType.SELECT, (<Array<string>> property.metadata.options).map(o => {
+            return {
+              name: o,
+              value: o === property.defaultValue ? undefined : o
+            }
+          }));
+        }
+      default:
+        break;
+    }
+    return new Properties.GenericControlModel(property, inputType);
+  }
 }

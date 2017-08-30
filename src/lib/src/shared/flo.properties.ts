@@ -10,6 +10,7 @@ export namespace Properties {
     NUMBER,
     SELECT,
     CHECKBOX,
+    PASSWORD,
     EMAIL,
     URL,
     CODE
@@ -22,6 +23,12 @@ export namespace Properties {
     description? : string;
     defaultValue? : any;
     value? : any;
+    readonly metadata : Flo.PropertyMetadata;
+  }
+
+  export interface SelectOption {
+    name: string;
+    value: any;
   }
 
   export interface ErrorData {
@@ -86,6 +93,12 @@ export namespace Properties {
 
   }
 
+  export class SelectControlModel extends GenericControlModel<any> {
+    constructor(_property : Property, type : InputType, public options : Array<SelectOption>) {
+      super(_property, type);
+    }
+  }
+
   export class PropertiesGroupModel {
 
     protected cell : dia.Cell;
@@ -133,7 +146,8 @@ export namespace Properties {
         defaultValue: metadata.defaultValue,
         attr: `props/${metadata.name}`,
         value: this.cell.attr(`props/${metadata.name}`),
-        description: metadata.description
+        description: metadata.description,
+        metadata: metadata
       }
     }
 

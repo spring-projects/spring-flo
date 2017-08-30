@@ -5,12 +5,17 @@ import { convertTextToGraph } from './text-to-graph';
 const metamodelData: Array<RawMetadata> = [{
   name: 'http', group: 'source', description: 'Receive HTTP input',
   properties: [
-    {id: 'port', name: 'port', defaultValue: '80', description: 'Port on which to listen'}
+    {id: 'port', name: 'port', defaultValue: '80', description: 'Port on which to listen', type: 'number'}
   ],
 }, {
   name: 'rabbit', group: 'source', description: 'Receives messages from RabbitMQ',
   properties: [
-    {id: 'queue', name: 'queue', description: 'the queue(s) from which messages will be received'}
+    {id: 'queue', name: 'queue', description: 'the queue(s) from which messages will be received'},
+    {id: 'time-unit', name: 'time-unit', description: 'Time unit for heart beat messages', type: 'enum', options: ['HOURS', 'MINUTES', 'SECONDS', 'MILIOSECONDS'], defaultValue: 'SECONDS'},
+    {id: 'heart-beat', name: 'heart-beat', description: 'Heart beat on/off', type: 'boolean', defaultValue: false},
+    {id: 'interval', name: 'interval', description: 'Time period being consecutive heart beat messages', type: 'number', defaultValue: 20},
+    {id: 'url', name: 'url', description: 'Service URL', type: 'url'},
+    {id: 'password', name: 'password', description: 'Password to login to service', type: 'password'}
   ],
 }, {
   name: 'filewatch', group: 'source', description: 'Produce messages from the content of files created in a directory',
@@ -67,7 +72,7 @@ const metamodelData: Array<RawMetadata> = [{
   name: 'ftp', group: 'sink', description: 'Send messages over FTP',
   properties: [
     {id: 'host', name: 'host', description: 'the host name for the FTP server'},
-    {id: 'port', name: 'port', description: 'The port for the FTP server'},
+    {id: 'port', name: 'port', description: 'The port for the FTP server', type: 'number'},
     {id: 'remoteDir', name: 'remoteDir', description: 'The remote directory on the server'},
   ],
 }];
