@@ -210,3 +210,16 @@ textarea:input:focus {
 .df-property-control {
   width: 100%;
 }
+
+.invalid-property-value .df-property-label-cell {
+  color: red;
+}
+
+.invalid-property-value .df-property-control {
+  outline-color: red;
+  border-color: red;
+}
+
+.validation-error-block {
+  color: red;
+}

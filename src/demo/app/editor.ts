@@ -15,6 +15,7 @@
  */
 
 import { Flo, Constants, Properties } from 'spring-flo';
+import { Validators } from '@angular/forms';
 import { dia } from 'jointjs';
 import { BsModalService } from 'ngx-bootstrap';
 import { PropertiesDialogComponent } from './properties.dialog.component';
@@ -557,6 +558,7 @@ export class Editor implements Flo.Editor {
 class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
   protected createControlModel(property : Properties.Property) : Properties.ControlModel<any> {
     let inputType = Properties.InputType.TEXT;
+    let validation : Properties.Validation;
     switch (property.metadata.type) {
       case 'number':
         inputType = Properties.InputType.NUMBER;
@@ -583,8 +585,16 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
           }));
         }
       default:
+        if (property.metadata.name === 'name') {
+          validation = {
+            validator: Validators.required,
+            errorData: [
+              { id: 'required', message: 'Name is required!' }
+            ]
+          }
+        }
         break;
     }
-    return new Properties.GenericControlModel(property, inputType);
+    return new Properties.GenericControlModel(property, inputType, validation);
   }
 }

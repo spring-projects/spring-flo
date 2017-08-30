@@ -1,4 +1,4 @@
-<tr [formGroup]="form" class="df-property-row">
+<tr [formGroup]="form" class="df-property-row" [ngClass]="{'invalid-property-value': control.invalid}">
 
   <td class="df-property-label-cell">
     <label [attr.for]="model.id" class="df-form-label">{{model.name}}</label>
@@ -32,10 +32,10 @@
       <input *ngSwitchDefault class="df-property-control" type="text" [id]="model.id" [formControlName]="model.id"
              [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
     </div>
-
-    <span class="glyphicon glyphicon-warning-sign form-control-feedback" *ngIf="!control.valid"></span>
-    <p class="help-block">{{model.description}}</p>
-    <p *ngFor="let e of errorData" class="validation-error-block">{{e.message}}</p>
+    <div class="help-block">
+      <div>{{model.description}}</div>
+      <div *ngFor="let e of errorData" class="validation-error-block">{{e.message}}</div>
+    </div>
   </td>
 
 </tr>

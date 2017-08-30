@@ -25,7 +25,8 @@ export class DynamicFormPropertyComponent {
   }
 
   get errorData() {
-    return (this.model.validation && this.model.validation.errorData ? this.model.validation.errorData : []).map(e => this.control.errors[e.message]);
+    return (this.model.validation && this.model.validation.errorData ? this.model.validation.errorData : [])
+      .filter(e => this.control.errors && this.control.errors[e.id]);
   }
 
 }
