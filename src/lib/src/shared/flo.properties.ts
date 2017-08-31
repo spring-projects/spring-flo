@@ -102,7 +102,7 @@ export namespace Properties {
 
     protected loading : boolean = true;
 
-    protected _loadedSubject = new Subject<boolean>();
+    protected _loadedSubject : Subject<boolean>;
 
     constructor(cell : dia.Cell) {
       this.cell = cell;
@@ -110,10 +110,12 @@ export namespace Properties {
 
     load() {
       this.loading = true;
+      this._loadedSubject = new Subject<boolean>();
       this.createProperties().then(properties => {
         this.controlModels = properties.map(p => this.createControlModel(p));
         this.loading = false;
         this._loadedSubject.next(true);
+        this._loadedSubject.complete();
       });
     }
 
