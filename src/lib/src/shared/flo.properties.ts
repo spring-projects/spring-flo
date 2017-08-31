@@ -110,7 +110,6 @@ export namespace Properties {
 
     load() {
       this.loading = true;
-      this._loadedSubject.next(false);
       this.createProperties().then(properties => {
         this.controlModels = properties.map(p => this.createControlModel(p));
         this.loading = false;
