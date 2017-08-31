@@ -88,6 +88,22 @@ export namespace Properties {
 
   }
 
+  export class GenericListControlModel extends GenericControlModel<string> {
+
+    constructor(property : Property, validation? : Validation) {
+      super(property, InputType.TEXT, validation);
+    }
+
+    get value() : string {
+      return this.property.value ? this.property.value.join(', ') : '';
+    }
+
+    set value(value : string) {
+      this.property.value = value && value.trim() ? value.split(/\s*,\s*/) : undefined;
+    }
+
+  }
+
   export class SelectControlModel extends GenericControlModel<any> {
     constructor(_property : Property, type : InputType, public options : Array<SelectOption>) {
       super(_property, type);

@@ -15,7 +15,10 @@ const metamodelData: Array<RawMetadata> = [{
     {id: 'heart-beat', name: 'heart-beat', description: 'Heart beat on/off', type: 'boolean', defaultValue: false},
     {id: 'interval', name: 'interval', description: 'Time period being consecutive heart beat messages', type: 'number', defaultValue: 20},
     {id: 'url', name: 'url', description: 'Service URL', type: 'url'},
-    {id: 'password', name: 'password', description: 'Password to login to service', type: 'password'}
+    {id: 'password', name: 'password', description: 'Password to login to service', type: 'password'},
+    {id: 'messages', name: 'messages', description: 'List of messages', type: 'list'},
+    {id: 'counts', name: 'counts', description: 'List of counts', type: 'list[number]'},
+    {id: 'successes', name: 'successes', description: 'List of successes', type: 'list[boolean]'},
   ],
 }, {
   name: 'filewatch', group: 'source', description: 'Produce messages from the content of files created in a directory',

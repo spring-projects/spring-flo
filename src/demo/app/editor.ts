@@ -566,6 +566,10 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
       case 'number':
         inputType = Properties.InputType.EMAIL;
         break;
+      case 'list':
+      case 'list[number]':
+      case 'list[boolean]':
+        return new Properties.GenericListControlModel(property);
       case 'enum':
         if (Array.isArray(property.metadata.options)) {
           return new Properties.SelectControlModel(property, Properties.InputType.SELECT, (<Array<string>> property.metadata.options).map(o => {
