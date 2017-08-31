@@ -49,18 +49,9 @@ export class Editor implements Flo.Editor {
       let bsModalRef = this.modelService.show(PropertiesDialogComponent);
       let metadata : Flo.ElementMetadata = cell.attr('metadata');
       bsModalRef.content.title = `Properties for ${metadata.name.toUpperCase()}`;
-      // metadata.properties().then((allProps : Array<Flo.PropertyMetadata>) => {
-      //   let models = allProps.map(p => new Flo.PropertiesForm.GenericControlModel({
-      //     id: p.id,
-      //     name: p.name,
-      //     defaultValue: p.defaultValue,
-      //     attr: `props/${p.name}`,
-      //     value: cell.attr(`props/${p.name}`),
-      //     description: p.description
-      //   }, Flo.PropertiesForm.InputType.TEXT));
-      //   bsModalRef.content.addControlModels(models);
-      // });
-      bsModalRef.content.propertiesGroupModel = new SamplePropertiesGroupModel(cell);
+      let propertiesModel = new SamplePropertiesGroupModel(cell);
+      propertiesModel.load();
+      bsModalRef.content.propertiesGroupModel = propertiesModel;
     }
 
     validatePort(context : Flo.EditorContext, view : dia.ElementView, magnet : SVGElement) {

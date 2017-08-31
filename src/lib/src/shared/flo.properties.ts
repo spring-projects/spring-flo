@@ -106,10 +106,11 @@ export namespace Properties {
 
     constructor(cell : dia.Cell) {
       this.cell = cell;
-      this.init();
     }
 
-    private init() {
+    load() {
+      this.loading = true;
+      this._loadedSubject.next(false);
       this.createProperties().then(properties => {
         this.controlModels = properties.map(p => this.createControlModel(p));
         this.loading = false;
