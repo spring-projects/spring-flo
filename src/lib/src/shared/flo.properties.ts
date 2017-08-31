@@ -1,7 +1,8 @@
 import { dia } from 'jointjs';
-import { ValidatorFn, AsyncValidatorFn } from '@angular/forms'
+import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms'
 import { Flo } from './../shared/flo.common';
 import { Subject } from 'rxjs/Subject'
+import { Observable } from 'rxjs/Observable';
 
 export namespace Properties {
 
@@ -173,6 +174,38 @@ export namespace Properties {
       });
 
       this.cell.trigger('batch:stop', { batchName: 'update properties' });
+    }
+
+  }
+
+  export namespace Validators {
+
+    export function uniqueResource(service : (value : any) => Observable<any>, debounce : number): AsyncValidatorFn {
+      return (control: AbstractControl): Observable<ValidationErrors> => {
+        return new Observable(obs => {
+          if (control.valueChanges && control.value) {
+            control.valueChanges
+              .debounceTime(debounce)
+              .flatMap(value => service(value))
+              .subscribe(() => {
+                obs.next({uniqueResource: true});
+                obs.complete();
+              }, () => {
+                obs.next(null);
+                obs.complete();
+              })
+          } else {
+            obs.next(null);
+            obs.complete();
+          }
+        });
+      }
+    }
+
+    export function noneOf(excluded : Array<any>) : ValidatorFn {
+      return (control: AbstractControl) : {[key: string]: any} => {
+        return excluded.find(e => e === control.value) ? {'noneOf': {value: control.value}} : null;
+      };
     }
 
   }
