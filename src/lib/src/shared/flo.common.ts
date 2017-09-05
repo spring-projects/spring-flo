@@ -118,7 +118,7 @@ export namespace Flo {
     getNodeView?() : dia.ElementView;
     getLinkView?() : dia.LinkView;
     layout?(paper : dia.Paper) : Promise<any>;
-    handleLinkEvent?(paper : dia.Paper, event : string, link : dia.Link) : void;
+    handleLinkEvent?(context : EditorContext, event : string, link : dia.Link) : void;
     isSemanticProperty?(propertyPath : string, element : dia.Cell) : boolean;
     refreshVisuals?(cell : dia.Cell, propertyPath : string, paper : dia.Paper) : void;
     getLinkAnchorPoint?(linkView : dia.LinkView, view : dia.ElementView, port : SVGElement, reference : dia.Point) : dia.Point;

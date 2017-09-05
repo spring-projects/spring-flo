@@ -367,12 +367,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     if (newSelection && (!newSelection.model.attr('metadata') || newSelection.model.attr('metadata/metadata/unselectable'))) {
       newSelection = undefined;
     }
-    if (newSelection === this._selection || (!newSelection && !this._selection)) {
-      if (this._selection /*&& propsMgr*/) {
-        // propsMgr.togglePropertiesView(selection);
-      }
-    }
-    else {
+    if (newSelection !== this._selection) {
       if (this._selection) {
         var elementview = this.paper.findViewByModel(this._selection.model);
         if (elementview) { // May have been removed from the graph
@@ -387,10 +382,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
       this._selection = newSelection;
-      $('#properties', this.element.nativeElement).css('display','block');
-      // if (propsMgr) {
-      //   propsMgr.updatePropertiesView(newSelection);
-      // }
     }
   }
 
@@ -909,11 +900,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
             propAttr.indexOf('props') === 0 ||
             (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, node))) {
             this.postValidation();
-            if (this.selection && this.selection.model === node) {
-              // if (propsMgr) {
-              //   propsMgr.updatePropertiesView(selection);
-              // }
-            }
             this.graphToTextEventEmitter.emit();
           }
           if (this.renderer && this.renderer.refreshVisuals) {
@@ -933,12 +919,7 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
    */
   handleLinkEvent(event : string, link : dia.Link) {
     if (this.renderer && this.renderer.handleLinkEvent) {
-      if (this.renderer.handleLinkEvent(this.paper, event, link)) {
-        // If the link was changed, update the properties view which might be open for it
-        // if (propsMgr && propsMgr.isVisible(link.id)) {
-        //   propsMgr.updatePropertiesView(paper.findViewByModel(link));
-        // }
-      }
+      this.renderer.handleLinkEvent(this.editorContext, event, link);
     }
   }
 
@@ -982,11 +963,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           if (sourceId || targetId) {
             this.postValidation();
           }
-          // if (this.selection && this.selection.model === link) {
-          //   if (propsMgr) {
-          //     propsMgr.updatePropertiesView(selection);
-          //   }
-          // }
           this.graphToTextEventEmitter.emit();
         }
         if (this.renderer && this.renderer.refreshVisuals) {
@@ -1022,9 +998,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       }
       if (this.selection && this.selection.model === element) {
         this.selection = undefined;
-        // if (propsMgr) {
-        //   propsMgr.updatePropertiesView();
-        // }
       }
       if (element.isLink()) {
         window.setTimeout(() => this.graphToTextEventEmitter.emit(), 100);

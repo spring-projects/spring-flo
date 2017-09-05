@@ -13,7 +13,7 @@ src/**/*.d.ts
 *.js.map
 e2e/**/*.js
 e2e/**/*.js.map
-.DS_STORE
-**/.DS_STORE
+.DS_Store
+**/.DS_Store
 *.iml
 .idea/

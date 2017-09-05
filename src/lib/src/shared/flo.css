@@ -309,6 +309,7 @@ flo-view {
   text-align: right;
   font-weight:bold;
   color: black;
+  background-color: transparent;
 }
 
 .zoom-canvas-label {
