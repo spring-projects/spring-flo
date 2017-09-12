@@ -65,11 +65,12 @@ export namespace Flo {
   }
 
   export interface Metamodel {
-    textToGraph(flo : EditorContext, dsl : string) : void;
+    textToGraph(flo : EditorContext, dsl : string) : Promise<Array<ParseMarker>>;
     graphToText(flo : EditorContext) : Promise<string>;
     load() : Promise<Map<string, Map<string, ElementMetadata>>>;
     groups() : Array<string>;
 
+    parseDsl?(dsl: string, flo: EditorContext): Promise<Array<ParseMarker>>;
     refresh?() : Promise<Map<string, Map<string, ElementMetadata>>>;
     subscribe?(listener : MetamodelListener) : void;
     unsubscribe?(listener : MetamodelListener) : void;
@@ -175,7 +176,22 @@ export namespace Flo {
   export interface Marker {
     severity : Severity;
     message : string;
-    range? : any;
+    range? : Range;
+  }
+
+  export interface ParseMarker extends Marker {
+    cell: dia.Cell;
+    range: Range;
+  }
+
+  export interface Position {
+    ch: number;
+    line: number;
+  }
+
+  export interface Range {
+    start: Position;
+    end: Position;
   }
 
   export interface Editor {
@@ -189,7 +205,7 @@ export namespace Flo {
     handleNodeDropping?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     showDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     hideDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
-    validate?(graph : dia.Graph) : Promise<Map<string, Array<Marker>>>;
+    validate?(graph : dia.Graph, parseMarkers?: Array<ParseMarker>) : Promise<Map<string, Array<Marker>>>;
     preDelete?(context : EditorContext, deletedElement : dia.Cell) : void;
     setDefaultContent?(editorContext : EditorContext, data : Map<string, Map<string, ElementMetadata>>) : void;
   }

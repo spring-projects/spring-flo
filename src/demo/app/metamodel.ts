@@ -124,12 +124,13 @@ export class Metamodel implements Flo.Metamodel {
     this.rawData = metamodelData;
   }
 
-  textToGraph(flo: Flo.EditorContext, dsl : string) {
+  textToGraph(flo: Flo.EditorContext, dsl : string): Promise<Array<Flo.ParseMarker>> {
     console.log('Text -> Graph');
-    this.load().then(metamodel => {
+    return this.load().then(metamodel => {
       convertTextToGraph(flo, metamodel, dsl);
       flo.performLayout();
       flo.fitToPage();
+      return [];
     })
   }
 
