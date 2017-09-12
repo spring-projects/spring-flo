@@ -1,4 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation, OnChanges, SimpleChanges} from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
 import { Flo } from './../shared/flo.common';
@@ -17,16 +17,13 @@ export interface VisibilityState {
   children : Array<VisibilityState>;
 }
 
-const isChrome = true/*!!window.chrome*/;
-const isFF = false/*typeof window.InstallTrigger !== 'undefined'*/;
-
 @Component({
   selector: 'flo-editor',
   templateUrl: './editor.component.html',
   styleUrls: ['./../../../../node_modules/jointjs/dist/joint.css', './../shared/flo.css'],
   encapsulation: ViewEncapsulation.None
 })
-export class EditorComponent implements OnInit, OnDestroy, OnChanges {
+export class EditorComponent implements OnInit, OnDestroy {
 
   /**
    * Metamodel. Retrieves metadata about elements that can be shown in Flo
@@ -75,6 +72,9 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   @Output()
   floApi = new EventEmitter<Flo.EditorContext>();
+
+  @Output()
+  validationMarkers = new EventEmitter<Map<string, Array<Flo.Marker>>>();
 
   /**
    * Joint JS Graph object representing the Graph model
@@ -251,10 +251,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
         }
       }
 
-      postValidation() {
-        // self.postValidation();
-      }
-
     })();
   }
 
@@ -286,10 +282,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnDestroy() {
     this._disposables.dispose();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('Something changes');
   }
 
   get noPalette() : boolean {
@@ -415,16 +407,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       }
     this._readOnlyCanvas = value;
   }
-
-  // _findMagnetByClass(view : dia.CellView, className : string) : HTMLElement {
-  //   if (className && className.startsWith('.')) {
-  //       className = className.substr(1);
-  //   }
-  //   return view.$('[magnet]').toArray().find(function(magnet) {
-  //     return magnet.getAttribute('class').split(/\s+/).indexOf(className) >= 0;
-  //   });
-  // }
-  //
 
   /**
    * Displays graphical feedback for the drag and drop in progress based on current drag and drop descriptor object
@@ -754,15 +736,21 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  validateGraph(parseMarkers?: Array<Flo.ParseMarker>) : Promise<any> {
-    if (this.editor && this.editor.validate) {
-      return this.editor
-        .validate(this.graph, parseMarkers)
-        .then(allMarkers => this.graph.getCells()
-            .forEach((cell: dia.Cell) => this.markElement(cell, allMarkers.has(cell.id) ? allMarkers.get(cell.id) : [])));
-    } else {
-      return Promise.resolve();
-    }
+  validateContent() : Promise<any> {
+    return new Promise(resolve => {
+      if (this.editor && this.editor.validate) {
+        return this.editor
+          .validate(this.graph, this.dsl, this.editorContext)
+          .then(allMarkers => {
+            this.graph.getCells()
+              .forEach((cell: dia.Cell) => this.markElement(cell, allMarkers.has(cell.id) ? allMarkers.get(cell.id) : []));
+            this.validationMarkers.emit(allMarkers);
+            resolve();
+          });
+      } else {
+        resolve();
+      }
+    });
   }
 
   markElement(cell: dia.Cell, markers: Array<Flo.Marker>) {
@@ -823,9 +811,9 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
   updateGraphRepresentation() : Promise<any> {
     console.debug(`Updating graph to represent '${this._dslText}'`);
     if (this.metamodel && this.metamodel.textToGraph) {
-      return this.metamodel.textToGraph(this.editorContext, this._dslText).then(parseMarkers => this.validateGraph(parseMarkers));
+      return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => this.validateContent());
     } else {
-      return this.validateGraph();
+      return this.validateContent();
     }
   }
 
@@ -836,14 +824,10 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           this._dslText = text;
           this.dslChange.emit(text);
         }
-        if (this.metamodel.parseDsl) {
-          return this.metamodel.parseDsl(text, this.editorContext).then(parseMarkers => this.validateGraph(parseMarkers));
-        } else {
-          return this.validateGraph();
-        }
+        return this.validateContent();
       });
     } else {
-      return this.validateGraph();
+      return this.validateContent();
     }
   }
 
@@ -875,11 +859,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     this.graph.set('type', Constants.CANVAS_CONTEXT);
   }
 
-  // postValidation() {
-  //   console.log('Validation request posted');
-  //   this.validationEventEmitter.emit();
-  // }
-
   handleNodeCreation(node : dia.Element) {
     node.on('change:size', this._resizeHandler);
     node.on('change:position', this._resizeHandler);
@@ -892,7 +871,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           if (propAttr.indexOf('metadata') === 0 ||
             propAttr.indexOf('props') === 0 ||
             (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, node))) {
-            // this.postValidation();
             this.graphToTextEventEmitter.emit();
           }
           if (this.renderer && this.renderer.refreshVisuals) {
@@ -901,8 +879,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
         }
       });
-
-      // this.postValidation();
     }
   }
 
@@ -918,14 +894,12 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
 
   handleLinkCreation(link : dia.Link) {
     this.handleLinkEvent('add', link);
-    // this.postValidation();
 
     link.on('change:source', (link : dia.Link) => {
       this.autosizePaper();
       let newSourceId = link.get('source').id;
       let oldSourceId = link.previous('source').id;
       if (newSourceId !== oldSourceId) {
-        // this.postValidation();
         this.graphToTextEventEmitter.emit();
       }
       this.handleLinkEvent('change:source', link);
@@ -936,7 +910,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
       let newTargetId = link.get('target').id;
       let oldTargetId = link.previous('target').id;
       if (newTargetId !== oldTargetId) {
-        // this.postValidation();
         this.graphToTextEventEmitter.emit();
       }
       this.handleLinkEvent('change:target', link);
@@ -953,9 +926,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
           (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, link))) {
           let sourceId = link.get('source').id;
           let targetId = link.get('target').id;
-          if (sourceId || targetId) {
-            // this.postValidation();
-          }
           this.graphToTextEventEmitter.emit();
         }
         if (this.renderer && this.renderer.refreshVisuals) {
@@ -987,7 +957,6 @@ export class EditorComponent implements OnInit, OnDestroy, OnChanges {
     this.graph.on('remove', (element : dia.Cell) => {
       if (element instanceof joint.dia.Link) {
         this.handleLinkEvent('remove', <dia.Link> element);
-        // this.postValidation();
       }
       if (this.selection && this.selection.model === element) {
         this.selection = undefined;

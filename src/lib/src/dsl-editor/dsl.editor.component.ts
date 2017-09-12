@@ -56,6 +56,9 @@ export class DslEditorComponent implements OnInit, OnDestroy {
   @Output()
   private blur = new EventEmitter<void>();
 
+  @Output()
+  private editor = new EventEmitter<CodeMirror.EditorFromTextArea>();
+
   private _dslChangedHandler = () => {
     this._dsl = this.doc.getValue();
     this.dslChange.emit(this._dsl);
@@ -126,6 +129,7 @@ export class DslEditorComponent implements OnInit, OnDestroy {
     this.doc.on('focus', () => this.focus.emit());
     this.doc.on('blur', () => this.blur.emit());
 
+    this.editor.emit(this.doc);
   }
 
   ngOnDestroy() {

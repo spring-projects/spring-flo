@@ -65,12 +65,11 @@ export namespace Flo {
   }
 
   export interface Metamodel {
-    textToGraph(flo : EditorContext, dsl : string) : Promise<Array<ParseMarker>>;
+    textToGraph(flo : EditorContext, dsl : string) : Promise<any>;
     graphToText(flo : EditorContext) : Promise<string>;
     load() : Promise<Map<string, Map<string, ElementMetadata>>>;
     groups() : Array<string>;
 
-    parseDsl?(dsl: string, flo: EditorContext): Promise<Array<ParseMarker>>;
     refresh?() : Promise<Map<string, Map<string, ElementMetadata>>>;
     subscribe?(listener : MetamodelListener) : void;
     unsubscribe?(listener : MetamodelListener) : void;
@@ -146,7 +145,6 @@ export namespace Flo {
     createNode(metadata : ElementMetadata, props? : Map<string, any>, position? : dia.Point) : dia.Element;
     createLink(source : LinkEnd, target : LinkEnd, metadata? : ElementMetadata, props? : Map<string, any>) : dia.Link;
     deleteSelectedNode() : void;
-    postValidation() : void;
     [propName : string] : any;
   }
 
@@ -179,11 +177,6 @@ export namespace Flo {
     range? : Range;
   }
 
-  export interface ParseMarker extends Marker {
-    cell: dia.Cell;
-    range: Range;
-  }
-
   export interface Position {
     ch: number;
     line: number;
@@ -205,7 +198,7 @@ export namespace Flo {
     handleNodeDropping?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     showDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     hideDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
-    validate?(graph : dia.Graph, parseMarkers?: Array<ParseMarker>) : Promise<Map<string, Array<Marker>>>;
+    validate?(graph : dia.Graph, dsl: string, flo: EditorContext) : Promise<Map<string, Array<Marker>>>;
     preDelete?(context : EditorContext, deletedElement : dia.Cell) : void;
     setDefaultContent?(editorContext : EditorContext, data : Map<string, Map<string, ElementMetadata>>) : void;
   }

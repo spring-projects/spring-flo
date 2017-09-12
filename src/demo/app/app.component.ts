@@ -34,4 +34,8 @@ export class AppComponent {
   arrangeAll() {
     this.editorContext.performLayout().then(() => this.editorContext.fitToPage());
   }
+
+  markersChanged(markers: Map<string, Array<Flo.Marker>>) {
+    console.log('MARKERS: ' + JSON.stringify(markers));
+  }
 }

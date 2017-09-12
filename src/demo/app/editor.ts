@@ -191,8 +191,7 @@ export class Editor implements Flo.Editor {
       };
     }
 
-    validate(graph : dia.Graph, parseMarkers?: Array<Flo.ParseMarker>) : Promise<Map<string, Array<Flo.Marker>>> {
-      console.log('VALIDATION');
+    validate(graph : dia.Graph, dsl: string, flo: Flo.EditorContext) : Promise<Map<string, Flo.Marker[]>> {
       return new Promise((resolve, reject) => {
         let allMarkers = new Map<string, Array<Flo.Marker>>();
         graph.getElements().filter(e => e.attr('metadata')).forEach(e => {
