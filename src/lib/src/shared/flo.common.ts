@@ -1,5 +1,5 @@
 import { dia } from 'jointjs';
-
+import { Subject } from 'rxjs/Subject';
 export namespace Flo {
 
   export enum DnDEventType {
@@ -132,8 +132,8 @@ export namespace Flo {
     graphToTextSync : boolean;
     noPalette : boolean;
     setDsl(dsl : string) : void;
-    updateGraph() : void;
-    updateText() : void;
+    updateGraph() : Promise<any>;
+    updateText() : Promise<any>;
     performLayout() : Promise<void>;
     clearGraph() : void;
     getGraph() : dia.Graph;
@@ -145,6 +145,8 @@ export namespace Flo {
     createNode(metadata : ElementMetadata, props? : Map<string, any>, position? : dia.Point) : dia.Element;
     createLink(source : LinkEnd, target : LinkEnd, metadata? : ElementMetadata, props? : Map<string, any>) : dia.Link;
     deleteSelectedNode() : void;
+    readonly textToGraphConversionSubject: Subject<void>;
+    readonly graphToTextConversionSubject: Subject<void>;
     [propName : string] : any;
   }
 

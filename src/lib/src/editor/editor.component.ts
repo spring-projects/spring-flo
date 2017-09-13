@@ -8,6 +8,7 @@ import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
 import * as _joint from 'jointjs';
+import { Subject } from 'rxjs/Subject';
 const joint : any = _joint;
 const $ : any = _$;
 
@@ -129,6 +130,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output()
   private dslChange = new EventEmitter<string>();
 
+  private textToGraphConversionCompleted = new EventEmitter<void>();
+
+  private graphToTextConversionCompleted = new EventEmitter<void>();
+
   constructor(private element: ElementRef) {
     let self = this;
     this.editorContext = new (class DefaultRunnableContext implements Flo.EditorContext {
@@ -169,12 +174,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         self.dsl = dsl;
       }
 
-      updateGraph() : void {
-        self.updateGraphRepresentation();
+      updateGraph() : Promise<any> {
+        return self.updateGraphRepresentation();
       }
 
-      updateText() : void {
-        self.updateTextRepresentation();
+      updateText() : Promise<any> {
+        return self.updateTextRepresentation();
       }
 
       performLayout() : Promise<void> {
@@ -249,6 +254,14 @@ export class EditorComponent implements OnInit, OnDestroy {
           self.selection.model.remove();
           self.selection = undefined;
         }
+      }
+
+      get textToGraphConversionSubject(): Subject<void> {
+        return self.textToGraphConversionCompleted;
+      }
+
+      get graphToTextConversionSubject(): Subject<void> {
+        return self.graphToTextConversionCompleted;
       }
 
     })();
@@ -811,8 +824,12 @@ export class EditorComponent implements OnInit, OnDestroy {
   updateGraphRepresentation() : Promise<any> {
     console.debug(`Updating graph to represent '${this._dslText}'`);
     if (this.metamodel && this.metamodel.textToGraph) {
-      return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => this.validateContent());
+      return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => {
+        this.textToGraphConversionCompleted.emit();
+        return this.validateContent()
+      });
     } else {
+      this.textToGraphConversionCompleted.emit();
       return this.validateContent();
     }
   }
@@ -824,9 +841,11 @@ export class EditorComponent implements OnInit, OnDestroy {
           this._dslText = text;
           this.dslChange.emit(text);
         }
+        this.graphToTextConversionCompleted.emit();
         return this.validateContent();
       });
     } else {
+      this.graphToTextConversionCompleted.emit();
       return this.validateContent();
     }
   }
