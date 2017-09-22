@@ -8,6 +8,7 @@ import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
 import * as _joint from 'jointjs';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 const joint : any = _joint;
 const $ : any = _$;
@@ -130,9 +131,9 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output()
   private dslChange = new EventEmitter<string>();
 
-  private textToGraphConversionCompleted = new EventEmitter<void>();
+  private textToGraphConversionCompleted = new Subject<void>();
 
-  private graphToTextConversionCompleted = new EventEmitter<void>();
+  private graphToTextConversionCompleted = new Subject<void>();
 
   constructor(private element: ElementRef) {
     let self = this;
@@ -256,11 +257,11 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
       }
 
-      get textToGraphConversionSubject(): Subject<void> {
+      get textToGraphConversionObservable(): Observable<void> {
         return self.textToGraphConversionCompleted;
       }
 
-      get graphToTextConversionSubject(): Subject<void> {
+      get graphToTextConversionObservable(): Observable<void> {
         return self.graphToTextConversionCompleted;
       }
 
@@ -825,11 +826,11 @@ export class EditorComponent implements OnInit, OnDestroy {
     console.debug(`Updating graph to represent '${this._dslText}'`);
     if (this.metamodel && this.metamodel.textToGraph) {
       return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => {
-        this.textToGraphConversionCompleted.emit();
+        this.textToGraphConversionCompleted.next();
         return this.validateContent()
       });
     } else {
-      this.textToGraphConversionCompleted.emit();
+      this.textToGraphConversionCompleted.next();
       return this.validateContent();
     }
   }
@@ -841,11 +842,11 @@ export class EditorComponent implements OnInit, OnDestroy {
           this._dslText = text;
           this.dslChange.emit(text);
         }
-        this.graphToTextConversionCompleted.emit();
+        this.graphToTextConversionCompleted.next();
         return this.validateContent();
       });
     } else {
-      this.graphToTextConversionCompleted.emit();
+      this.graphToTextConversionCompleted.next();
       return this.validateContent();
     }
   }

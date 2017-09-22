@@ -1,5 +1,5 @@
 import { dia } from 'jointjs';
-import { Subject } from 'rxjs/Subject';
+import { Observable } from 'rxjs/Observable';
 export namespace Flo {
 
   export enum DnDEventType {
@@ -145,8 +145,8 @@ export namespace Flo {
     createNode(metadata : ElementMetadata, props? : Map<string, any>, position? : dia.Point) : dia.Element;
     createLink(source : LinkEnd, target : LinkEnd, metadata? : ElementMetadata, props? : Map<string, any>) : dia.Link;
     deleteSelectedNode() : void;
-    readonly textToGraphConversionSubject: Subject<void>;
-    readonly graphToTextConversionSubject: Subject<void>;
+    readonly textToGraphConversionObservable: Observable<void>;
+    readonly graphToTextConversionObservable: Observable<void>;
     [propName : string] : any;
   }
 
