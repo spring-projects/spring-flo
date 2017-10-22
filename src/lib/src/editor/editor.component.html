@@ -2,7 +2,9 @@
 <div id="flow-view" class="flow-view" style="position:relative">
   <div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
-      <flo-palette [metamodel]="metamodel" [renderer]="renderer" [paletteSize]="paletteSize" (onPaletteEntryDrop)="handleDnDFromPalette($event)"></flo-palette>
+      <flo-palette [metamodel]="metamodel" [renderer]="renderer" [paletteSize]="paletteSize"
+                   (onPaletteEntryDrop)="handleDnDFromPalette($event)"
+                    (paletteReady)="updatePaletteReadyState($event)"></flo-palette>
     </div>
 
     <div id="sidebar-resizer" *ngIf="!noPalette"

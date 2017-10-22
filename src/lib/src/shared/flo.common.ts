@@ -26,6 +26,7 @@ export namespace Flo {
     readonly titleProperty? : string;
     readonly noEditableProps? : boolean;
     readonly noPaletteEntry? : boolean;
+    readonly unselectable? : boolean;
     readonly [propName : string] : any;
 
     readonly allowAdditionalProperties? : boolean; //TODO: Verify it is still needed
@@ -147,6 +148,7 @@ export namespace Flo {
     deleteSelectedNode() : void;
     readonly textToGraphConversionObservable: Observable<void>;
     readonly graphToTextConversionObservable: Observable<void>;
+    readonly paletteReady: Observable<boolean>;
     [propName : string] : any;
   }
 

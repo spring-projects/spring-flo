@@ -80,6 +80,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   @Output()
   onPaletteEntryDrop = new EventEmitter<Flo.DnDEvent>();
 
+  @Output()
+  paletteReady = new EventEmitter<boolean>();
+
   private _paletteSize : number;
 
   private _filterText : string = '';
@@ -218,6 +221,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private buildPalette(metamodel : Map<string, Map<string, Flo.ElementMetadata>>) {
     let startTime : number = new Date().getTime();
 
+    this.paletteReady.emit(false);
     this.paletteGraph.clear();
 
     let filterText = this.filterText;
@@ -332,6 +336,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       prevNode = pnode;
     });
     this.palette.setDimensions(parentWidth, ypos);
+    this.paletteReady.emit(true);
     console.info('buildPalette took '+(new Date().getTime()-startTime)+'ms');
   }
 
