@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject, ViewEncapsulation} from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
 import { Flo } from './../shared/flo.common';
@@ -73,8 +73,10 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   @Input()
   set paletteSize(size : number) {
     console.log('Palette Size : ' + size);
-    this._paletteSize = size;
-    this.rebuildPalette();
+    if (this._paletteSize != size) {
+      this._paletteSize = size;
+      this.rebuildPalette();
+    }
   }
 
   @Output()
@@ -91,7 +93,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private palette : dia.Paper;
 
-  private filterTextModel = new BehaviorSubject(this.filterText);
+  private filterTextModel = new Subject<string>();
 
   private mouseMoveHanlder = (e : any) => this.handleDrag(e);
   private mouseUpHanlder = (e : any) => this.handleMouseUp(e);
@@ -111,18 +113,14 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private viewBeingDragged : dia.CellView;
 
+  private initialized = false;
+
   constructor(private element: ElementRef, @Inject(DOCUMENT) private document : any) {
     this.paletteGraph = new joint.dia.Graph();
     this.paletteGraph.set('type', Constants.PALETTE_CONTEXT);
     this._filterText = '';
 
     this.closedGroups = new Set<string>();
-
-    this._metamodelListener = new Palette.MetamodelListener(this);
-
-    this.filterTextModel
-      .debounceTime(DEBOUNCE_TIME)
-      .subscribe((value) => this.rebuildPalette());
   }
 
   ngOnInit() {
@@ -173,9 +171,18 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     if (this.metamodel) {
       this.metamodel.load().then(data => {
         this.buildPalette(data);
+
+        // Add listener to metamodel
         if (this.metamodel && this.metamodel.subscribe) {
           this.metamodel.subscribe(this._metamodelListener);
         }
+
+        // Add debounced listener to filter text changes
+        this.filterTextModel
+          .debounceTime(DEBOUNCE_TIME)
+          .subscribe((value) => this.rebuildPalette());
+
+        this.initialized = true;
       });
     } else {
       console.error('No Metamodel service specified for palette!');
@@ -341,14 +348,16 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   }
 
   rebuildPalette() {
-    if (this.metamodel) {
+    if (this.initialized && this.metamodel) {
       this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
     }
   }
 
   set filterText(text : string) {
-    this._filterText = text;
-    this.filterTextModel.next(text);
+    if (this._filterText !== text) {
+      this._filterText = text;
+      this.filterTextModel.next(text);
+    }
   }
 
   get filterText() : string {
