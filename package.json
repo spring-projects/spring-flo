@@ -37,8 +37,7 @@
     "integration:aot": "cd integration && npm run e2e:aot",
     "lint": "tslint ./src/**/*.ts -t verbose",
     "release": "standard-version",
-
-    "postinstall": "postinstall-build --only-as-dependency dist \"npm run build && rimraf node_modules\""
+    "postinstall": "postinstall-build --only-as-dependency dist \"npm run build && node postinstall.js\""
   },
   "dependencies": {
     "@angular/core": "^4.2.4",
@@ -51,7 +50,6 @@
     "jointjs": "1.0.3",
     "lodash": "3.10.1",
     "ts-disposables": "^2.2.3",
-
     "postinstall-build": "^5.0.1"
   },
   "peerDependencies": {
@@ -91,9 +89,7 @@
     "tslint": "~5.3.2",
     "typescript": "~2.3.3",
     "zone.js": "^0.8.14",
-
     "@angular/forms": "^4.2.4",
-    "@angular/platform-browser": "^4.2.4",
     "@types/codemirror": "0.0.45",
     "@types/jointjs": "^1.0.4",
     "@types/lodash": "^4.14.73",
