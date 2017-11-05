@@ -98,7 +98,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private mouseMoveHanlder = (e : any) => this.handleDrag(e);
   private mouseUpHanlder = (e : any) => this.handleMouseUp(e);
 
-  private _metamodelListener : Flo.MetamodelListener;
+  private _metamodelListener : Flo.MetamodelListener = {
+    metadataError: (data) => {},
+    metadataAboutToChange: () => {},
+    metadataChanged: (data) => this.rebuildPalette()
+  };
 
   /**
    * The names of any groups in the palette that have been deliberately closed (the arrow clicked on)
