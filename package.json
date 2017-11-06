@@ -83,7 +83,7 @@
     "rollup": "^0.48.2",
     "rollup-plugin-sourcemaps": "^0.4.2",
     "rollup-plugin-uglify": "^2.0.1",
-    "rxjs": "^5.4.2",
+    "rxjs": "5.4.3",
     "standard-version": "^4.0.0",
     "systemjs": "^0.19.40",
     "tslint": "~5.3.2",
