@@ -1,6 +1,10 @@
 import { dia } from 'jointjs';
 import { Observable } from 'rxjs/Observable';
+import * as _joint from 'jointjs';
+
 export namespace Flo {
+
+  export const joint : any = _joint;
 
   export enum DnDEventType {
     DRAG,

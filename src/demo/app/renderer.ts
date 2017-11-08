@@ -17,10 +17,9 @@
 import { Flo, Constants } from 'spring-flo';
 import { dia } from 'jointjs';
 
-import * as _joint from 'jointjs';
 const dagre = require('dagre');
 
-const joint : any = _joint;
+const joint : any = Flo.joint;
 
 
 const HANDLE_ICON_MAP = new Map<string, string>()

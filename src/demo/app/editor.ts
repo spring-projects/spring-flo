@@ -19,8 +19,7 @@ import { Validators } from '@angular/forms';
 import { dia } from 'jointjs';
 import { BsModalService } from 'ngx-bootstrap';
 import { PropertiesDialogComponent } from './properties.dialog.component';
-import * as _joint from 'jointjs';
-const joint : any = _joint;
+const joint : any = Flo.joint;
 
 /**
  * @author Alex Boyko

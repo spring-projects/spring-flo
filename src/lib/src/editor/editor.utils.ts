@@ -1,7 +1,7 @@
 import { dia } from 'jointjs';
+import { Flo } from './../shared/flo.common';
 import * as _ from 'lodash';
-import * as _joint from 'jointjs';
-const joint : any = _joint;
+const joint : any = Flo.joint;
 import * as _$ from 'jquery';
 const $ : any = _$;
 

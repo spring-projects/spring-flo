@@ -7,11 +7,10 @@ import { Utils } from './editor.utils';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
-import * as _joint from 'jointjs';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-const joint : any = _joint;
+const joint : any = Flo.joint;
 const $ : any = _$;
 
 
