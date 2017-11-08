@@ -1,5 +1,5 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime } from 'rxjs/operators/debounceTime';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';
@@ -564,8 +564,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   /**
    * Hides DOM Node (used to determine drop target DOM element)
    * @param domNode DOM node to hide
-   * @returns {{visibility: *, children: Array}}
-   * @private
+   * @returns
    */
   private _hideNode(domNode : HTMLElement) : VisibilityState {
     let oldVisibility : VisibilityState = {
@@ -586,7 +585,6 @@ export class EditorComponent implements OnInit, OnDestroy {
    * Restored DOM node original visibility (used to determine drop target DOM element)
    * @param domNode DOM node to restore visibility of
    * @param oldVisibility original visibility parameter
-   * @private
    */
   _restoreNodeVisibility(domNode : HTMLElement, oldVisibility : VisibilityState) {
     if (domNode.style) {
@@ -872,7 +870,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.metamodel.load().then(data => {
       this.updateGraphRepresentation();
 
-      let textSyncSubscription = this.graphToTextEventEmitter.debounceTime(100).subscribe(() => {
+      let textSyncSubscription = this.graphToTextEventEmitter.pipe(debounceTime(100)).subscribe(() => {
         if (this._graphToTextSyncEnabled) {
           this.updateTextRepresentation();
         }
@@ -883,10 +881,10 @@ export class EditorComponent implements OnInit, OnDestroy {
       let graphValidatedSubscription1 = this.graphToTextEventEmitter.subscribe(() => this.contentValidated.emit(false));
       this._disposables.add(Disposable.create(() => graphValidatedSubscription1.unsubscribe));
 
-      // let validationSubscription = this.validationEventEmitter.debounceTime(100).subscribe(() => this.validateGraph());
+      // let validationSubscription = this.validationEventEmitter.pipe(debounceTime(100)).subscribe(() => this.validateGraph());
       // this._disposables.add(Disposable.create(() => validationSubscription.unsubscribe()));
 
-      let graphSyncSubscription = this.textToGraphEventEmitter.debounceTime(300).subscribe(() => this.updateGraphRepresentation());
+      let graphSyncSubscription = this.textToGraphEventEmitter.pipe(debounceTime(300)).subscribe(() => this.updateGraphRepresentation());
       this._disposables.add(Disposable.create(() => graphSyncSubscription.unsubscribe()));
 
       // Setup content validated event emitter. Emit not validated when text to graph conversion required

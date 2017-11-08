@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation, EventEmitter, OnInit } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Properties } from 'spring-flo';
 import { FormGroup } from '@angular/forms';
