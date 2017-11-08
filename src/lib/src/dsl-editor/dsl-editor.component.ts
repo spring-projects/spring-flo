@@ -1,5 +1,4 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import 'rxjs/add/operator/debounceTime';
 import * as _ from 'lodash';
 import * as CodeMirror from 'codemirror';
 import * as _$ from 'jquery';

@@ -1,9 +1,8 @@
 import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy,} from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser'
 import {Observable}  from 'rxjs/Observable';
-import 'rxjs/add/operator/sampleTime';
+import { sampleTime } from 'rxjs/operators';
 import 'rxjs/add/observable/fromEvent';
-import 'rxjs/Rx';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 const $ : any = _$;
@@ -125,7 +124,7 @@ export class ResizerDirective implements OnInit, OnDestroy {
     this.splitSize = this._splitSize;
 
     let subscription1 = Observable.fromEvent($(this.document).get(0), 'mousemove')
-      .sampleTime(300)
+      .pipe(sampleTime(300))
       .subscribe(this.mouseMoveHandler);
     this._subscriptions.add(Disposable.create(() => subscription1.unsubscribe()));
     let subscription2 = Observable.fromEvent($(this.document).get(0), 'mouseup')

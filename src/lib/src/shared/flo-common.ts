@@ -210,9 +210,9 @@ export namespace Flo {
 
   /**
    * Return the metadata for a particular palette entry in a particular group.
-   * @param {String} name - name of the palette entry
-   * @param {string} group - group in which the palette entry should exist (e.g. sinks)
-   * @return {{name:string,group:string,unresolved:Boolean}}
+   * @param name - name of the palette entry
+   * @param group - group in which the palette entry should exist (e.g. sinks)
+   * @return
    */
   export function getMetadata(metamodel : Map<string, Map<string, ElementMetadata>>, name : string, group : string) : ElementMetadata {
     if (name && group && metamodel.get(group) && metamodel.get(group).get(name)) {

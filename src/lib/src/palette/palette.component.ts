@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject, ViewEncapsulation} from '@angular/core';
 import { Subject } from 'rxjs/Subject';
-import 'rxjs/add/operator/debounceTime';
+import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from './../shared/shapes';
@@ -91,7 +91,6 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   /**
    * The names of any groups in the palette that have been deliberately closed (the arrow clicked on)
-   * @type {String[]}
    */
   private closedGroups : Set<string>;
 
@@ -172,7 +171,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
         // Add debounced listener to filter text changes
         this.filterTextModel
-          .debounceTime(DEBOUNCE_TIME)
+          .pipe(debounceTime(DEBOUNCE_TIME))
           .subscribe((value) => this.rebuildPalette());
 
         this.initialized = true;

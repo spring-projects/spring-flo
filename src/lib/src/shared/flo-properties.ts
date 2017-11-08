@@ -3,6 +3,7 @@ import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from
 import { Flo } from './flo-common';
 import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable';
+import { debounceTime, flatMap } from 'rxjs/operators';
 
 export namespace Properties {
 
@@ -297,8 +298,7 @@ export namespace Properties {
         return new Observable(obs => {
           if (control.valueChanges && control.value) {
             control.valueChanges
-              .debounceTime(debounce)
-              .flatMap(value => service(value))
+              .pipe(debounceTime(debounce), flatMap(value => service(value)))
               .subscribe(() => {
                 obs.next({uniqueResource: true});
                 obs.complete();
