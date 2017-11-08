@@ -4,7 +4,8 @@
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
       <flo-palette [metamodel]="metamodel" [renderer]="renderer" [paletteSize]="paletteSize"
                    (onPaletteEntryDrop)="handleDnDFromPalette($event)"
-                    (paletteReady)="updatePaletteReadyState($event)"></flo-palette>
+                    (paletteReady)="updatePaletteReadyState($event)"
+                    (paletteFocus)="graphToTextSync=true"></flo-palette>
     </div>
 
     <div id="sidebar-resizer" *ngIf="!noPalette"

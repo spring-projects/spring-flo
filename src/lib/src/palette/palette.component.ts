@@ -85,6 +85,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   @Output()
   paletteReady = new EventEmitter<boolean>();
 
+  @Output()
+  paletteFocus = new EventEmitter<void>();
+
   private _paletteSize : number;
 
   private _filterText : string = '';
@@ -125,6 +128,10 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     this._filterText = '';
 
     this.closedGroups = new Set<string>();
+  }
+
+  onFocus(): void {
+    this.paletteFocus.emit();
   }
 
   ngOnInit() {

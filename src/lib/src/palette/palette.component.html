@@ -1,5 +1,5 @@
 <div id="palette-filter" class="palette-filter">
-  <input type="text" id="palette-filter-textfield" class="palette-filter-textfield" [(ngModel)]="filterText"/>
+  <input type="text" id="palette-filter-textfield" class="palette-filter-textfield" [(ngModel)]="filterText" (focus)="onFocus()"/>
 </div>
 <div id="palette-paper-container" style="height:calc(100% - 40px); width:100%; overflow:auto;">
   <div id="palette-paper" class="palette-paper" style="overflow:hidden;"></div>
