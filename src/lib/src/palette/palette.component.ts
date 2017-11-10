@@ -2,7 +2,7 @@ import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, O
 import { Subject } from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
-import { Flo } from './../shared/flo.common';
+import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from './../shared/shapes';
 import { DOCUMENT } from '@angular/platform-browser'
 import * as _$ from 'jquery';
@@ -42,23 +42,6 @@ joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
   encapsulation: ViewEncapsulation.None
 })
 export class Palette implements OnInit, OnDestroy, OnChanges {
-
-  private static MetamodelListener = class {
-
-    constructor(private palette : Palette) {}
-
-    metadataError(data : any) : void {
-      console.error(JSON.stringify(data));
-    }
-
-    metadataAboutToChange() : void {
-
-    }
-
-    metadataChanged(data : Flo.MetadataChangedData) : void {
-      this.palette.buildPalette(data.newData);
-    }
-  };
 
   @Input()
   metamodel : Flo.Metamodel;
@@ -103,7 +86,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private _metamodelListener : Flo.MetamodelListener = {
     metadataError: (data) => {},
     metadataAboutToChange: () => {},
-    metadataChanged: (data) => this.rebuildPalette()
+    metadataChanged: () => this.rebuildPalette()
   };
 
   /**

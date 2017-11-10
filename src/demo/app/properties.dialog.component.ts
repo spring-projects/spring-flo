@@ -3,6 +3,8 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { Properties } from 'spring-flo';
 import { FormGroup } from '@angular/forms';
 
+// For JS linting
+import 'jshint';
 
 @Component({
   selector: 'properties-dialog-content',

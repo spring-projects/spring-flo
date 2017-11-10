@@ -223,3 +223,15 @@ textarea:input:focus {
 .validation-error-block {
   color: red;
 }
+
+.code-editor-host {
+  height: 120px;
+  width: 284px;
+  border: 1px solid;
+  border-color: lightgrey;
+}
+
+.CodeMirror pre.CodeMirror-placeholder {
+  color: lightgray;
+}
+

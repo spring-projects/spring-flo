@@ -1,5 +1,5 @@
 import { dia } from 'jointjs';
-import { Flo } from './flo.common';
+import { Flo } from './flo-common';
 import EditorDescriptor = Flo.ViewerDescriptor;
 import * as _ from 'lodash';
 import * as _$ from 'jquery';

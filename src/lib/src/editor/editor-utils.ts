@@ -1,5 +1,5 @@
 import { dia } from 'jointjs';
-import { Flo } from './../shared/flo.common';
+import { Flo } from '../shared/flo-common';
 import * as _ from 'lodash';
 const joint : any = Flo.joint;
 import * as _$ from 'jquery';

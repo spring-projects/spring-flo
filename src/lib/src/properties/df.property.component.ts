@@ -1,6 +1,6 @@
 import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { FormGroup, AbstractControl } from '@angular/forms';
-import { Properties } from './../shared/flo.properties';
+import { Properties } from '../shared/flo-properties';
 
 @Component({
   selector: 'df-property',

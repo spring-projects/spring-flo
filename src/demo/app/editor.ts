@@ -578,6 +578,8 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
             }
           }));
         }
+      case 'code':
+        return new Properties.CodeControlModelWithDynamicLanguageProperty(property, 'language', this, this.encodeTextToDSL, this.decodeTextFromDSL);
       default:
         if (property.metadata.name === 'name') {
           validation = {
@@ -591,4 +593,17 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
     }
     return new Properties.GenericControlModel(property, inputType, validation);
   }
+
+  encodeTextToDSL(text: string): string {
+    return '\"' + text.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/"/g, '""') + '\"';
+  }
+
+  decodeTextFromDSL(dsl: string): string {
+    if (dsl.charAt(0) === '\"' && dsl.charAt(dsl.length - 1) === '\"') {
+      dsl = dsl.substr(1, dsl.length - 2);
+    }
+    return dsl.replace(/\\n/g, '\n').replace(/\"\"/g, '"');
+  }
+
 }
+

@@ -1,6 +1,6 @@
 import { dia } from 'jointjs';
 import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms'
-import { Flo } from './../shared/flo.common';
+import { Flo } from './flo-common';
 import { Subject } from 'rxjs/Subject'
 import { Observable } from 'rxjs/Observable';
 
@@ -54,6 +54,10 @@ export namespace Properties {
     readonly validation? : Validation;
   }
 
+  export interface CodeControlModel<T> extends ControlModel<T> {
+    readonly language: string;
+  }
+
   export class GenericControlModel<T> implements ControlModel<T> {
 
     constructor(private _property : Property, public type : InputType, public validation? : Validation) {}
@@ -75,15 +79,83 @@ export namespace Properties {
     }
 
     get value() : T {
-      return <T> this.property.value;
+      return this.getValue();
     }
 
     set value(value : T) {
-      this.property.value = value;
+      this.setValue(value);
     }
 
     get property() : Property {
       return this._property;
+    }
+
+    protected setValue(value: T) {
+      this.property.value = value;
+    }
+
+    protected getValue(): T {
+      return this.property.value;
+    }
+
+  }
+
+  export abstract class AbstractCodeControlModel  extends GenericControlModel<string> implements CodeControlModel<string> {
+
+    constructor(_property : Property, private encode?: (s: string) => string, private decode?: (s: string) => string, validation? : Validation) {
+      super(_property, InputType.CODE, validation);
+    }
+
+    set value(value: string) {
+      if (value && this.encode) {
+        super.setValue(this.encode(value));
+      } else {
+        super.setValue(value);
+      }
+    }
+
+    get value(): string {
+      let dsl = super.getValue();
+      if (dsl && this.decode) {
+        return this.decode(dsl);
+      } else {
+        return dsl;
+      }
+    }
+
+    abstract language: string;
+
+  }
+
+
+  export class GenericCodeControlModel extends AbstractCodeControlModel {
+
+    constructor(_property : Property, public language: string, encode?: (s: string) => string, decode?: (s: string) => string, validation? : Validation) {
+      super(_property, encode, decode, validation);
+    }
+
+  }
+
+  export class CodeControlModelWithDynamicLanguageProperty extends AbstractCodeControlModel {
+
+    private _langControlModel: Properties.ControlModel<any>;
+
+    constructor(_property: Properties.Property, private _languagePropertyName: string,
+                private _groupModel: Properties.PropertiesGroupModel,
+                encode?: (s: string) => string, decode?: (s: string) => string, validation? : Validation) {
+      super(_property, encode, decode, validation);
+    }
+
+    get language(): string {
+      const value = this.languageControlModel.value;
+      return value ? value : this.languageControlModel.defaultValue;
+    }
+
+    get languageControlModel(): Properties.ControlModel<any> {
+      if (!this._langControlModel) {
+        this._langControlModel = this._groupModel.getControlsModels().find(c => c.id === this._languagePropertyName);
+      }
+      return this._langControlModel;
     }
 
   }

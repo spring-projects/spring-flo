@@ -14,12 +14,12 @@ import 'codemirror/addon/scroll/simplescrollbars';
 
 @Component({
   selector: 'dsl-editor',
-  templateUrl: './dsl.editor.component.html',
+  templateUrl: './dsl-editor.component.html',
   styleUrls: [
     './../../../../node_modules/codemirror/lib/codemirror.css',
     './../../../../node_modules/codemirror/addon/hint/show-hint.css',
     './../../../../node_modules/codemirror/addon/lint/lint.css',
-    './dsl.editor.component.css', ],
+    './dsl-editor.component.css', ],
   encapsulation: ViewEncapsulation.None
 })
 export class DslEditorComponent implements OnInit, OnDestroy {

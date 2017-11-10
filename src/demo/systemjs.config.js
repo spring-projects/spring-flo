@@ -35,7 +35,18 @@
       'codemirror': 'npm:codemirror',
       'moment': 'npm:moment/moment.js',
       'ngx-bootstrap': 'npm:ngx-bootstrap/bundles/ngx-bootstrap.umd.js',
-      'ts-disposables': 'npm:ts-disposables'
+      'ts-disposables': 'npm:ts-disposables',
+      'jshint': 'npm:jshint/dist/jshint.js'
+    },
+    meta: {
+      'lodash': {
+        exports: '_',
+        format: 'global'
+      },
+      'jshint': {
+        deps: ['lodash'],
+        format: 'global'
+      }
     },
     // packages tells the System loader how to load when no filename and/or no extension
     packages: {
@@ -44,7 +55,7 @@
         meta: {
           './*.js': {
             loader: 'systemjs-angular-loader.js'
-          }
+          },
         }
       },
       rx: {
@@ -74,6 +85,13 @@
       },
       codemirror: {
         main: './lib/codemirror.js'
+      },
+      jshint: {
+        meta: {
+          lodash: {
+            format: 'global'
+          }
+        }
       },
       'spring-flo': {
         main: 'index.js',

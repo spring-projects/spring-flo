@@ -54,19 +54,7 @@ export namespace Flo {
   export interface MetamodelListener {
     metadataError(data : any) : void;
     metadataAboutToChange() : void;
-    metadataChanged(data : MetadataChangedData) : void;
-  }
-
-  export interface MetadataChangedData {
-    readonly old : Map<string, Map<string, ElementMetadata>>;
-    readonly new : Map<string, Map<string, ElementMetadata>>;
-    readonly [propName : string] : any;
-  }
-
-  export interface Definition {
-    text : string;
-    name? : string; //TODO: is this still required?
-    [propName : string] : any; //TODO: is anything else needed?
+    metadataChanged() : void;
   }
 
   export interface Metamodel {
@@ -78,8 +66,6 @@ export namespace Flo {
     refresh?() : Promise<Map<string, Map<string, ElementMetadata>>>;
     subscribe?(listener : MetamodelListener) : void;
     unsubscribe?(listener : MetamodelListener) : void;
-    encodeTextToDSL?(text : string) : string;
-    decodeTextFromDSL?(dsl : string) : string;
     isValidPropertyValue?(element : dia.Element, property : string, value : any) : boolean;
   }
 

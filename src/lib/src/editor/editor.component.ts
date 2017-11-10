@@ -1,9 +1,9 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import 'rxjs/add/operator/debounceTime';
 import { dia } from 'jointjs';
-import { Flo } from './../shared/flo.common';
+import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';
-import { Utils } from './editor.utils';
+import { Utils } from './editor-utils';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
