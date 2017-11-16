@@ -100,6 +100,22 @@ export namespace Properties {
 
   }
 
+  export class CheckBoxControlModel extends GenericControlModel<boolean> {
+
+    constructor(_property : Property, validation? : Validation) {
+      super(_property, InputType.CHECKBOX, validation);
+    }
+
+    protected getValue() {
+      const res = super.getValue();
+      if (typeof res !== 'boolean') {
+        return this.property.defaultValue;
+      }
+      return res;
+    }
+
+  }
+
   export abstract class AbstractCodeControlModel  extends GenericControlModel<string> implements CodeControlModel<string> {
 
     constructor(_property : Property, private encode?: (s: string) => string, private decode?: (s: string) => string, validation? : Validation) {
@@ -179,6 +195,12 @@ export namespace Properties {
   export class SelectControlModel extends GenericControlModel<any> {
     constructor(_property : Property, type : InputType, public options : Array<SelectOption>) {
       super(_property, type);
+      if (_property.defaultValue === undefined) {
+        options.unshift({
+          name: 'SELECT',
+          value: _property.defaultValue
+        })
+      }
     }
   }
 

@@ -560,8 +560,7 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
         inputType = Properties.InputType.PASSWORD;
         break;
       case 'boolean':
-        inputType = Properties.InputType.CHECKBOX;
-        break;
+        return new Properties.CheckBoxControlModel(property);
       case 'number':
         inputType = Properties.InputType.EMAIL;
         break;

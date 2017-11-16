@@ -25,7 +25,9 @@ const metamodelData: Array<RawMetadata> = [{
 }, {
   name: 'filewatch', group: 'source', description: 'Produce messages from the content of files created in a directory',
   properties: [
-    {id: 'dir', name: 'dir', description: 'the absolute path to monitor for files'}
+    {id: 'dir', name: 'dir', description: 'the absolute path to monitor for files'},
+    {id: 'withSubDir', name: 'withSubDir', description: 'With subdirectories', defaultValue: true, type: 'boolean'},
+    {id: 'type', name: 'type', description: 'Type of file watching', type: 'enum', options: ['tough', 'so-so', 'easy']}
   ],
 }, {
   name: 'transform', group: 'processor', description: 'Apply an expression to modify incoming messages',

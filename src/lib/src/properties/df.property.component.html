@@ -31,7 +31,7 @@
 
       <code-editor *ngSwitchCase="types.CODE" class="df-property-control" [id]="model.id"
               [formControlName]="model.id" [language]="model.language" [(ngModel)]="model.value" line-numbers="true"
-              scrollbar-style="simple" placeholder="Enter code snippet..." overview-ruler="true">
+              scrollbar-style="simple" [placeholder]="model.defaultValue || 'Enter code snippet...'" overview-ruler="true">
       </code-editor>
 
       <input *ngSwitchDefault class="df-property-control" type="text" [id]="model.id" [formControlName]="model.id"
