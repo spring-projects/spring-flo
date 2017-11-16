@@ -12,11 +12,13 @@ const sourcemaps = require('rollup-plugin-sourcemaps');
 const inlineResources = require('./inline-resources');
 
 
+const DIST_FOLDER_NAME = 'dist';
+
 const libName = require('./package.json').name;
 const rootFolder = path.join(__dirname);
 const compilationFolder = path.join(rootFolder, 'out-tsc');
 const srcFolder = path.join(rootFolder, 'src/lib');
-const distFolder = path.join(rootFolder, 'dist');
+const distFolder = path.join(rootFolder, DIST_FOLDER_NAME);
 const tempLibFolder = path.join(compilationFolder, 'lib');
 const es5OutputFolder = path.join(compilationFolder, 'lib-es5');
 const es2015OutputFolder = path.join(compilationFolder, 'lib-es2015');
@@ -120,8 +122,8 @@ return Promise.resolve()
   // Copy package files
   .then(() => Promise.resolve()
     .then(() => _relativeCopy('LICENSE', rootFolder, distFolder))
-    .then(() => _relativeCopy('package.json', rootFolder, distFolder))
-    .then(() => _relativeCopy('README.md', rootFolder, distFolder))
+    .then(() => _relativeCopy('README.adoc', rootFolder, distFolder))
+    .then(() => _generatePackageJson(path.join(rootFolder, 'package.json'), distFolder))
     .then(() => console.log('Package files copy succeeded.'))
   )
   .catch(e => {
@@ -146,6 +148,33 @@ function _relativeCopy(fileGlob, from, to) {
       })
     })
   });
+}
+
+function _generatePackageJson(basePackageJson, distFolder) {
+  return new Promise((resolve, reject) => {
+    try {
+      const json = JSON.parse(fs.readFileSync(basePackageJson));
+      if (json['scripts']) {
+        delete json['scripts']['postinstall'];
+      }
+      const searchValue = './' + DIST_FOLDER_NAME + '/';
+      const replaceValue = './';
+      replacePropertyValue(json, 'main', searchValue, replaceValue);
+      replacePropertyValue(json, 'module', searchValue, replaceValue);
+      replacePropertyValue(json, 'es2015', searchValue, replaceValue);
+      replacePropertyValue(json, 'typings', searchValue, replaceValue);
+      fs.writeFileSync(path.join(distFolder, 'package.json'), JSON.stringify(json, null, 2));
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+function replacePropertyValue(json, property, searchValue, newValue) {
+  if (typeof json[property] === 'string') {
+    json[property] = json[property].replace(searchValue, newValue);
+  }
 }
 
 // Recursively create a dir.
