@@ -325,7 +325,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   set graphToTextSync(sync : boolean) {
     this._graphToTextSyncEnabled = sync;
-    this.graphToTextEventEmitter.emit();
+    // Try commenting the sync out. Just set the flag but don't kick off graph->text conversion
+    // this.performGraphToTextSyncing();
+  }
+
+  private performGraphToTextSyncing() {
+    if (this._graphToTextSyncEnabled) {
+      this.graphToTextEventEmitter.emit();
+    }
   }
 
   createHandle(element: dia.CellView, kind: string, action: () => void, location: dia.Point): dia.Element {
@@ -909,7 +916,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           if (propAttr.indexOf('metadata') === 0 ||
             propAttr.indexOf('props') === 0 ||
             (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, node))) {
-            this.graphToTextEventEmitter.emit();
+            this.performGraphToTextSyncing();
           }
           if (this.renderer && this.renderer.refreshVisuals) {
             this.renderer.refreshVisuals(node, propAttr, this.paper);
@@ -938,7 +945,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       let newSourceId = link.get('source').id;
       let oldSourceId = link.previous('source').id;
       if (newSourceId !== oldSourceId) {
-        this.graphToTextEventEmitter.emit();
+        this.performGraphToTextSyncing();
       }
       this.handleLinkEvent('change:source', link);
     });
@@ -948,7 +955,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       let newTargetId = link.get('target').id;
       let oldTargetId = link.previous('target').id;
       if (newTargetId !== oldTargetId) {
-        this.graphToTextEventEmitter.emit();
+        this.performGraphToTextSyncing();
       }
       this.handleLinkEvent('change:target', link);
     });
@@ -964,7 +971,7 @@ export class EditorComponent implements OnInit, OnDestroy {
           (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, link))) {
           let sourceId = link.get('source').id;
           let targetId = link.get('target').id;
-          this.graphToTextEventEmitter.emit();
+          this.performGraphToTextSyncing();
         }
         if (this.renderer && this.renderer.refreshVisuals) {
           this.renderer.refreshVisuals(link, propAttr, this.paper);
@@ -987,7 +994,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.handleNodeCreation(<dia.Element> element);
       }
       if (element.get('type') === joint.shapes.flo.NODE_TYPE || element.get('type') === joint.shapes.flo.LINK_TYPE) {
-        this.graphToTextEventEmitter.emit();
+        this.performGraphToTextSyncing();
       }
       this.autosizePaper();
     });
@@ -1000,9 +1007,9 @@ export class EditorComponent implements OnInit, OnDestroy {
         this.selection = undefined;
       }
       if (element.isLink()) {
-        window.setTimeout(() => this.graphToTextEventEmitter.emit(), 100);
+        window.setTimeout(() => this.performGraphToTextSyncing(), 100);
       } else if (element.get('type') === joint.shapes.flo.NODE_TYPE) {
-        this.graphToTextEventEmitter.emit();
+        this.performGraphToTextSyncing();
       }
       this.autosizePaper();
     });
