@@ -1,5 +1,5 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators/debounceTime';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';

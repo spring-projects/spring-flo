@@ -1,7 +1,7 @@
 import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy,} from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser'
 import {Observable}  from 'rxjs/Observable';
-import { sampleTime } from 'rxjs/operators';
+import { sampleTime } from 'rxjs/operators/sampleTime';
 import 'rxjs/add/observable/fromEvent';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
