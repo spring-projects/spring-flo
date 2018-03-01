@@ -20,13 +20,14 @@ export namespace Properties {
   }
 
   export interface Property {
-    id : string;
-    name : string;
-    attr : string;
-    description? : string;
-    defaultValue? : any;
+    readonly id : string;
+    readonly name : string;
+    readonly type : string;
+    readonly description? : string;
+    readonly defaultValue? : any;
     value? : any;
-    readonly metadata? : Flo.PropertyMetadata;
+    readonly valueOptions?: any[]
+    readonly [propName : string] : any;
   }
 
   export interface SelectOption {
@@ -206,9 +207,62 @@ export namespace Properties {
     }
   }
 
-  export class PropertiesGroupModel {
+  export interface PropertiesSource {
+    getProperties(): Promise<Property[]>;
+    applyChanges(properties: Property[]): void;
+  }
+
+  export class DefaultCellPropertiesSource implements PropertiesSource {
 
     protected cell : dia.Cell;
+
+    constructor(cell : dia.Cell) {
+      this.cell = cell;
+    }
+
+    getProperties() : Promise<Array<Property>> {
+      let metadata : Flo.ElementMetadata = this.cell.attr('metadata');
+      return Promise.resolve(metadata.properties().then(propsMetadata => Array.from(propsMetadata.values()).map(m => this.createProperty(m))));
+    }
+
+    protected createProperty(metadata : Flo.PropertyMetadata) : Property {
+      return {
+        id: metadata.id,
+        name: metadata.name,
+        type: metadata.type,
+        defaultValue: metadata.defaultValue,
+        attr: `props/${metadata.name}`,
+        value: this.cell.attr(`props/${metadata.name}`),
+        description: metadata.description,
+        valueOptions: metadata.options
+      }
+    }
+
+    applyChanges(properties: Property[]) {
+      this.cell.trigger('batch:start', { batchName: 'update properties' });
+
+      properties.forEach(property => {
+        if ((typeof property.value === 'boolean' && !property.defaultValue && !property.value) ||
+          (property.value === property.defaultValue || property.value === '' || property.value === undefined || property.value === null)) {
+          let currentValue = this.cell.attr(property.attr);
+          if (currentValue !== undefined && currentValue !== null) {
+            // Remove attr doesn't fire appropriate event. Set default value first as a workaround to schedule DSL resync
+            this.cell.attr(property.attr, property.defaultValue === undefined ? null : property.defaultValue);
+            this.cell.removeAttr(property.attr);
+          }
+        } else {
+          this.cell.attr(property.attr, property.value);
+        }
+      });
+
+      this.cell.trigger('batch:stop', { batchName: 'update properties' });
+    }
+
+  }
+
+  export class PropertiesGroupModel {
+
+    protected propertiesSource: PropertiesSource;
 
     protected controlModels : Array<ControlModel<any>>;
 
@@ -216,14 +270,14 @@ export namespace Properties {
 
     protected _loadedSubject : Subject<boolean>;
 
-    constructor(cell : dia.Cell) {
-      this.cell = cell;
+    constructor(propertiesSource : PropertiesSource) {
+      this.propertiesSource = propertiesSource;
     }
 
     load() {
       this.loading = true;
       this._loadedSubject = new Subject<boolean>();
-      this.createProperties().then(properties => {
+      this.propertiesSource.getProperties().then(properties => {
         this.controlModels = properties.map(p => this.createControlModel(p));
         this.loading = false;
         this._loadedSubject.next(true);
@@ -243,23 +297,6 @@ export namespace Properties {
       return this.controlModels;
     }
 
-    protected createProperties() : Promise<Array<Property>> {
-      let metadata : Flo.ElementMetadata = this.cell.attr('metadata');
-      return Promise.resolve(metadata.properties().then(propsMetadata => Array.from(propsMetadata.values()).map(m => this.createProperty(m))));
-    }
-
-    protected createProperty(metadata : Flo.PropertyMetadata) : Property {
-      return {
-        id: metadata.id,
-        name: metadata.name,
-        defaultValue: metadata.defaultValue,
-        attr: `props/${metadata.name}`,
-        value: this.cell.attr(`props/${metadata.name}`),
-        description: metadata.description,
-        metadata: metadata
-      }
-    }
-
     protected createControlModel(property : Property) : ControlModel<any> {
       return new GenericControlModel(property, InputType.TEXT);
     }
@@ -271,23 +308,7 @@ export namespace Properties {
 
       let properties = this.controlModels.map(cm => cm.property);
 
-      this.cell.trigger('batch:start', { batchName: 'update properties' });
-
-      properties.forEach(property => {
-        if ((typeof property.value === 'boolean' && !property.defaultValue && !property.value) ||
-          (property.value === property.defaultValue || property.value === '' || property.value === undefined || property.value === null)) {
-          let currentValue = this.cell.attr(property.attr);
-          if (currentValue !== undefined && currentValue !== null) {
-            // Remove attr doesn't fire appropriate event. Set default value first as a workaround to schedule DSL resync
-            this.cell.attr(property.attr, property.defaultValue === undefined ? null : property.defaultValue);
-            this.cell.removeAttr(property.attr);
-          }
-        } else {
-          this.cell.attr(property.attr, property.value);
-        }
-      });
-
-      this.cell.trigger('batch:stop', { batchName: 'update properties' });
+      this.propertiesSource.applyChanges(properties);
     }
 
   }

@@ -48,7 +48,7 @@ export class Editor implements Flo.Editor {
       let bsModalRef = this.modelService.show(PropertiesDialogComponent);
       let metadata : Flo.ElementMetadata = cell.attr('metadata');
       bsModalRef.content.title = `Properties for ${metadata.name.toUpperCase()}`;
-      let propertiesModel = new SamplePropertiesGroupModel(cell);
+      let propertiesModel = new SamplePropertiesGroupModel(new Properties.DefaultCellPropertiesSource(cell));
       propertiesModel.load();
       bsModalRef.content.propertiesGroupModel = propertiesModel;
     }
@@ -549,7 +549,7 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
   protected createControlModel(property : Properties.Property) : Properties.ControlModel<any> {
     let inputType = Properties.InputType.TEXT;
     let validation : Properties.Validation;
-    switch (property.metadata.type) {
+    switch (property.type) {
       case 'number':
         inputType = Properties.InputType.NUMBER;
         break;
@@ -561,7 +561,7 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
         break;
       case 'boolean':
         return new Properties.CheckBoxControlModel(property);
-      case 'number':
+      case 'e-mail':
         inputType = Properties.InputType.EMAIL;
         break;
       case 'list':
@@ -569,8 +569,8 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
       case 'list[boolean]':
         return new Properties.GenericListControlModel(property);
       case 'enum':
-        if (Array.isArray(property.metadata.options)) {
-          return new Properties.SelectControlModel(property, Properties.InputType.SELECT, (<Array<string>> property.metadata.options).map(o => {
+        if (Array.isArray(property.valueOptions)) {
+          return new Properties.SelectControlModel(property, Properties.InputType.SELECT, (<Array<string>> property.valueOptions).map(o => {
             return {
               name: o,
               value: o === property.defaultValue ? undefined : o
@@ -580,7 +580,7 @@ class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
       case 'code':
         return new Properties.CodeControlModelWithDynamicLanguageProperty(property, 'language', this, this.encodeTextToDSL, this.decodeTextFromDSL);
       default:
-        if (property.metadata.name === 'name') {
+        if (property.name === 'name') {
           validation = {
             validator: Validators.required,
             errorData: [
