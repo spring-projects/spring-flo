@@ -78,6 +78,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private palette : dia.Paper;
 
+  private floaterpaper : dia.Paper;
+
   private filterTextModel = new Subject<string>();
 
   private mouseMoveHanlder = (e : any) => this.handleDrag(e);
@@ -139,6 +141,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         }
         this.clickedElement = undefined;
         $('#palette-floater').remove();
+        this.floaterpaper.remove();
     });
 
     // Toggle the header open/closed on a click
@@ -189,6 +192,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         this.metamodel.unsubscribe(this._metamodelListener);
       }
       $(this.document).off('mouseup', this.mouseUpHanlder);
+      this.palette.remove();
   }
 
   ngOnChanges(changes : SimpleChanges) {
@@ -480,7 +484,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         let floatergraph : dia.Graph = new joint.dia.Graph();
         floatergraph.set('type', Constants.FEEDBACK_CONTEXT);
 
-        let floaterpaper : dia.Paper = new joint.dia.Paper({
+        this.floaterpaper = new joint.dia.Paper({
           el: $('#palette-floater'),
           elementView: this.renderer && this.renderer.getNodeView ? this.renderer.getNodeView() : joint.dia.ElementView,
           gridSize: 10,
@@ -495,16 +499,16 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         // Initiative drag and drop - create draggable element
         let floaternode : dia.Element = Shapes.Factory.createNode({
           "renderer": this.renderer,
-          'paper': floaterpaper,
+          'paper': this.floaterpaper,
           'graph': floatergraph,
           'metadata': dataOfClickedElement
         });
 
-        let box : dia.BBox = floaterpaper.findViewByModel(floaternode).getBBox();
+        let box : dia.BBox = this.floaterpaper.findViewByModel(floaternode).getBBox();
         let size : dia.Size = floaternode.get('size');
         // Account for node real size including ports
         floaternode.translate(box.width - size.width, box.height - size.height);
-        this.viewBeingDragged = floaterpaper.findViewByModel(floaternode);
+        this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
         $('#palette-floater').offset({left:event.pageX+5,top:event.pageY+5});
       } else {
         $('#palette-floater').offset({left:event.pageX+5,top:event.pageY+5});

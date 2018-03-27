@@ -1143,6 +1143,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
     // The paper is what will represent the graph on the screen
     this.paper = new joint.dia.Paper(options);
+    this._disposables.add(Disposable.create(() => this.paper.remove()));
+
   }
 
   updatePaletteReadyState(ready: boolean) {
