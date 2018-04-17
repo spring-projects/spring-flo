@@ -1,6 +1,6 @@
 {
   "name": "spring-flo",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Library for quickly building text DSL visualization diagram editor",
   "main": "./dist/bundles/spring-flo.umd.js",
   "module": "./dist/spring-flo.es5.js",
@@ -40,13 +40,9 @@
     "postinstall": "postinstall-build --only-as-dependency dist \"npm run build && node postinstall.js\""
   },
   "dependencies": {
-    "@angular/core": "5.2.9",
-    "@angular/forms": "5.2.9",
-    "@angular/platform-browser": "5.2.9",
     "@types/codemirror": "0.0.45",
     "@types/jointjs": "1.0.4",
     "@types/lodash": "4.14.73",
-    "rxjs": "5.5.6",
     "codemirror": "5.28.0",
     "jointjs": "1.0.3",
     "lodash": "3.10.1",
@@ -54,7 +50,10 @@
     "postinstall-build": "5.0.1"
   },
   "peerDependencies": {
-    "@angular/core": ">=5.0.0 <6.0.0"
+    "@angular/core": ">=5.2.9 <6.0.0",
+    "@angular/forms": ">=5.2.9 < 6.0.0",
+    "@angular/platform-browser": ">=5.2.9 <6.0.0",
+    "rxjs": ">=5.5.7 <6.0.0"
   },
   "devDependencies": {
     "@angular/common": "5.2.9",
