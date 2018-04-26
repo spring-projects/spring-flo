@@ -194,6 +194,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       clearGraph() {
         self.selection = undefined;
+        self.graphToTextSync = true;
         self.graph.clear();
         if (self.metamodel && self.metamodel.load && self.editor && self.editor.setDefaultContent) {
           return self.metamodel.load().then(data => self.editor.setDefaultContent(this, data));
