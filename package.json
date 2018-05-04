@@ -1,6 +1,6 @@
 {
   "name": "spring-flo",
-  "version": "0.7.4",
+  "version": "0.7.5",
   "description": "Library for quickly building text DSL visualization diagram editor",
   "main": "./dist/bundles/spring-flo.umd.js",
   "module": "./dist/spring-flo.es5.js",
