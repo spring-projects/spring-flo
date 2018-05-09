@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';
 
 import { Palette } from './palette/palette.component';
 import { EditorComponent } from './editor/editor.component';
@@ -13,7 +13,7 @@ import { DynamicFormPropertyComponent } from './properties/df.property.component
 @NgModule({
   imports: [
     FormsModule,
-    BrowserModule,
+    CommonModule,
     ReactiveFormsModule
   ],
   declarations: [
