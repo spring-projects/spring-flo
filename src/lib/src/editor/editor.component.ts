@@ -868,6 +868,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
         this.graphToTextConversionCompleted.next();
         return this.validateContent();
+      })
+      .catch(error => {
+        // Validation may reveal why the graph couldn't be
+        // converted so let it run
+        this.graphToTextConversionCompleted.next();
+        return this.validateContent();
       });
     } else {
       this.graphToTextConversionCompleted.next();
