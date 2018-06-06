@@ -16,7 +16,7 @@
 
 import { Flo, Constants, Properties } from 'spring-flo';
 import { Validators } from '@angular/forms';
-import { dia } from 'jointjs';
+import { dia, g } from 'jointjs';
 import { BsModalService } from 'ngx-bootstrap';
 import { PropertiesDialogComponent } from './properties.dialog.component';
 const joint : any = Flo.joint;
@@ -108,7 +108,7 @@ export class Editor implements Flo.Editor {
 //	            }
     }
 
-    calculateDragDescriptor(context : Flo.EditorContext, draggedView : dia.CellView, targetUnderMouse : dia.CellView, point : dia.Point, sourceComponent : string) : Flo.DnDDescriptor {
+    calculateDragDescriptor(context : Flo.EditorContext, draggedView : dia.CellView, targetUnderMouse : dia.CellView, point : g.Point, sourceComponent : string) : Flo.DnDDescriptor {
       let source = draggedView.model;
       let sourceGroup = source.attr('metadata/group');
 
@@ -139,7 +139,7 @@ export class Editor implements Flo.Editor {
               let type = magnet.getAttribute('port');
               if ((type === 'input' && targetHasIncomingPort && hasOutgoingPort) || (type === 'output' && targetHasOutgoingPort && hasIncomingPort)) {
                 let bbox = joint.V(magnet).bbox(false, paper.viewport); // jshint ignore:line
-                let distance = (<any> point).distance({
+                let distance = point.distance({
                   x: bbox.x + bbox.width / 2,
                   y: bbox.y + bbox.height / 2
                 });
@@ -190,9 +190,9 @@ export class Editor implements Flo.Editor {
       };
     }
 
-    validate(graph : dia.Graph, dsl: string, flo: Flo.EditorContext) : Promise<Map<string, Flo.Marker[]>> {
+    validate(graph : dia.Graph, dsl: string, flo: Flo.EditorContext) : Promise<Map<string | number, Flo.Marker[]>> {
       return new Promise((resolve, reject) => {
-        let allMarkers = new Map<string, Array<Flo.Marker>>();
+        let allMarkers = new Map<string | number, Array<Flo.Marker>>();
         graph.getElements().filter(e => e.attr('metadata')).forEach(e => {
           let markers : Array<Flo.Marker> = []
           let group = e.attr('metadata/group');

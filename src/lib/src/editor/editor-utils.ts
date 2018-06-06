@@ -70,16 +70,16 @@ export class Utils {
         // There is more than one siblings. We need to create vertices.
 
         // First of all we'll find the middle point of the link.
-        let source = graph.getCell(srcId);
-        let target = graph.getCell(trgId);
+        let source = <dia.Element> graph.getCell(srcId);
+        let target = <dia.Element> graph.getCell(trgId);
 
         if (!source || !target) {
           // When clearing the graph it may happen that some nodes are gone and some are left
           return;
         }
 
-        let srcCenter = (<any>source).getBBox().center();
-        let trgCenter = (<any>target).getBBox().center();
+        let srcCenter = source.getBBox().center();
+        let trgCenter = target.getBBox().center();
         let midPoint = joint.g.line(srcCenter, trgCenter).midpoint();
 
         // Then find the angle it forms.

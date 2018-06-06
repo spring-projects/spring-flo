@@ -139,9 +139,9 @@ joint.shapes.flo.Node = joint.shapes.basic.Generic.extend({
         'text': '\u21d2',
         'text-anchor': 'middle',
         'ref-x': 0.15, // jointjs specific: relative position to ref'd element
-        'ref-y': 0.15, // jointjs specific: relative position to ref'd element
+        'ref-y': 0.2, // jointjs specific: relative position to ref'd element
         ref: '.border', // jointjs specific: element for ref-x, ref-y
-        transform: 'translate(' + (IMAGE_W/2) + ',' + (IMAGE_H/2) + ')',
+        // transform: 'translate(' + (IMAGE_W/2) + ',' + (IMAGE_H/2) + ')',
         fill: 'black',
         'font-size': 24
       },
@@ -224,78 +224,110 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
   // _tempZorder: 0,
   _tempOpacity: 1.0,
   _hovering: false,
-  pointerdown: function(evt : any, x : number, y : number) {
-    // this.canShowTooltip = false;
-    // this.hideTooltip();
-    this.beingDragged = false;
-    this._tempOpacity = this.model.attr('./opacity');
 
-    this.model.trigger('batch:start');
+  dragMagnetStart: function(evt: any, x: number, y: number) {
 
-    if ( // target is a valid magnet start linking
-      evt.target.getAttribute('magnet') &&
-      this.paper.options.validateMagnet.call(this.paper, this, evt.target)
-    ) {
-      let link = this.paper.getDefaultLink(this, evt.target);
-      if ($(evt.target).attr('port') === 'input') {
-        link.set({
-          source: { x: x, y: y },
-          target: {
-            id: this.model.id,
-            selector: this.getSelector(evt.target),
-            port: evt.target.getAttribute('port')
-          }
-        });
-      } else {
-        link.set({
-          source: {
-            id: this.model.id,
-            selector: this.getSelector(evt.target),
-            port: evt.target.getAttribute('port')
-          },
-          target: { x: x, y: y }
-        });
-      }
-      this.paper.model.addCell(link);
-      this._linkView = this.paper.findViewByModel(link);
-      if ($(evt.target).attr('port') === 'input') {
-        this._linkView.startArrowheadMove('source');
-      } else {
-        this._linkView.startArrowheadMove('target');
-      }
-      this.paper.__creatingLinkFromPort = true;
+    if (!this.can('addLinkFromMagnet')) return;
+
+    this.model.startBatch('add-link');
+
+    const paper = this.paper;
+    const graph = paper.model;
+    const magnet = evt.target;
+    const link = paper.getDefaultLink(this, magnet);
+
+    let sourceEnd, targetEnd;
+
+    if ($(evt.target).attr('port') === 'input') {
+      sourceEnd = { x: x, y: y };
+      targetEnd = this.getLinkEnd(magnet, x, y, link, 'target');
     } else {
-      this._dx = x;
-      this._dy = y;
-      joint.dia.CellView.prototype.pointerdown.apply(this, arguments);
+      sourceEnd = this.getLinkEnd(magnet, x, y, link, 'source');
+      targetEnd = { x: x, y: y };
     }
+
+    link.set({ source: sourceEnd, target: targetEnd });
+    link.addTo(graph, { async: false, ui: true });
+
+    const linkView = link.findView(paper);
+    joint.dia.CellView.prototype.pointerdown.apply(linkView, arguments);
+    linkView.notify('link:pointerdown', evt, x, y);
+    // const data = linkView.startArrowheadMove('target', { whenNotAllowed: 'remove' });
+    let data;
+    if ($(evt.target).attr('port') === 'input') {
+      data = linkView.startArrowheadMove('source', { whenNotAllowed: 'remove' });
+    } else {
+      data = linkView.startArrowheadMove('target', { whenNotAllowed: 'remove' });
+    }
+
+    linkView.eventData(evt, data);
+
+    this.eventData(evt, {
+      action: 'magnet',
+      linkView: linkView,
+      stopPropagation: true
+    });
+
+    this.paper.delegateDragEvents(this, evt.data);
   },
-  pointermove: function(evt : MouseEvent, x : number, y : number) {
+
+  // pointerdown: function(evt : any, x : number, y : number) {
+  //   // this.canShowTooltip = false;
+  //   // this.hideTooltip();
+  //   this.beingDragged = false;
+  //   this._tempOpacity = this.model.attr('./opacity');
+  //
+  //   this.model.trigger('batch:start');
+  //
+  //   if ( // target is a valid magnet start linking
+  //     evt.target.getAttribute('magnet') &&
+  //     this.paper.options.validateMagnet.call(this.paper, this, evt.target)
+  //   ) {
+  //     let link = this.paper.getDefaultLink(this, evt.target);
+  //     if ($(evt.target).attr('port') === 'input') {
+  //       link.set({
+  //         source: { x: x, y: y },
+  //         target: {
+  //           id: this.model.id,
+  //           selector: this.getSelector(evt.target),
+  //           port: evt.target.getAttribute('port')
+  //         }
+  //       });
+  //     } else {
+  //       link.set({
+  //         source: {
+  //           id: this.model.id,
+  //           selector: this.getSelector(evt.target),
+  //           port: evt.target.getAttribute('port')
+  //         },
+  //         target: { x: x, y: y }
+  //       });
+  //     }
+  //     this.paper.model.addCell(link);
+  //     this._linkView = this.paper.findViewByModel(link);
+  //     if ($(evt.target).attr('port') === 'input') {
+  //       this._linkView.startArrowheadMove('source');
+  //     } else {
+  //       this._linkView.startArrowheadMove('target');
+  //     }
+  //     this.paper.__creatingLinkFromPort = true;
+  //   } else {
+  //     this._dx = x;
+  //     this._dy = y;
+  //     joint.dia.CellView.prototype.pointerdown.apply(this, arguments);
+  //   }
+  // },
+  drag: function(evt : MouseEvent, x : number, y : number) {
     let interactive = _.isFunction(this.options.interactive) ? this.options.interactive(this, 'pointermove') :
       this.options.interactive;
-    if (interactive !== false && !this._linkView) {
-      this.beingDragged = true;
+    if (interactive !== false) {
       this.paper.trigger('dragging-node-over-canvas', {type: Flo.DnDEventType.DRAG, view: this, event: evt});
-      this.model.attr('./opacity', 0.75);
     }
-    joint.dia.ElementView.prototype.pointermove.apply(this, arguments);
+    joint.dia.ElementView.prototype.drag.apply(this, arguments);
   },
-  pointerup: function(evt : MouseEvent, x : number, y : number) { // jshint ignore:line
-    delete this.paper.__creatingLinkFromPort;
-    // this.canShowTooltip = true;
-    if (this.beingDragged) {
-      if (typeof this._tempOpacity === 'number') {
-        this.model.attr('./opacity', this._tempOpacity);
-      } else {
-        // Joint JS view doesn't react to attribute removal.
-        // TODO: fix in the mainElementView
-        this.model.attr('./opacity', 1);
-        //					this.model.removeAttr('./opacity');
-      }
-      this.paper.trigger('dragging-node-over-canvas', {type: Flo.DnDEventType.DROP, view: this, event: evt});
-    }
-    this.beingDragged = false;
-    joint.dia.ElementView.prototype.pointerup.apply(this, arguments);
+  dragEnd: function(evt : MouseEvent, x : number, y : number) { // jshint ignore:line
+    this.paper.trigger('dragging-node-over-canvas', {type: Flo.DnDEventType.DROP, view: this, event: evt});
+    joint.dia.ElementView.prototype.dragEnd.apply(this, arguments);
   },
   // events: {
   //   // Tooltips on the elements in the graph

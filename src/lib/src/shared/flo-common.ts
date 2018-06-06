@@ -1,4 +1,4 @@
-import { dia } from 'jointjs';
+import { dia, g } from 'jointjs';
 import { Observable } from 'rxjs/Observable';
 import * as _joint from 'jointjs';
 
@@ -155,7 +155,7 @@ export namespace Flo {
   }
 
   export interface LinkEnd {
-    id : string;
+    id : string | number;
     selector? : string;
     port? : string;
   }
@@ -182,30 +182,36 @@ export namespace Flo {
   }
 
   export interface Editor {
-    interactive? : ((cellView: dia.CellView, event: string) => boolean) | boolean | { vertexAdd?: boolean, vertexMove?: boolean, vertexRemove?: boolean, arrowheadMove?: boolean };
+    interactive? : ((cellView: dia.CellView, event: string) => boolean) | boolean | dia.CellView.InteractivityOptions;
     allowLinkVertexEdit? : boolean;
     highlighting? : any;
     createHandles?(context : EditorContext, createHandle : (owner : dia.CellView, kind : string, action : () => void, location : dia.Point) => void, owner : dia.CellView) : void;
     validatePort?(context : EditorContext, view : dia.ElementView, magnet : SVGElement) : boolean;
     validateLink?(context : EditorContext, cellViewS : dia.ElementView, portS : SVGElement, cellViewT : dia.ElementView, portT : SVGElement, isSource : boolean, linkView : dia.LinkView) : boolean;
-    calculateDragDescriptor?(context : EditorContext, draggedView : dia.CellView, targetUnderMouse : dia.CellView, coordinate : dia.Point, sourceComponent : string) : DnDDescriptor;
+    calculateDragDescriptor?(context : EditorContext, draggedView : dia.CellView, targetUnderMouse : dia.CellView, coordinate : g.Point, sourceComponent : string) : DnDDescriptor;
     handleNodeDropping?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     showDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
     hideDragFeedback?(context : EditorContext, dragDescriptor : DnDDescriptor) : void;
-    validate?(graph : dia.Graph, dsl: string, flo: EditorContext) : Promise<Map<string, Array<Marker>>>;
+    validate?(graph : dia.Graph, dsl: string, flo: EditorContext) : Promise<Map<string | number, Array<Marker>>>;
     preDelete?(context : EditorContext, deletedElement : dia.Cell) : void;
     setDefaultContent?(editorContext : EditorContext, data : Map<string, Map<string, ElementMetadata>>) : void;
   }
 
-  export function findMagnetByClass(view : dia.CellView, className : string) : HTMLElement {
+  export function findMagnetByClass(view : dia.CellView, className : string) : SVGElement {
     if (className && className.startsWith('.')) {
       className = className.substr(1);
     }
-    return view.$('[magnet]').toArray().find((magnet : HTMLElement) => magnet.getAttribute('class').split(/\s+/).indexOf(className) >= 0);
+    const element = view.$('[magnet]').toArray().find((magnet : any) => magnet.getAttribute('class').split(/\s+/).indexOf(className) >= 0);
+    if (element) {
+      return view.findMagnet($(element));
+    }
   }
 
-  export function findMagnetByPort(view : dia.CellView, port : string) : HTMLElement {
-    return view.$('[magnet]').toArray().find((magnet : HTMLElement) => magnet.getAttribute('port') === port);
+  export function findMagnetByPort(view : dia.CellView, port : string) : SVGElement {
+    const element = view.$('[magnet]').toArray().find((magnet : HTMLElement) => magnet.getAttribute('port') === port);
+    if (element) {
+      return view.findMagnet($(element));
+    }
   }
 
   /**

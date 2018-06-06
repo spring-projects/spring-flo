@@ -61,9 +61,10 @@ flo-view {
 
 #palette-floater {
   /* TODO size relative to paper that goes on it? */
+  opacity: 0.75;
   width:170px;
   height:60px;
-  opacity: 0.75;
+  background-color: transparent;
   /*
     background-color: #6db33f;
     */
@@ -74,6 +75,10 @@ flo-view {
   -moz-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+
+#palette-floater.joint-paper > svg {
+  background-color: transparent;
 }
 
 /* Joint JS paper for drawing palette -> canvas DnD visual feedback END */

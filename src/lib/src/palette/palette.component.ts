@@ -126,7 +126,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       model: this.paletteGraph,
       height: $(this.element.nativeElement.parentNode).height(),
       width: $(this.element.nativeElement.parentNode).width(),
-      elementView: this.getPaletteView(this.renderer && this.renderer.getNodeView ? this.renderer.getNodeView() : joint.dia.ElementView)
+      elementView: this.getPaletteView(this.renderer && this.renderer.getNodeView ? this.renderer.getNodeView() : joint.dia.ElementView),
+      interactive: false
     });
 
     this.palette.on('cell:pointerup', (cellview : dia.CellView, evt : any) => {
@@ -484,13 +485,15 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         let floatergraph : dia.Graph = new joint.dia.Graph();
         floatergraph.set('type', Constants.FEEDBACK_CONTEXT);
 
+        const parent = $('#palette-floater');
+
         this.floaterpaper = new joint.dia.Paper({
           el: $('#palette-floater'),
           elementView: this.renderer && this.renderer.getNodeView ? this.renderer.getNodeView() : joint.dia.ElementView,
           gridSize: 10,
           model: floatergraph,
-          height: 400,
-          width: 200,
+          height: parent.height(),
+          width: parent.width(),
           validateMagnet: () => false,
           validateConnection: () => false
         });
@@ -504,7 +507,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
           'metadata': dataOfClickedElement
         });
 
-        let box : dia.BBox = this.floaterpaper.findViewByModel(floaternode).getBBox();
+        // Only node view expected
+        let box : dia.BBox = (<dia.ElementView>this.floaterpaper.findViewByModel(floaternode)).getBBox();
         let size : dia.Size = floaternode.get('size');
         // Account for node real size including ports
         floaternode.translate(box.width - size.width, box.height - size.height);

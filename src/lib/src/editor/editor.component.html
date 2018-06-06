@@ -17,8 +17,11 @@
       [resizerRight]="'#paper-container'">
     </div>
 
-    <div id="paper-container">
-      <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
+    <div>
+
+      <div id="paper-container" style="overflow:overlay;">
+        <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
+      </div>
 
       <span class="canvas-controls-container" ng-if="canvasControls">
         <table ng-if="canvasControls.zoom" class="canvas-control zoom-canvas-control">
@@ -26,22 +29,23 @@
             <tr>
               <td>
                 <input class="zoom-canvas-input canvas-control zoom-canvas-control" type="text"
-                                               data-inline="true" [(ngModel)]="zoomPercent"
-                                               size="3">
+                       data-inline="true" [(ngModel)]="zoomPercent"
+                       size="3">
               </td>
               <td>
                 <label class="canvas-control zoom-canvas-label">%</label>
               </td>
               <td>
                 <input type="range" data-inline="true" [(ngModel)]="zoomPercent"
-                                               [step]="zoomStep"
-                                               [max]="maxZoom" [min]="minZoom" data-type="range"
-                                               name="range" class="canvas-control zoom-canvas-control">
+                       [step]="zoomStep"
+                       [max]="maxZoom" [min]="minZoom" data-type="range"
+                       name="range" class="canvas-control zoom-canvas-control">
               </td>
             </tr>
           </tbody>
         </table>
       </span>
+
     </div>
   </div>
 </div>

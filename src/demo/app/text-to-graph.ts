@@ -67,7 +67,7 @@ class TextToGraphConverter {
   }
 
   convertToGraph(input : string) {
-    this.flo.clearGraph();
+    this.flo.getGraph().clear();
 
     // input is a string like this (3 nodes: foo, goo and hoo):   foo --a=b --c=d > goo --d=e --f=g>hoo
     let trimmed = input.trim();

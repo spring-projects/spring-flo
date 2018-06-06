@@ -76,7 +76,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   floApi = new EventEmitter<Flo.EditorContext>();
 
   @Output()
-  validationMarkers = new EventEmitter<Map<string, Array<Flo.Marker>>>();
+  validationMarkers = new EventEmitter<Map<string | number, Array<Flo.Marker>>>();
 
   @Output()
   contentValidated = new EventEmitter<boolean>();
@@ -356,7 +356,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       kind: kind,
       position: location
     });
-    let view = this.paper.findViewByModel(handle);
+    const view: dia.ElementView = this.paper.findViewByModel(handle);
     view.on('cell:pointerdown', () => {
       if (action) {
         action();
@@ -372,8 +372,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       handle.removeAttr('image/filter');
     });
 
-    // TODO: Look for ways to incorporate this option on the view when it's created
-    (<any>view).options.interactive = false;
+    view.setInteractivity(false);
 
     return handle;
   }
@@ -457,7 +456,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.editor && this.editor.showDragFeedback) {
       this.editor.showDragFeedback(this.editorContext, dragDescriptor);
     } else {
-      let magnet : HTMLElement;
+      let magnet : SVGElement;
       if (dragDescriptor.source && dragDescriptor.source.view) {
         joint.V(dragDescriptor.source.view.el).addClass('dnd-source-feedback');
         if (dragDescriptor.source.cssClassSelector) {
@@ -489,7 +488,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.editor && this.editor.hideDragFeedback) {
       this.editor.hideDragFeedback(this.editorContext, dragDescriptor);
     } else {
-      let magnet : HTMLElement;
+      let magnet : SVGElement;
       if (dragDescriptor.source && dragDescriptor.source.view) {
         joint.V(dragDescriptor.source.view.el).removeClass('dnd-source-feedback');
         if (dragDescriptor.source.cssClassSelector) {
@@ -639,7 +638,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     excludeViews.forEach((excluded, i) => {
       this._restoreNodeVisibility(excluded.el, oldVisibility[i]);
     });
-    return this.paper.findView(targetElement);
+    return this.paper.findView($(targetElement));
   }
 
   handleDnDFromPalette(dndEvent : Flo.DnDEvent) {
@@ -687,7 +686,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   handleDropFromPalette(event : Flo.DnDEvent) {
     let cellview = event.view;
     let evt = event.event;
-    if (this.paper.el === evt.target || $.contains(this.paper.el, <any>evt.target)) {
+    if (this.paper.el === evt.target || $.contains(this.paper.el, evt.target)) {
       if (this.readOnlyCanvas) {
         this.setDragDescriptor(undefined);
       } else {
@@ -711,18 +710,16 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   autosizePaper() : void {
-    let scrollBarSize = 17;
-    let parent = $('#paper', this.element.nativeElement);
+    let parent = $('#paper-container', this.element.nativeElement);
     this.paper.fitToContent({
       padding: this.paperPadding,
-      minWidth: parent.width() - scrollBarSize,
-      minHeight: parent.height() - scrollBarSize,
+      minWidth: parent.width(),
+      minHeight: parent.height(),
     });
   }
 
   fitToPage() : void {
-    let scrollBarSize = 17;
-    let parent = $('#paper', this.element.nativeElement);
+    let parent = $('#paper-container', this.element.nativeElement);
     let minScale = this.minZoom / 100;
     let maxScale = 2;
     this.paper.scaleContentToFit({
@@ -731,7 +728,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       minScaleY: minScale,
       maxScaleX: maxScale,
       maxScaleY: maxScale,
-      fittingBBox: {x: 0, y: 0, width: parent.width() - scrollBarSize, height: parent.height() - scrollBarSize}
+      fittingBBox: {x: 0, y: 0, width: parent.width(), height: parent.height()}
     });
     /**
      * #scaleContentToFit() sets some weird origin for the paper, so autosize to get the better origin.
@@ -800,7 +797,7 @@ export class EditorComponent implements OnInit, OnDestroy {
         errorCell.remove();
       } else {
         // Without rewrite we merge this list with existing errors
-        (<any>errorCell).attr('messages', errorMessages, {rewrite: true});
+        errorCell.attr('messages', errorMessages, {rewrite: true});
       }
     } else if (errorMessages.length > 0) {
       let error = Shapes.Factory.createDecoration({
@@ -811,16 +808,15 @@ export class EditorComponent implements OnInit, OnDestroy {
         messages: errorMessages
       });
       let pt : dia.Point;
+      const view = this.paper.findViewByModel(error);
       if (cell instanceof joint.dia.Element) {
-        pt = (<any>(<dia.Element> cell).getBBox()).topRight().offset(-error.get('size').width, 0);
+        pt = (<dia.Element> cell).getBBox().topRight().offset(-error.get('size').width, 0);
+        error.set('position', pt);
+        (<dia.ElementView>view).setInteractivity(false);
       } else {
         // TODO: do something for the link perhaps?
       }
-      error.set('position', pt);
-      let view = this.paper.findViewByModel(error);
 
-      // Cast to <any>. Types are missing 'options' property
-      (<any>view).options.interactive = false;
     }
   }
 
@@ -1083,7 +1079,7 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   initPaper() : void {
 
-    let options : any = {
+    let options : dia.Paper.Options = {
       el: $('#paper', this.element.nativeElement),
       gridSize: this._gridSize,
       drawGrid: true,
@@ -1093,11 +1089,11 @@ export class EditorComponent implements OnInit, OnDestroy {
       // Enable link snapping within 25px lookup radius
       snapLinks: { radius: 25 }, // http://www.jointjs.com/tutorial/ports
       defaultLink: /*this.renderer && this.renderer.createDefaultLink ? this.renderer.createDefaultLink : new joint.shapes.flo.Link*/
-        (cellView: dia.ElementView, magnet: HTMLElement) => {
+        (cellView: dia.ElementView, magnet: SVGElement) => {
           if (this.renderer && this.renderer.createLink) {
             let linkEnd : Flo.LinkEnd = {
               id: cellView.model.id
-            }
+            };
             if (magnet) {
               linkEnd.selector = cellView.getSelector(magnet, undefined);
             }
@@ -1127,11 +1123,19 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
       },
 
-      interactive: () => {
+      interactive: (cellView: dia.CellView, event: string) => {
         if (this.readOnlyCanvas) {
           return false;
         } else {
-          return this.editor && this.editor.interactive ? this.editor.interactive : true;
+          if (this.editor && this.editor.interactive) {
+            if (typeof this.editor.interactive === 'function') {
+              // Type for interactive is wrong in JointJS have to cast to <any>
+              return <any>this.editor.interactive(cellView, event);
+            } else {
+              return this.editor.interactive
+            }
+          }
+          return true
         }
       },
 
@@ -1152,8 +1156,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
 
     if (this.editor && this.editor.validateLink) {
-      options.validateConnection = (cellViewS : dia.ElementView, magnetS : SVGElement, cellViewT : dia.ElementView, magnetT : SVGElement, end : boolean, linkView : dia.LinkView) =>
-        this.editor.validateLink(this.editorContext, cellViewS, magnetS, cellViewT, magnetT, end, linkView);
+      options.validateConnection = (cellViewS : dia.ElementView, magnetS : SVGElement, cellViewT : dia.ElementView, magnetT : SVGElement, end: 'source' | 'target', linkView : dia.LinkView) =>
+        this.editor.validateLink(this.editorContext, cellViewS, magnetS, cellViewT, magnetT, end === 'source', linkView);
     }
 
     // The paper is what will represent the graph on the screen
