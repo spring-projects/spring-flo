@@ -1,6 +1,9 @@
 import { dia, g } from 'jointjs';
 import { Observable } from 'rxjs/Observable';
 import * as _joint from 'jointjs';
+import * as _$ from 'jquery';
+
+const $ = _$;
 
 export namespace Flo {
 
