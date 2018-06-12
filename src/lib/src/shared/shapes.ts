@@ -241,8 +241,10 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
     if ($(evt.target).attr('port') === 'input') {
       sourceEnd = { x: x, y: y };
       targetEnd = this.getLinkEnd(magnet, x, y, link, 'target');
+      targetEnd.selector = magnet.getAttribute('class').split(' ').map((cls: string) => '.' + cls).join(' ');
     } else {
       sourceEnd = this.getLinkEnd(magnet, x, y, link, 'source');
+      sourceEnd.selector = magnet.getAttribute('class').split(' ').map((cls: string) => '.' + cls).join(' ');
       targetEnd = { x: x, y: y };
     }
 
