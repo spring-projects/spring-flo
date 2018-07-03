@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject, ViewEncapsulation} from '@angular/core';
-import { Subject } from 'rxjs/Subject';
-import { debounceTime } from 'rxjs/operators/debounceTime';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from './../shared/shapes';

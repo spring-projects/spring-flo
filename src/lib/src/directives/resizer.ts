@@ -1,8 +1,8 @@
 import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy,} from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser'
-import {Observable}  from 'rxjs/Observable';
-import { sampleTime } from 'rxjs/operators/sampleTime';
-import 'rxjs/add/observable/fromEvent';
+import { fromEvent } from "rxjs";
+import { sampleTime } from 'rxjs/operators';
+
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 const $ : any = _$;
@@ -123,11 +123,11 @@ export class ResizerDirective implements OnInit, OnDestroy {
     // Need to set left and right elements width and fire events on init when DOM is built 
     this.splitSize = this._splitSize;
 
-    let subscription1 = Observable.fromEvent($(this.document).get(0), 'mousemove')
+    let subscription1 = fromEvent($(this.document).get(0), 'mousemove')
       .pipe(sampleTime(300))
       .subscribe(this.mouseMoveHandler);
     this._subscriptions.add(Disposable.create(() => subscription1.unsubscribe()));
-    let subscription2 = Observable.fromEvent($(this.document).get(0), 'mouseup')
+    let subscription2 = fromEvent($(this.document).get(0), 'mouseup')
       .subscribe(e => {
         if (this.dragInProgress) {
           this.mousemove(e);

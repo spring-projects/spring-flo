@@ -1,5 +1,5 @@
 import { dia, g } from 'jointjs';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from "rxjs";
 import * as _joint from 'jointjs';
 import * as _$ from 'jquery';
 

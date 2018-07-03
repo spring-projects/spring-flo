@@ -1,10 +1,8 @@
 import { dia } from 'jointjs';
 import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms'
 import { Flo } from './flo-common';
-import { Subject } from 'rxjs/Subject'
-import { Observable } from 'rxjs/Observable';
-import { debounceTime } from 'rxjs/operators/debounceTime';
-import { mergeMap } from 'rxjs/operators/mergeMap';
+import { Subject, Observable } from 'rxjs'
+import { debounceTime, mergeMap } from 'rxjs/operators';
 
 export namespace Properties {
 

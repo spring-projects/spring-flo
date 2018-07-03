@@ -1,5 +1,5 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
-import { debounceTime } from 'rxjs/operators/debounceTime';
+import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';
@@ -7,9 +7,7 @@ import { Utils } from './editor-utils';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
-import { Observable } from 'rxjs/Observable';
-import { Subject } from 'rxjs/Subject';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 const joint : any = Flo.joint;
 const $ : any = _$;
 

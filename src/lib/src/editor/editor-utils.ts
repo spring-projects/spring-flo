@@ -41,14 +41,15 @@ export class Utils {
     // If one of the ends is not a model, the link has no siblings.
     if (!srcId || !trgId) { return; }
 
-    let siblings = _.filter(graph.getLinks(), (sibling : dia.Link) => {
+    const siblings: dia.Link[] = graph.getLinks().filter((sibling: dia.Link) => {
 
-      let _srcId = sibling.get('source').id;
-      let _trgId = sibling.get('target').id;
-      let vertices = sibling.get('vertices');
-      let fanRouted = !vertices || vertices.length === 0 || sibling.get('fanRouted');
+      const _srcId = sibling.get('source').id;
+      const _trgId = sibling.get('target').id;
+      const vertices = sibling.get('vertices');
+      const fanRouted = !vertices || vertices.length === 0 || sibling.get('fanRouted');
 
       return ((_srcId === srcId && _trgId === trgId) || (_srcId === trgId && _trgId === srcId)) && fanRouted;
+
     });
 
     switch (siblings.length) {
@@ -88,7 +89,7 @@ export class Utils {
         // This is the maximum distance between links
         let gap = 20;
 
-        _.each(siblings, (sibling : dia.Link, index : number) => {
+        siblings.forEach((sibling: dia.Link, index: number) => {
 
           // We want the offset values to be calculated as follows 0, 20, 20, 40, 40, 60, 60 ..
           let offset = gap * Math.ceil(index / 2);

@@ -4,6 +4,7 @@
  */
 (function (global) {
   System.config({
+    transpiler: 'plugin-babel',
     paths: {
       // paths serve as alias
       'npm:': 'node_modules/'
@@ -24,8 +25,6 @@
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
 
       // other libraries
-      // 'rxjs/operators': 'npm:rxjs@5.4.3/operators/index.js',
-      'rx': 'npm:rx',
       'rxjs': 'npm:rxjs',
       'jointjs': 'npm:jointjs',
       'jquery': 'npm:jquery',
@@ -35,9 +34,12 @@
       'dagre': 'npm:dagre',
       'codemirror': 'npm:codemirror',
       'moment': 'npm:moment/moment.js',
-      'ngx-bootstrap': 'npm:ngx-bootstrap/bundles/ngx-bootstrap.umd.js',
+      'ngx-bootstrap': 'npm:ngx-bootstrap/bundles/ngx-bootstrap.es2015.js',
       'ts-disposables': 'npm:ts-disposables',
-      'jshint': 'npm:jshint/dist/jshint.js'
+      'jshint': 'npm:jshint/dist/jshint.js',
+
+      'plugin-babel': 'npm:systemjs-plugin-babel/plugin-babel.js',
+      'systemjs-babel-build': 'npm:systemjs-plugin-babel/systemjs-babel-browser.js'
     },
     meta: {
       'lodash': {
@@ -63,6 +65,7 @@
         main: './dist/rx.js'
       },
       rxjs: {
+        main: 'index.js',
         defaultExtension: 'js'
       },
       'rxjs/operators': {
