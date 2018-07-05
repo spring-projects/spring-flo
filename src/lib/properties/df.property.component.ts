@@ -10,7 +10,7 @@ import { Properties } from '../shared/flo-properties';
 export class DynamicFormPropertyComponent {
 
   @Input()
-  model : Properties.ControlModel<any>;
+  model: Properties.ControlModel<any>;
 
   @Input() form: FormGroup;
 
@@ -20,7 +20,7 @@ export class DynamicFormPropertyComponent {
     return Properties.InputType;
   }
 
-  get control() : AbstractControl {
+  get control(): AbstractControl {
     return this.form.controls[this.model.id];
   }
 

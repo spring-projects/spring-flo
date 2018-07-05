@@ -18,14 +18,14 @@ export namespace Properties {
   }
 
   export interface Property {
-    readonly id : string;
-    readonly name : string;
-    readonly type : string;
-    readonly description? : string;
-    readonly defaultValue? : any;
-    value? : any;
+    readonly id: string;
+    readonly name: string;
+    readonly type?: string;
+    readonly description?: string;
+    readonly defaultValue?: any;
+    value?: any;
     readonly valueOptions?: any[]
-    readonly [propName : string] : any;
+    readonly [propName: string]: any;
   }
 
   export interface SelectOption {
@@ -34,25 +34,25 @@ export namespace Properties {
   }
 
   export interface ErrorData {
-    id : string;
-    message : string;
+    id: string;
+    message: string;
   }
 
   export interface Validation {
     validator?: ValidatorFn|ValidatorFn[]|null,
     asyncValidator?: AsyncValidatorFn|AsyncValidatorFn[]|null,
-    errorData? : Array<ErrorData>;
+    errorData?: Array<ErrorData>;
   }
 
   export interface ControlModel<T> {
-    readonly type : InputType;
-    readonly id : string;
-    value : T;
-    readonly defaultValue : T;
-    readonly name? : string;
-    readonly description? : string;
-    readonly property : Property
-    readonly validation? : Validation;
+    readonly type: InputType;
+    readonly id: string;
+    value: T;
+    readonly defaultValue: T;
+    readonly name?: string;
+    readonly description?: string;
+    readonly property: Property
+    readonly validation?: Validation;
   }
 
   export interface CodeControlModel<T> extends ControlModel<T> {
@@ -61,7 +61,7 @@ export namespace Properties {
 
   export class GenericControlModel<T> implements ControlModel<T> {
 
-    constructor(private _property : Property, public type : InputType, public validation? : Validation) {}
+    constructor(private _property: Property, public type: InputType, public validation?: Validation) {}
 
     get id() {
       return this.property.id;
@@ -79,15 +79,15 @@ export namespace Properties {
       return this.property.defaultValue;
     }
 
-    get value() : T {
+    get value(): T {
       return this.getValue();
     }
 
-    set value(value : T) {
+    set value(value: T) {
       this.setValue(value);
     }
 
-    get property() : Property {
+    get property(): Property {
       return this._property;
     }
 
@@ -103,7 +103,7 @@ export namespace Properties {
 
   export class CheckBoxControlModel extends GenericControlModel<boolean> {
 
-    constructor(_property : Property, validation? : Validation) {
+    constructor(_property: Property, validation?: Validation) {
       super(_property, InputType.CHECKBOX, validation);
     }
 
@@ -119,7 +119,9 @@ export namespace Properties {
 
   export abstract class AbstractCodeControlModel  extends GenericControlModel<string> implements CodeControlModel<string> {
 
-    constructor(_property : Property, private encode?: (s: string) => string, private decode?: (s: string) => string, validation? : Validation) {
+    abstract language: string;
+
+    constructor(_property: Property, private encode?: (s: string) => string, private decode?: (s: string) => string, validation?: Validation) {
       super(_property, InputType.CODE, validation);
     }
 
@@ -140,14 +142,12 @@ export namespace Properties {
       }
     }
 
-    abstract language: string;
-
   }
 
 
   export class GenericCodeControlModel extends AbstractCodeControlModel {
 
-    constructor(_property : Property, public language: string, encode?: (s: string) => string, decode?: (s: string) => string, validation? : Validation) {
+    constructor(_property: Property, public language: string, encode?: (s: string) => string, decode?: (s: string) => string, validation?: Validation) {
       super(_property, encode, decode, validation);
     }
 
@@ -159,7 +159,7 @@ export namespace Properties {
 
     constructor(_property: Properties.Property, private _languagePropertyName: string,
                 private _groupModel: Properties.PropertiesGroupModel,
-                encode?: (s: string) => string, decode?: (s: string) => string, validation? : Validation) {
+                encode?: (s: string) => string, decode?: (s: string) => string, validation?: Validation) {
       super(_property, encode, decode, validation);
     }
 
@@ -170,7 +170,9 @@ export namespace Properties {
 
     get languageControlModel(): Properties.ControlModel<any> {
       if (!this._langControlModel) {
-        this._langControlModel = this._groupModel.getControlsModels().find(c => c.id === this._languagePropertyName);
+        // Cast to Properties.ControlModel<any> from Properties.ControlModel<any> | undefined
+        // Should not be undefined!
+        this._langControlModel = <Properties.ControlModel<any>> this._groupModel.getControlsModels().find(c => c.id === this._languagePropertyName);
       }
       return this._langControlModel;
     }
@@ -179,22 +181,22 @@ export namespace Properties {
 
   export class GenericListControlModel extends GenericControlModel<string> {
 
-    constructor(property : Property, validation? : Validation) {
+    constructor(property: Property, validation?: Validation) {
       super(property, InputType.TEXT, validation);
     }
 
-    get value() : string {
+    get value(): string {
       return this.property.value ? this.property.value.join(', ') : '';
     }
 
-    set value(value : string) {
+    set value(value: string) {
       this.property.value = value && value.trim() ? value.split(/\s*,\s*/) : undefined;
     }
 
   }
 
   export class SelectControlModel extends GenericControlModel<any> {
-    constructor(_property : Property, type : InputType, public options : Array<SelectOption>) {
+    constructor(_property: Property, type: InputType, public options: Array<SelectOption>) {
       super(_property, type);
       if (_property.defaultValue === undefined) {
         options.unshift({
@@ -212,18 +214,18 @@ export namespace Properties {
 
   export class DefaultCellPropertiesSource implements PropertiesSource {
 
-    protected cell : dia.Cell;
+    protected cell: dia.Cell;
 
-    constructor(cell : dia.Cell) {
+    constructor(cell: dia.Cell) {
       this.cell = cell;
     }
 
-    getProperties() : Promise<Array<Property>> {
-      let metadata : Flo.ElementMetadata = this.cell.attr('metadata');
+    getProperties(): Promise<Array<Property>> {
+      let metadata: Flo.ElementMetadata = this.cell.attr('metadata');
       return Promise.resolve(metadata.properties().then(propsMetadata => Array.from(propsMetadata.values()).map(m => this.createProperty(m))));
     }
 
-    protected createProperty(metadata : Flo.PropertyMetadata) : Property {
+    protected createProperty(metadata: Flo.PropertyMetadata): Property {
       return {
         id: metadata.id,
         name: metadata.name,
@@ -262,13 +264,13 @@ export namespace Properties {
 
     protected propertiesSource: PropertiesSource;
 
-    protected controlModels : Array<ControlModel<any>>;
+    protected controlModels: Array<ControlModel<any>>;
 
-    protected loading : boolean = true;
+    protected loading = true;
 
-    protected _loadedSubject : Subject<boolean>;
+    protected _loadedSubject: Subject<boolean>;
 
-    constructor(propertiesSource : PropertiesSource) {
+    constructor(propertiesSource: PropertiesSource) {
       this.propertiesSource = propertiesSource;
     }
 
@@ -283,7 +285,7 @@ export namespace Properties {
       });
     }
 
-    get isLoading() : boolean {
+    get isLoading(): boolean {
       return this.loading;
     }
 
@@ -295,11 +297,11 @@ export namespace Properties {
       return this.controlModels;
     }
 
-    protected createControlModel(property : Property) : ControlModel<any> {
+    protected createControlModel(property: Property): ControlModel<any> {
       return new GenericControlModel(property, InputType.TEXT);
     }
 
-    public applyChanges() : void {
+    public applyChanges(): void {
       if (this.loading) {
         return;
       }
@@ -313,7 +315,7 @@ export namespace Properties {
 
   export namespace Validators {
 
-    export function uniqueResource(service : (value : any) => Observable<any>, debounce : number): AsyncValidatorFn {
+    export function uniqueResource(service: (value: any) => Observable<any>, debounce: number): AsyncValidatorFn {
       return (control: AbstractControl): Observable<ValidationErrors> => {
         return new Observable(obs => {
           if (control.valueChanges && control.value) {
@@ -323,20 +325,20 @@ export namespace Properties {
                 obs.next({uniqueResource: true});
                 obs.complete();
               }, () => {
-                obs.next(null);
+                obs.next(undefined);
                 obs.complete();
               })
           } else {
-            obs.next(null);
+            obs.next(undefined);
             obs.complete();
           }
         });
       }
     }
 
-    export function noneOf(excluded : Array<any>) : ValidatorFn {
-      return (control: AbstractControl) : {[key: string]: any} => {
-        return excluded.find(e => e === control.value) ? {'noneOf': {value: control.value}} : null;
+    export function noneOf(excluded: Array<any>): ValidatorFn {
+      return (control: AbstractControl): {[key: string]: any} => {
+        return excluded.find(e => e === control.value) ? {'noneOf': {value: control.value}} : {};
       };
     }
 

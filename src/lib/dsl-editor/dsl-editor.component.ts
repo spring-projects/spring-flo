@@ -2,7 +2,7 @@ import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, 
 import * as _ from 'lodash';
 import * as CodeMirror from 'codemirror';
 import * as _$ from 'jquery';
-const $ : any = _$;
+const $: any = _$;
 
 import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/hint/show-hint';
@@ -15,36 +15,36 @@ import 'codemirror/addon/scroll/simplescrollbars';
   selector: 'dsl-editor',
   templateUrl: './dsl-editor.component.html',
   styleUrls: [
-    './../../../../node_modules/codemirror/lib/codemirror.css',
-    './../../../../node_modules/codemirror/addon/hint/show-hint.css',
-    './../../../../node_modules/codemirror/addon/lint/lint.css',
+    './../../../node_modules/codemirror/lib/codemirror.css',
+    './../../../node_modules/codemirror/addon/hint/show-hint.css',
+    './../../../node_modules/codemirror/addon/lint/lint.css',
     './dsl-editor.component.css', ],
   encapsulation: ViewEncapsulation.None
 })
 export class DslEditorComponent implements OnInit, OnDestroy {
 
-  private doc : CodeMirror.EditorFromTextArea;
+  private doc: CodeMirror.EditorFromTextArea;
 
   private _dsl = '';
 
-  private _lint : boolean | CodeMirror.LintOptions = false;
+  private _lint: boolean | CodeMirror.LintOptions = false;
 
-  private _hint : any;
+  private _hint: any;
 
   @Input('line-numbers')
-  private lineNumbers : boolean = false;
+  private lineNumbers = false;
 
   @Input('line-wrapping')
-  private lineWrapping : boolean = false;
+  private lineWrapping = false;
 
   @Input('scrollbar-style')
-  private scrollbarStyle : string;
+  private scrollbarStyle: string;
 
   @Input()
-  private placeholder : string;
+  private placeholder: string;
 
   @Input()
-  private debounce : number = 0;
+  private debounce = 0;
 
   @Output()
   private dslChange = new EventEmitter<string>();
@@ -66,7 +66,7 @@ export class DslEditorComponent implements OnInit, OnDestroy {
   constructor(private element: ElementRef) {}
 
   @Input()
-  set dsl(dsl : string) {
+  set dsl(dsl: string) {
     this._dsl = dsl;
     if (this.doc && this._dsl !== this.doc.getValue()) {
       let cursorPosition = (<any>this.doc).getCursor();
@@ -76,7 +76,7 @@ export class DslEditorComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  set lintOptions(lintOptions : boolean | CodeMirror.LintOptions) {
+  set lintOptions(lintOptions: boolean | CodeMirror.LintOptions) {
     this._lint = lintOptions;
     if (this.doc) {
       this.doc.setOption('lint', this._lint);
@@ -84,7 +84,7 @@ export class DslEditorComponent implements OnInit, OnDestroy {
   }
 
   @Input()
-  set hintOptions(hintOptions : any) {
+  set hintOptions(hintOptions: any) {
     this._hint = hintOptions;
     if (this.doc) {
       this.doc.setOption('hintOptions', this._hint);
@@ -93,7 +93,7 @@ export class DslEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    let options : CodeMirror.EditorConfiguration = {
+    let options: CodeMirror.EditorConfiguration = {
       value: this._dsl || '',
       gutters: ['CodeMirror-lint-markers'],
       extraKeys: {'Ctrl-Space': 'autocomplete'},

@@ -1,32 +1,32 @@
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import * as _ from 'lodash';
-const joint : any = Flo.joint;
+const joint: any = Flo.joint;
 import * as _$ from 'jquery';
-const $ : any = _$;
+const $: any = _$;
 
 
 export class Utils {
 
-  static fanRoute(graph : dia.Graph, cell : dia.Cell) {
+  static fanRoute(graph: dia.Graph, cell: dia.Cell) {
     if (cell instanceof joint.dia.Element) {
 
-      _.chain(graph.getConnectedLinks(cell)).groupBy((link : dia.Link) => {
+      _.chain(graph.getConnectedLinks(cell)).groupBy((link: dia.Link) => {
         // the key of the group is the model id of the link's source or target, but not our cell id.
         return _.omit([link.get('source').id, link.get('target').id], cell.id)[0];
-      }).each((group : any, key : string) => {
+      }).each((group: any, key: string) => {
         // If the member of the group has both source and target model adjust vertices.
-        let toRoute : any = {};
+        let toRoute: any = {};
         if (key !== undefined) {
-          group.forEach((link : dia.Link) => {
+          group.forEach((link: dia.Link) => {
             if (link.get('source').id === cell.get('id') && link.get('target').id) {
               toRoute[link.get('target').id] = link;
             } else if (link.get('target').id === cell.get('id') && link.get('source').id) {
               toRoute[link.get('source').id] = link;
             }
           });
-          Object.keys(toRoute).forEach(key => {
-            Utils.fanRoute(graph, toRoute[key]);
+          Object.keys(toRoute).forEach(k => {
+            Utils.fanRoute(graph, toRoute[k]);
           });
         }
       });
@@ -115,7 +115,7 @@ export class Utils {
     }
   }
 
-  static isCustomPaperEvent(args : any) : boolean {
+  static isCustomPaperEvent(args: any): boolean {
     return args.length === 5 &&
       _.isString(args[0]) &&
       (args[0].indexOf('link:') === 0 || args[0].indexOf('element:') === 0) &&

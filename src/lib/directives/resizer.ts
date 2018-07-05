@@ -1,34 +1,38 @@
-import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy,} from '@angular/core';
+import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy} from '@angular/core';
 import {DOCUMENT} from '@angular/platform-browser'
-import { fromEvent } from "rxjs";
+import { fromEvent } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
 import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
-const $ : any = _$;
+const $: any = _$;
 
 @Directive({
   selector: '[resizer]',
   host: {'(mousedown)': 'startDrag()'}
 })
 export class ResizerDirective implements OnInit, OnDestroy {
-  private dragInProgress: boolean = false;
-  private vertical: boolean = true;
+  private dragInProgress = false;
+  private vertical = true;
   private first: string;
   private second: string;
   private _size: number;
   private _splitSize: number;
   private _subscriptions = new CompositeDisposable();
+  @Input()
+  maxSplitSize: number;
+
+  @Output()
+  sizeChange = new EventEmitter<number>();
+
   private mouseMoveHandler = (e: any) => {
     if (this.dragInProgress) {
       this.mousemove(e);
     }
   };
-  @Input()
-  maxSplitSize: number;
 
   @Input()
-  set splitSize(splitSize : number) {
+  set splitSize(splitSize: number) {
 
     if (this.maxSplitSize && splitSize > this.maxSplitSize) {
       splitSize = this.maxSplitSize;
@@ -66,38 +70,35 @@ export class ResizerDirective implements OnInit, OnDestroy {
     this.sizeChange.emit(splitSize);
   }
 
-  @Output()
-  sizeChange = new EventEmitter<number>();
-
   @Input()
-  set resizerWidth(width : number) {
+  set resizerWidth(width: number) {
     this._size = width;
     this.vertical = true;
   }
 
   @Input()
-  set resizerHeight(height : number) {
+  set resizerHeight(height: number) {
     this._size = height;
     this.vertical = false;
   }
 
   @Input()
-  set resizerLeft(first : string) {
+  set resizerLeft(first: string) {
     this.first = first;
   }
 
   @Input()
-  set resizerTop(first : string) {
+  set resizerTop(first: string) {
     this.first = first;
   }
 
   @Input()
-  set resizerRight(second : string) {
+  set resizerRight(second: string) {
     this.second = second;
   }
 
   @Input()
-  set resizerBottom(second : string) {
+  set resizerBottom(second: string) {
     this.second = second;
   }
 

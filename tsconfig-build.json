@@ -1,0 +1,45 @@
+{
+  "compilerOptions": {
+    "rootDir": "./lib",
+    "baseUrl": "./lib",
+    "paths": {
+      "@angular/*": [
+        "../../node_modules/@angular/*"
+      ],
+      "@rxjs/*": [
+        "../../node_modules/rxjs/*"
+      ]
+    },
+    "outDir": "../out-tsc",
+    "declaration": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "module": "es2015",
+    "target": "es2015",
+    "lib": [
+      "es2015",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "types": [],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "importHelpers": true,
+    "strictNullChecks": false
+  },
+  "include": [
+    "./lib/**/*",
+    "../../node_modules/zone.js/dist/zone.js.d.ts"
+  ],
+  "angularCompilerOptions": {
+    "enableResourceInlining": false,
+    "skipTemplateCodegen": true,
+    "annotateForClosureCompiler": true,
+    "strictMetadataEmit": true,
+    "flatModuleOutFile": "./spring-flo.js",
+    "flatModuleId": "spring-flo"
+  }
+}

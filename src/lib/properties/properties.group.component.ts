@@ -10,10 +10,10 @@ import { Properties } from '../shared/flo-properties';
 export class PropertiesGroupComponent implements OnInit {
 
   @Input()
-  propertiesGroupModel : Properties.PropertiesGroupModel;
+  propertiesGroupModel: Properties.PropertiesGroupModel;
 
   @Input()
-  form : FormGroup;
+  form: FormGroup;
 
   ngOnInit() {
     if (this.propertiesGroupModel.isLoading) {

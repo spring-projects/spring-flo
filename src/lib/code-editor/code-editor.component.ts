@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as CodeMirror from 'codemirror';
 
 import * as _$ from 'jquery';
-const $ : any = _$;
+const $: any = _$;
 
 // CodeMirror extensions
 import 'codemirror/mode/meta';
@@ -37,10 +37,10 @@ import 'codemirror/mode/coffeescript/coffeescript';
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
   styleUrls: [
-    './../../../../node_modules/codemirror/lib/codemirror.css',
-    './../../../../node_modules/codemirror/addon/hint/show-hint.css',
-    './../../../../node_modules/codemirror/addon/lint/lint.css',
-    './../../../../node_modules/codemirror/addon/scroll/simplescrollbars.css',
+    './../../../node_modules/codemirror/lib/codemirror.css',
+    './../../../node_modules/codemirror/addon/hint/show-hint.css',
+    './../../../node_modules/codemirror/addon/lint/lint.css',
+    './../../../node_modules/codemirror/addon/scroll/simplescrollbars.css',
     './code-editor.component.scss', ],
   encapsulation: ViewEncapsulation.None,
   providers: [
@@ -53,11 +53,11 @@ import 'codemirror/mode/coffeescript/coffeescript';
 })
 export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
-  private doc : CodeMirror.EditorFromTextArea;
+  private doc: CodeMirror.EditorFromTextArea;
 
   private _dsl = '';
 
-  private _lint : boolean | CodeMirror.LintOptions = false;
+  private _lint: boolean | CodeMirror.LintOptions = false;
 
   private _language: string;
 
@@ -70,16 +70,16 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
   private _onTouchHandler: () => void;
 
   @Input('line-numbers')
-  private lineNumbers : boolean = false;
+  private lineNumbers = false;
 
   @Input('line-wrapping')
-  private lineWrapping : boolean = false;
+  private lineWrapping = false;
 
   @Input('scrollbar-style')
-  private scrollbarStyle : string;
+  private scrollbarStyle: string;
 
   @Input()
-  private placeholder : string;
+  private placeholder: string;
 
   @Input('overview-ruler')
   private overviewRuler: boolean;
@@ -107,7 +107,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
   constructor(private element: ElementRef) {}
 
   @Input()
-  set dsl(dsl : string) {
+  set dsl(dsl: string) {
     this._dsl = dsl;
     if (this.doc && this._dsl !== this.doc.getValue()) {
       let cursorPosition = (<any>this.doc).getCursor();
@@ -126,7 +126,7 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
 
   ngOnInit() {
 
-    let options : any = {
+    let options: any = {
       value: this._dsl || '',
       gutters: ['CodeMirror-lint-markers'],
       extraKeys: {'Ctrl-Space': 'autocomplete'},
