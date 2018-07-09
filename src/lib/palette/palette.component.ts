@@ -38,7 +38,7 @@ joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 @Component({
   selector: 'flo-palette',
   templateUrl: './palette.component.html',
-  styleUrls: ['./../shared/flo.css'],
+  styleUrls: ['./palette.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class Palette implements OnInit, OnDestroy, OnChanges {

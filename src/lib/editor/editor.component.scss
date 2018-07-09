@@ -57,60 +57,6 @@ flo-view {
   color: #FFF;
 }
 
-/* Joint JS paper for drawing palette -> canvas DnD visual feedback START */
-
-#palette-floater {
-  /* TODO size relative to paper that goes on it? */
-  opacity: 0.75;
-  width:170px;
-  height:60px;
-  background-color: transparent;
-  /*
-    background-color: #6db33f;
-    */
-  float:left;
-  position: absolute;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-}
-
-#palette-floater.joint-paper > svg {
-  background-color: transparent;
-}
-
-/* Joint JS paper for drawing palette -> canvas DnD visual feedback END */
-
-/* Palette START */
-
-.palette-filter {
-  border: 3px solid #6db33f;
-}
-
-.palette-filter-textfield {
-  width: 100%;
-  font-size:24px;
-  /* border: 3px solid #6db33f;
- */	font-family: "Varela Round",sans-serif;
-  /* 	padding: 2px; */
-}
-
-.palette-paper {
-  background-color: #eeeeee;
-  /*
-    border-right: 7px solid;
-    */
-  border-color: #6db33f;
-  /* 	width: 170px;
-        height:100%;
-            float: left;
-     */
-}
-
-/* Palette END */
-
 /* Tooltip START */
 
 .node-tooltip .tooltip-description {
@@ -159,109 +105,6 @@ flo-view {
 
 /* Tooltip END */
 
-/* Properties DIV Start */
-
-.properties td {
-  border-top: 1px solid #34302d;
-}
-
-.properties {
-  /* 	opacity: 0.5; */
-  border: 8px #eeeeee;
-  /*	border-radius: 2px;*/
-  /* 	border: 2px solid;
-     */	border-color: #6db33f;
-  margin-top: 3px;
-  background-color: #eeeeee;
-  /* 	height: 115px;
-     */	font-family: monospace;
-  z-index: 2;
-  /*	padding-top:1px; */
-  position: absolute;
-  /* 	left: 850px;
-        top: 386px;
-        width:360px;
-        height:0px;
-        overflow-y:auto;
-     */}
-.properties-node-name {
-
-  width: 100%;
-  /*	background-color: #eeeeee; */
-  background: #34302d;
-  color: #ffffff;
-  padding-left:2px;
-  border:0px;
-  font-size: 18px;
-  font-family: "Varela Round",sans-serif;
-  font-weight: bold;
-}
-.properties-node-name-row {
-  /*
-    background: #34302d;
-    color: #ffffff;
-    */background: #34302d;
-  width: 100%;
-  padding-left:2px;
-}
-
-.properties-row-even {
-  width: 100%;
-  border-top: 1px #34302d;
-  background-color: #ffffff;
-}
-
-
-.properties-row-odd {
-  width: 100%;
-  border-top: 1px #34302d;
-  background-color: #eeeeee;
-}
-
-.properties-row-text-even {
-  background-color: #ffffff;
-  border-left:0px;
-  border-right:0px;
-  border-bottom:0px;
-  border-top:1px #34302d;
-}
-
-.properties-row-text-odd {
-  background-color: #eeeeee;
-  border-left:0px;
-  border-right:0px;
-  border-bottom:0px;
-  border-top:1px #34302d;
-}
-
-.properties-input {
-  width: 100%;
-  font-size: 18px;
-  font-family: "Varela Round",sans-serif;
-}
-
-.properties-key {
-  width: 30%;
-  padding-left:2px;
-  padding-right:4px;
-}
-
-.properties-value {
-  width: 70%;
-  padding-left:2px;
-  padding-right:2px;
-}
-
-.properties-table {
-  border: 1px solid #d1d1d1;
-  padding: 3px;
-}
-
-.properties-new-property {
-  color: #888888;
-}
-
-/* Properties DIV END */
 
 /* Validation Error Marker on Canvas START */
 
@@ -381,6 +224,5 @@ flo-view {
   stroke-width: 0;
   fill: transparent;
 }
-
 
 /* END - FLO CANVAS STYLES */

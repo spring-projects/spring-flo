@@ -19,7 +19,7 @@ export interface VisibilityState {
 @Component({
   selector: 'flo-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./../../../node_modules/jointjs/dist/joint.css', './../shared/flo.css'],
+  styleUrls: ['./../../../node_modules/jointjs/dist/joint.css', './editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent implements OnInit, OnDestroy {
