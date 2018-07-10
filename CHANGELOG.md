@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/spring-projects/spring-flo/compare/v0.7.5...v0.8.0) (2018-07-10)
+
+
+
 <a name="0.7.5"></a>
 ## [0.7.5](https://github.com/spring-projects/spring-flo/compare/v0.7.4...v0.7.5) (2018-05-04)
 
