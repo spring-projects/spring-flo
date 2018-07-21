@@ -187,19 +187,19 @@ export class EditorComponent implements OnInit, OnDestroy {
         return self.doLayout();
       }
 
-      clearGraph() {
+      clearGraph(): Promise<void> {
         self.selection = undefined;
         self.graph.clear();
         if (self.metamodel && self.metamodel.load && self.editor && self.editor.setDefaultContent) {
           return self.metamodel.load().then(data => {
             self.editor.setDefaultContent(this, data);
             if (!self.graphToTextSync) {
-              self.updateTextRepresentation();
+              return self.updateTextRepresentation();
             }
           });
         } else {
           if (!self.graphToTextSync) {
-            self.updateTextRepresentation();
+            return self.updateTextRepresentation();
           }
         }
       }
@@ -704,12 +704,91 @@ export class EditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private fitToContent(gridWidth: number, gridHeight: number, padding: number, opt: any) {
+    const paper = this.paper;
+
+    if (joint.util.isObject(gridWidth)) {
+      // first parameter is an option object
+      opt = gridWidth;
+      gridWidth = opt.gridWidth || 1;
+      gridHeight = opt.gridHeight || 1;
+      padding = opt.padding || 0;
+
+    } else {
+
+      opt = opt || {};
+      gridWidth = gridWidth || 1;
+      gridHeight = gridHeight || 1;
+      padding = padding || 0;
+    }
+
+    const paddingJson = joint.util.normalizeSides(padding);
+
+    // Calculate the paper size to accomodate all the graph's elements.
+    const bbox = joint.V(paper.viewport).getBBox();
+
+    const currentScale = paper.scale();
+    const currentTranslate = paper.translate();
+
+    bbox.x *= currentScale.sx;
+    bbox.y *= currentScale.sy;
+    bbox.width *= currentScale.sx;
+    bbox.height *= currentScale.sy;
+
+    let calcWidth = Math.max((bbox.width + bbox.x) / gridWidth, 1) * gridWidth;
+    let calcHeight = Math.max((bbox.height + bbox.y) / gridHeight, 1) * gridHeight;
+
+    let tx = 0;
+    let ty = 0;
+
+    if ((opt.allowNewOrigin === 'negative' && bbox.x < 0) || (opt.allowNewOrigin === 'positive' && bbox.x >= 0) || opt.allowNewOrigin === 'any') {
+      tx = (-bbox.x / gridWidth) * gridWidth;
+      tx += paddingJson.left;
+    } else if (opt.allowNewOrigin === 'same') {
+      tx = currentTranslate.tx;
+    }
+    calcWidth += tx;
+
+    if ((opt.allowNewOrigin === 'negative' && bbox.y < 0) || (opt.allowNewOrigin === 'positive' && bbox.y >= 0) || opt.allowNewOrigin === 'any') {
+      ty = (-bbox.y / gridHeight) * gridHeight;
+      ty += paddingJson.top;
+    } else if (opt.allowNewOrigin === 'same') {
+      ty = currentTranslate.ty;
+    }
+    calcHeight += ty;
+
+    calcWidth += paddingJson.right;
+    calcHeight += paddingJson.bottom;
+
+    // Make sure the resulting width and height are greater than minimum.
+    calcWidth = Math.max(calcWidth, opt.minWidth || 0);
+    calcHeight = Math.max(calcHeight, opt.minHeight || 0);
+
+    // Make sure the resulting width and height are lesser than maximum.
+    calcWidth = Math.min(calcWidth, opt.maxWidth || Number.MAX_VALUE);
+    calcHeight = Math.min(calcHeight, opt.maxHeight || Number.MAX_VALUE);
+
+    const dimensionChange = calcWidth !== paper.options.width || calcHeight !== paper.options.height;
+    const originChange = tx !== currentTranslate.tx || ty !== currentTranslate.ty;
+
+    // Change the dimensions only if there is a size discrepency or an origin change
+    if (originChange) {
+      paper.translate(tx, ty);
+    }
+    if (dimensionChange) {
+      paper.setDimensions(calcWidth, calcHeight);
+    }
+
+  }
+
   autosizePaper(): void {
     let parent = $('#paper-container', this.element.nativeElement);
-    this.paper.fitToContent({
-      padding: this.paperPadding,
-      minWidth: parent.width(),
-      minHeight: parent.height(),
+    const parentWidth = parent.innerWidth();
+    const parentHeight = parent.innerHeight();
+    this.fitToContent(this.gridSize, this.gridSize, this.paperPadding, {
+      minWidth: parentWidth,
+      minHeight: parentHeight,
+      allowNewOrigin: 'same'
     });
   }
 
@@ -717,20 +796,26 @@ export class EditorComponent implements OnInit, OnDestroy {
     let parent = $('#paper-container', this.element.nativeElement);
     let minScale = this.minZoom / 100;
     let maxScale = 2;
+    const parentWidth = parent.innerWidth();
+    const parentHeight = parent.innerHeight();
     this.paper.scaleContentToFit({
       padding: this.paperPadding,
       minScaleX: minScale,
       minScaleY: minScale,
       maxScaleX: maxScale,
       maxScaleY: maxScale,
-      fittingBBox: {x: 0, y: 0, width: parent.width(), height: parent.height()}
+      fittingBBox: {x: 0, y: 0, width: parentWidth, height: parentHeight}
     });
     /**
-     * #scaleContentToFit() sets some weird origin for the paper, so autosize to get the better origin.
-     * If origins are different a sudden jump would flash when shape started being dragged on the
-     * canvas after #fitToPage() has been called
+     * Size the canvas appropriately and allow origin movement
      */
-    this.autosizePaper();
+    this.fitToContent(this.gridSize, this.gridSize, this.paperPadding, {
+      minWidth: parentWidth,
+      minHeight: parentHeight,
+      maxWidth: parentWidth,
+      maxHeight: parentHeight,
+      allowNewOrigin: 'any'
+    });
   }
 
   get zoomPercent(): number {
@@ -906,6 +991,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   initGraph() {
     this.graph = new joint.dia.Graph();
     this.graph.set('type', Constants.CANVAS_CONTEXT);
+    this.graph.set('paperPadding', this.paperPadding);
   }
 
   handleNodeCreation(node: dia.Element) {

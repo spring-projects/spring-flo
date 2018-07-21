@@ -136,7 +136,7 @@ export class Renderer implements Flo.Renderer {
           let node : any = graph.getCell(v);
           if (node) {
             let bbox = node.getBBox();
-            node.translate(g.node(v).x - bbox.x, g.node(v).y - bbox.y);
+            node.translate(g.node(v).x - g.node(v).width / 2 - bbox.x, g.node(v).y - g.node(v).height / 2 - bbox.y);
           }
         });
 

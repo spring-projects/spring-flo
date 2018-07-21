@@ -132,7 +132,7 @@ export namespace Flo {
     updateGraph(): Promise<any>;
     updateText(): Promise<any>;
     performLayout(): Promise<void>;
-    clearGraph(): void;
+    clearGraph(): Promise<void>;
     getGraph(): dia.Graph;
     getPaper(): dia.Paper;
     getMinZoom(): number;
