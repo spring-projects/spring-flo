@@ -4,7 +4,7 @@
  */
 (function (global) {
   System.config({
-    transpiler: 'plugin-babel',
+    transpiler: false,
     paths: {
       // paths serve as alias
       'npm:': 'node_modules/'
@@ -23,9 +23,12 @@
       '@angular/http': 'npm:@angular/http/bundles/http.umd.js',
       '@angular/router': 'npm:@angular/router/bundles/router.umd.js',
       '@angular/forms': 'npm:@angular/forms/bundles/forms.umd.js',
+      'ngx-bootstrap': 'npm:ngx-bootstrap/bundles/ngx-bootstrap.umd.min.js',
 
       // other libraries
       'rxjs': 'npm:rxjs',
+      // ngx-bootstrap 2.x + rxjs-compat due to https://github.com/valor-software/ngx-bootstrap/issues/4494
+      'rxjs-compat': 'npm:rxjs-compat',
       'jointjs': 'npm:jointjs',
       'jquery': 'npm:jquery',
       'backbone': 'npm:backbone',
@@ -34,12 +37,8 @@
       'dagre': 'npm:dagre',
       'codemirror': 'npm:codemirror',
       'moment': 'npm:moment/moment.js',
-      'ngx-bootstrap': 'npm:ngx-bootstrap/bundles/ngx-bootstrap.es2015.js',
       'ts-disposables': 'npm:ts-disposables',
-      'jshint': 'npm:jshint/dist/jshint.js',
-
-      'plugin-babel': 'npm:systemjs-plugin-babel/plugin-babel.js',
-      'systemjs-babel-build': 'npm:systemjs-plugin-babel/systemjs-babel-browser.js'
+      'jshint': 'npm:jshint/dist/jshint.js'
     },
     meta: {
       'lodash': {
@@ -67,6 +66,13 @@
       rxjs: {
         main: 'index.js',
         defaultExtension: 'js'
+      },
+      'rxjs-compat': {
+        main: 'index.js',
+        defaultExtension: 'js'
+      },
+      'rxjs/internal-compatibility': {
+        main: './index.js'
       },
       'rxjs/operators': {
         main: './index.js'
