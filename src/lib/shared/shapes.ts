@@ -1,6 +1,5 @@
 import { dia } from 'jointjs';
 import { Flo } from './flo-common';
-import EditorDescriptor = Flo.ViewerDescriptor;
 import * as _ from 'lodash';
 import * as _$ from 'jquery';
 const joint: any = Flo.joint;
@@ -30,6 +29,15 @@ HANDLE_ICON_MAP.set(REMOVE, 'icons/delete.svg');
 const DECORATION_ICON_MAP: Map<string, string> = new Map<string, string>();
 const ERROR = 'error';
 DECORATION_ICON_MAP.set(ERROR, 'icons/error.svg');
+
+
+joint.util.cloneDeep = (obj: any) => {
+  return _.cloneDeep(obj, (o) => {
+    if (_.isObject(o) && !_.isPlainObject(o)) {
+      return o;
+    }
+  });
+};
 
 joint.util.filter.redscale = (args: Shapes.FilterOptions) => {
 

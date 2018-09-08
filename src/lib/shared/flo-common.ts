@@ -238,14 +238,6 @@ export namespace Flo {
     }
   }
 
-  export function removeAttr(cell: dia.Cell, attr: string) {
-    // Bug in JointJS removeAttr() kills all ES6 objects
-    const idx = attr.lastIndexOf('/');
-    const propertyConatiner = idx < 0 ? cell.attributes.attrs : cell.attr(attr.substring(0, idx));
-    const key = idx < 0 ? attr : attr.substr(idx + 1);
-    delete propertyConatiner[key];
-  }
-
 }
 
 

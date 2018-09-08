@@ -13,7 +13,9 @@ export class Utils {
 
       _.chain(graph.getConnectedLinks(cell)).groupBy((link: dia.Link) => {
         // the key of the group is the model id of the link's source or target, but not our cell id.
-        return _.omit([link.get('source').id, link.get('target').id], cell.id)[0];
+        const sourceId = link.get('source').id;
+        const targetId = link.get('target').id;
+        return cell.id !== sourceId ? sourceId : targetId;
       }).each((group: any, key: string) => {
         // If the member of the group has both source and target model adjust vertices.
         let toRoute: any = {};

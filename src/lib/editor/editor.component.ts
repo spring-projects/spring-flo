@@ -430,14 +430,11 @@ export class EditorComponent implements OnInit, OnDestroy {
             link.attr('.marker-vertices/display', 'none');
             link.attr('.connection-wrap/display', 'none');
           } else {
-            // link.removeAttr('.link-tools/display');
-              Flo.removeAttr(link, '.link-tools/display');
+            link.removeAttr('.link-tools/display');
             if (this.editor && this.editor.allowLinkVertexEdit) {
-              // link.removeAttr('.marker-vertices/display');
-              Flo.removeAttr(link, '.marker-vertices/display');
+              link.removeAttr('.marker-vertices/display');
             }
-            // link.removeAttr('.connection-wrap/display');
-            Flo.removeAttr(link, '.connection-wrap/display');
+            link.removeAttr('.connection-wrap/display');
           }
         });
       }
