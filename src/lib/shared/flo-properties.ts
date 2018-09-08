@@ -248,7 +248,9 @@ export namespace Properties {
           if (currentValue !== undefined && currentValue !== null) {
             // Remove attr doesn't fire appropriate event. Set default value first as a workaround to schedule DSL resync
             this.cell.attr(property.attr, property.defaultValue === undefined ? null : property.defaultValue);
-            this.cell.removeAttr(property.attr);
+            // Bug in JointJS removeAttr() kills all ES6 objects
+            // this.cell.removeAttr(property.attr);
+            Flo.removeAttr(this.cell, property.attr);
           }
         } else {
           this.cell.attr(property.attr, property.value);
