@@ -141,7 +141,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         }
         this.clickedElement = undefined;
         $('#palette-floater').remove();
-        this.floaterpaper.remove();
+        if (this.floaterpaper) {
+          this.floaterpaper.remove();
+        }
     });
 
     // Toggle the header open/closed on a click
