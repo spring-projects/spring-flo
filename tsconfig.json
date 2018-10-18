@@ -15,10 +15,6 @@
       "es2015",
       "dom"
     ],
-    "typeRoots": [
-      "node_modules/@types",
-      "src/lib/@types"
-    ],
     "strictNullChecks":false
   }
 }
