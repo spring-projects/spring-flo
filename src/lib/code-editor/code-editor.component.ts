@@ -1,46 +1,46 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as CodeMirror from 'codemirror';
+import * as CodeMirror from 'codemirror-minified';
 
 import * as _$ from 'jquery';
 const $: any = _$;
 
 // CodeMirror extensions
-import 'codemirror/mode/meta';
-import 'codemirror/addon/lint/lint';
-import 'codemirror/addon/hint/show-hint';
-// import 'codemirror/addon/mode/loadmode';
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/display/placeholder';
-import 'codemirror/addon/scroll/annotatescrollbar';
-import 'codemirror/addon/scroll/simplescrollbars';
+import 'codemirror-minified/mode/meta';
+import 'codemirror-minified/addon/lint/lint';
+import 'codemirror-minified/addon/hint/show-hint';
+// import 'codemirror-minified/addon/mode/loadmode';
+import 'codemirror-minified/addon/edit/matchbrackets';
+import 'codemirror-minified/addon/edit/closebrackets';
+import 'codemirror-minified/addon/display/placeholder';
+import 'codemirror-minified/addon/scroll/annotatescrollbar';
+import 'codemirror-minified/addon/scroll/simplescrollbars';
 
 // Lint support
 // Unclear how to import this dynamically...
-import 'codemirror/addon/lint/javascript-lint';
-import 'codemirror/addon/lint/coffeescript-lint';
-import 'codemirror/addon/lint/json-lint';
-import 'codemirror/addon/lint/yaml-lint';
+import 'codemirror-minified/addon/lint/javascript-lint';
+import 'codemirror-minified/addon/lint/coffeescript-lint';
+import 'codemirror-minified/addon/lint/json-lint';
+import 'codemirror-minified/addon/lint/yaml-lint';
 
 // TODO: use dynamic import with JS7 in the future. CM autoLoad cannot load it properly - thinks its AMD
 // Supported languages until dynamic loading
-import 'codemirror/mode/groovy/groovy';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/python/python';
-import 'codemirror/mode/ruby/ruby';
-import 'codemirror/mode/clike/clike';
-import 'codemirror/mode/yaml/yaml';
-import 'codemirror/mode/coffeescript/coffeescript';
+import 'codemirror-minified/mode/groovy/groovy';
+import 'codemirror-minified/mode/javascript/javascript';
+import 'codemirror-minified/mode/python/python';
+import 'codemirror-minified/mode/ruby/ruby';
+import 'codemirror-minified/mode/clike/clike';
+import 'codemirror-minified/mode/yaml/yaml';
+import 'codemirror-minified/mode/coffeescript/coffeescript';
 
 @Component({
   selector: 'code-editor',
   templateUrl: './code-editor.component.html',
   styleUrls: [
-    './../../../node_modules/codemirror/lib/codemirror.css',
-    './../../../node_modules/codemirror/addon/hint/show-hint.css',
-    './../../../node_modules/codemirror/addon/lint/lint.css',
-    './../../../node_modules/codemirror/addon/scroll/simplescrollbars.css',
+    './../../../node_modules/codemirror-minified/lib/codemirror.css',
+    './../../../node_modules/codemirror-minified/addon/hint/show-hint.css',
+    './../../../node_modules/codemirror-minified/addon/lint/lint.css',
+    './../../../node_modules/codemirror-minified/addon/scroll/simplescrollbars.css',
     './code-editor.component.scss', ],
   encapsulation: ViewEncapsulation.None,
   providers: [

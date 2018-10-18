@@ -22,6 +22,10 @@
       "dom"
     ],
     "skipLibCheck": true,
+    "typeRoots": [
+      "node_modules/@types",
+      "src/lib/@types"
+    ],
     "types": [],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
