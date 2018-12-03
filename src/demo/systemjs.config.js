@@ -35,7 +35,7 @@
       'lodash': 'npm:lodash',
       'underscore': 'npm:lodash',
       'dagre': 'npm:dagre',
-      'codemirror': 'npm:codemirror',
+      'codemirror': 'npm:codemirror-minified',
       'moment': 'npm:moment/moment.js',
       'ts-disposables': 'npm:ts-disposables',
       'jshint': 'npm:jshint/dist/jshint.js'
