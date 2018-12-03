@@ -37,7 +37,6 @@
   "angularCompilerOptions": {
     "enableResourceInlining": false,
     "skipTemplateCodegen": true,
-    "annotateForClosureCompiler": true,
     "strictMetadataEmit": true,
     "flatModuleOutFile": "./spring-flo.js",
     "flatModuleId": "spring-flo"

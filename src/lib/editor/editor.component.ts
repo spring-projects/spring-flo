@@ -282,8 +282,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    console.log('Initializing my component');
-
     this.initGraph();
 
     this.initPaper();
@@ -650,7 +648,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   handleDragFromPalette(dnDEvent: Flo.DnDEvent) {
-    console.log('Dragging from palette');
+    console.debug('Dragging from palette');
     if (dnDEvent.view && !this.readOnlyCanvas) {
       let location = this.paper.snapToGrid({x: dnDEvent.event.clientX, y: dnDEvent.event.clientY});
       this.handleNodeDragging(dnDEvent.view,  this.getTargetViewFromEvent(dnDEvent.event, location.x, location.y, [dnDEvent.view]), location.x, location.y, Constants.PALETTE_CONTEXT);
@@ -923,7 +921,7 @@ export class EditorComponent implements OnInit, OnDestroy {
    * then update the view based on that new information.
    */
   updateGraphRepresentation(): Promise<any> {
-    console.log(`Updating graph to represent '${this._dslText}'`);
+    console.debug(`Updating graph to represent '${this._dslText}'`);
     if (this.metamodel && this.metamodel.textToGraph) {
       return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => {
         this.textToGraphConversionCompleted.next();
@@ -1138,7 +1136,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     this.paper.on('dragging-node-over-canvas', (dndEvent: Flo.DnDEvent) => {
-      console.log(`Canvas DnD type = ${dndEvent.type}`);
+      console.debug(`Canvas DnD type = ${dndEvent.type}`);
       let location = this.paper.snapToGrid({x: dndEvent.event.clientX, y: dndEvent.event.clientY});
       switch (dndEvent.type) {
         case Flo.DnDEventType.DRAG:

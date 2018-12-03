@@ -98,7 +98,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   set paletteSize(size: number) {
-    console.log('Palette Size: ' + size);
+    console.debug('Palette Size: ' + size);
     if (this._paletteSize !== size) {
       this._paletteSize = size;
       this.rebuildPalette();
@@ -237,7 +237,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     let groupAdded: Set<string> = new Set<string>();
 
     let parentWidth: number = this._paletteSize;
-    console.log(`Parent Width: ${parentWidth}`);
+    console.debug(`Parent Width: ${parentWidth}`);
 
     // The field closedGroups tells us which should not be shown
     // Work out the list of active groups/nodes based on the filter text
@@ -342,7 +342,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     });
     this.palette.setDimensions(parentWidth, ypos);
     this.paletteReady.emit(true);
-    console.log('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
+    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
   }
 
   rebuildPalette() {
@@ -472,7 +472,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private handleDrag(event: any) {
     // TODO offsetX/Y not on firefox
     // console.debug("tracking move: x="+event.pageX+",y="+event.pageY);
-    // console.log('Element = ' + (this.clickedElement ? this.clickedElement.attr('metadata/name'): 'null'));
+    // console.debug('Element = ' + (this.clickedElement ? this.clickedElement.attr('metadata/name'): 'null'));
     if (this.clickedElement && this.clickedElement.attr('metadata')) {
       if (!this.viewBeingDragged) {
 
