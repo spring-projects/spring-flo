@@ -22,6 +22,13 @@
   background-color: transparent;
 }
 
+#palette-paper-container {
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: white;
+  color: white;
+}
+
 /* Joint JS paper for drawing palette -> canvas DnD visual feedback END */
 
 /* Palette START */
