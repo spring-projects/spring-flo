@@ -1117,7 +1117,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   initPaperListeners() {
-    // http://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
+    // https://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
     this.paper.on('cell:pointerclick', (cellView: dia.CellView) => {
         if (!this.readOnlyCanvas) {
           this.selection = cellView;
@@ -1168,7 +1168,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       elementView: this.renderer && this.renderer.getNodeView ? this.renderer.getNodeView() : joint.shapes.flo.ElementView/*joint.dia.ElementView*/,
       linkView: this.renderer && this.renderer.getLinkView ? this.renderer.getLinkView() : joint.shapes.flo.LinkView,
       // Enable link snapping within 25px lookup radius
-      snapLinks: { radius: 25 }, // http://www.jointjs.com/tutorial/ports
+      snapLinks: { radius: 25 }, // https://www.jointjs.com/tutorial/ports
       defaultLink: /*this.renderer && this.renderer.createDefaultLink ? this.renderer.createDefaultLink: new joint.shapes.flo.Link*/
         (cellView: dia.CellView, magnet: SVGElement) => {
           if (this.renderer && this.renderer.createLink) {
