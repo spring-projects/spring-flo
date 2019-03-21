@@ -30,4 +30,4 @@ Pull requests are welcome, but before accepting them we will need you to sign th
 
 ## License
 
-Spring Flo is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+Spring Flo is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
