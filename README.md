@@ -4,7 +4,7 @@
 
 Spring Flo is a JavaScript library that offers a basic embeddable HTML5 visual builder for pipelines and simple graphs. This library is used as the basis of the stream builder in Spring Cloud Data Flow.
 
-[![dataflow ui](docs/Flo.png)](http://cloud.spring.io/spring-cloud-dataflow/)
+[![dataflow ui](docs/Flo.png)](https://cloud.spring.io/spring-cloud-dataflow/)
 
 Here is a [youtube video](https://www.youtube.com/watch?v=78CgV46OstI) of Spring Flo in action.
 
@@ -30,4 +30,4 @@ Pull requests are welcome, but before accepting them we will need you to sign th
 
 ## License
 
-Spring Flo is Open Source software released under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+Spring Flo is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
