@@ -4,7 +4,7 @@ image::https://travis-ci.org/spring-projects/spring-flo.svg?branch=master[Build 
 
 Spring Flo is a JavaScript library that offers a basic embeddable HTML5 visual builder for pipelines and simple graphs. This library is used as the basis of the stream builder in Spring Cloud Data Flow.
 
-image::docs/Flo.png[width="700", link="http://cloud.spring.io/spring-cloud-dataflow/"]
+image::docs/Flo.png[width="700", link="https://cloud.spring.io/spring-cloud-dataflow/"]
 
 Here is a https://www.youtube.com/watch?v=78CgV46OstI[youtube video] of Spring Flo in action.
 

@@ -27,7 +27,7 @@ define(function(require) {
 		joint.shapes.flo = {};
 	}
 
-	// http://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
+	// https://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
 	joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 		// The path is the open/close arrow, defaults to vertical (open)
 		markup: '<g class="scalable"><rect/></g><text/><g class="rotatable"><path d="m 10 10 l 5 8.7 l 5 -8.7 z"/></g>',

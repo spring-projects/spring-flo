@@ -1464,7 +1464,7 @@ define(function(require) {
     }
 
     function initPaperListeners() {
-		// http://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
+		// https://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
 		paper.on('cell:pointerclick',
 		    function(cellView, evt, x, y) { // jshint ignore:line
 				if (!readOnlyCanvas()) {
@@ -1506,7 +1506,7 @@ define(function(require) {
 
 	function initPaper() {
 		// The paper is what will represent the graph on the screen
-		paper = new PaperExtended({ // http://www.jointjs.com/api#joint.dia.Paper
+		paper = new PaperExtended({ // https://www.jointjs.com/api#joint.dia.Paper
 		 	el: $('#paper', domContext),
 		 	gridSize: _gridSize,
 			drawGrid: true,
@@ -1514,7 +1514,7 @@ define(function(require) {
 		 	elementView: renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : mainElementView,
 		 	linkView: renderService && angular.isFunction(renderService.getLinkView) ? renderService.getLinkView() : joint.dia.LinkView,
 		 	// Enable link snapping within 25px lookup radius
-		 	snapLinks: { radius: 25 }, // http://www.jointjs.com/tutorial/ports
+		 	snapLinks: { radius: 25 },
 			defaultLink: renderService && angular.isFunction(renderService.createLink) ? renderService.createLink() : new joint.shapes.flo.Link(),
 
 			// decide whether to create a link if the user clicks a magnet
