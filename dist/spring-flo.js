@@ -98,13 +98,13 @@ define('directives/resizer',[],function () {
 
 });
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
-// This is CodeMirror (http://codemirror.net), a code editor
+// This is CodeMirror (https://codemirror.net), a code editor
 // implemented in JavaScript on top of the browser's DOM.
 //
 // You can find some technical background for some of the code below
-// at http://marijnhaverbeke.nl/blog/#cm-internals .
+// at https://marijnhaverbeke.nl/blog/#cm-internals .
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -7377,7 +7377,7 @@ define('directives/resizer',[],function () {
   // It also indexes by height, and is used to convert between height
   // and line object, and to find the total height of the document.
   //
-  // See also http://marijnhaverbeke.nl/blog/codemirror-line-tree.html
+  // See also https://marijnhaverbeke.nl/blog/codemirror-line-tree.html
 
   function LeafChunk(lines) {
     this.lines = lines;
@@ -8883,7 +8883,7 @@ define('directives/resizer',[],function () {
   }
 
   // Bidirectional ordering algorithm
-  // See http://unicode.org/reports/tr9/tr9-13.html for the algorithm
+  // See https://unicode.org/reports/tr9/tr9-13.html for the algorithm
   // that this (partially) implements.
 
   // One-char codes used for character types:
@@ -9062,7 +9062,7 @@ define('directives/resizer',[],function () {
 define('codemirror', ['codemirror/lib/codemirror'], function (main) { return main; });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -9302,7 +9302,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -9741,7 +9741,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -9804,7 +9804,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -9923,7 +9923,7 @@ define('codemirror', ['codemirror/lib/codemirror'], function (main) { return mai
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -10318,7 +10318,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
     }];
 });
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -10527,7 +10527,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -10592,7 +10592,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -10715,7 +10715,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -10911,7 +10911,7 @@ define('directives/dsl-editor',['controllers/dsl-editor'],function () {
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -11142,7 +11142,7 @@ CodeMirror.defineMIME("text/x-groovy", "groovy");
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -11905,7 +11905,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -11963,7 +11963,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 
     var py3 = !(parserConf.version && Number(parserConf.version) < 3)
     if (py3) {
-      // since http://legacy.python.org/dev/peps/pep-0465/ @ is also an operator
+      // since https://legacy.python.org/dev/peps/pep-0465/ @ is also an operator
       var singleOperators = parserConf.singleOperators || /^[\+\-\*\/%&|\^~<>!@]/;
       var identifiers = parserConf.identifiers|| /^[_A-Za-z\u00A1-\uFFFF][_A-Za-z0-9\u00A1-\uFFFF]*/;
       myKeywords = myKeywords.concat(["nonlocal", "False", "True", "None", "async", "await"]);
@@ -12246,7 +12246,7 @@ CodeMirror.defineMIME("application/typescript", { name: "javascript", typescript
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -12532,7 +12532,7 @@ CodeMirror.defineMIME("text/x-ruby", "ruby");
 });
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -14297,7 +14297,7 @@ function inspect(obj, opts) {
 exports.inspect = inspect;
 
 
-// http://en.wikipedia.org/wiki/ANSI_escape_code#graphics
+// https://en.wikipedia.org/wiki/ANSI_escape_code#graphics
 inspect.colors = {
   'bold' : [1, 22],
   'italic' : [3, 23],
@@ -14388,7 +14388,7 @@ function formatValue(ctx, value, recurseTimes) {
   }
 
   // IE doesn't make error fields non-enumerable
-  // http://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
+  // https://msdn.microsoft.com/en-us/library/ie/dww52sbt(v=vs.94).aspx
   if (isError(value)
       && (keys.indexOf('message') >= 0 || keys.indexOf('description') >= 0)) {
     return formatError(value);
@@ -14833,7 +14833,7 @@ function now() {
 
 },{}],12:[function(require,module,exports){
 //     Underscore.js 1.6.0
-//     http://underscorejs.org
+//     https://underscorejs.org
 //     (c) 2009-2014 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
 //     Underscore may be freely distributed under the MIT license.
 
@@ -15117,7 +15117,7 @@ function now() {
   };
 
   // Shuffle an array, using the modern version of the
-  // [Fisher-Yates shuffle](http://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
+  // [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher–Yates_shuffle).
   _.shuffle = function(obj) {
     var rand;
     var index = 0;
@@ -15412,7 +15412,7 @@ function now() {
 
   // Generate an integer Array containing an arithmetic progression. A port of
   // the native Python `range()` function. See
-  // [the Python documentation](http://docs.python.org/library/functions.html#range).
+  // [the Python documentation](https://docs.python.org/library/functions.html#range).
   _.range = function(start, stop, step) {
     if (arguments.length <= 1) {
       stop = start || 0;
@@ -15736,7 +15736,7 @@ function now() {
   // Internal recursive comparison function for `isEqual`.
   var eq = function(a, b, aStack, bStack) {
     // Identical objects are equal. `0 === -0`, but they aren't identical.
-    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    // See the [Harmony `egal` proposal](https://wiki.ecmascript.org/doku.php?id=harmony:egal).
     if (a === b) return a !== 0 || 1 / a == 1 / b;
     // A strict comparison is necessary because `null == undefined`.
     if (a == null || b == null) return a === b;
@@ -18212,7 +18212,7 @@ var warnings = {
   W122: "Invalid typeof value '{a}'",
   W123: "'{a}' is already defined in outer scope.",
   W124: "A generator function shall contain a yield statement.",
-  W125: "This line contains non-breaking spaces: http://jshint.com/doc/options/#nonbsp",
+  W125: "This line contains non-breaking spaces: https://jshint.com/doc/options/#nonbsp",
   W126: "Unnecessary grouping operator.",
   W127: "Unexpected use of a comma operator.",
   W128: "Empty array elements require elision=true.",
@@ -18378,7 +18378,7 @@ exports.bool = {
      * lead to some unexpected results. The latter don't do any coercion so
      * they are generally safer. If you would like to learn more about type
      * coercion in JavaScript, we recommend [Truth, Equality and
-     * JavaScript](http://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/)
+     * JavaScript](https://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/)
      * by Angus Croll.
      */
     eqeqeq      : true,
@@ -18418,7 +18418,7 @@ exports.bool = {
 
     /**
      * This option enables syntax first defined in [the ECMAScript 5.1
-     * specification](http://es5.github.io/). This includes allowing reserved
+     * specification](https://es5.github.io/). This includes allowing reserved
      * keywords as object properties.
      */
     es5         : true,
@@ -18439,7 +18439,7 @@ exports.bool = {
      *
      * For more in-depth understanding of `for in` loops in JavaScript, read
      * [Exploring JavaScript for-in
-     * loops](http://javascriptweblog.wordpress.com/2011/01/04/exploring-javascript-for-in-loops/)
+     * loops](https://javascriptweblog.wordpress.com/2011/01/04/exploring-javascript-for-in-loops/)
      * by Angus Croll.
      */
     forin       : true,
@@ -18611,9 +18611,9 @@ exports.bool = {
      *
      * For more information about semicolons in JavaScript read [An Open Letter
      * to JavaScript Leaders Regarding
-     * Semicolons](http://blog.izs.me/post/2353458699/an-open-letter-to-javascript-leaders-regarding)
+     * Semicolons](https://blog.izs.me/post/2353458699/an-open-letter-to-javascript-leaders-regarding)
      * by Isaac Schlueter and [JavaScript Semicolon
-     * Insertion](http://inimino.org/~inimino/blog/javascript_semicolons).
+     * Insertion](https://inimino.org/~inimino/blog/javascript_semicolons).
      */
     asi         : true,
 
@@ -18791,7 +18791,7 @@ exports.bool = {
      * More info:
      *
      * * [with Statement Considered
-     *   Harmful](http://yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/)
+     *   Harmful](https://yuiblog.com/blog/2006/04/11/with-statement-considered-harmful/)
      */
     withstmt    : true,
 
@@ -18875,7 +18875,7 @@ exports.bool = {
      * More info:
      *
      * * [Draft Specification for ES.next (ECMA-262 Ed.
-     *   6)](http://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts)
+     *   6)](https://wiki.ecmascript.org/doku.php?id=harmony:specification_drafts)
      */
     esnext      : true,
 
@@ -18891,13 +18891,13 @@ exports.bool = {
 
     /**
      * This option defines globals exposed by the
-     * [MooTools](http://mootools.net/) JavaScript framework.
+     * [MooTools](https://mootools.net/) JavaScript framework.
      */
     mootools    : true,
 
     /**
      * This option defines globals exposed by
-     * [CouchDB](http://couchdb.apache.org/). CouchDB is a document-oriented
+     * [CouchDB](https://couchdb.apache.org/). CouchDB is a document-oriented
      * database that can be queried and indexed in a MapReduce fashion using
      * JavaScript.
      */
@@ -18910,14 +18910,14 @@ exports.bool = {
     jasmine     : true,
 
     /**
-     * This option defines globals exposed by the [jQuery](http://jquery.com/)
+     * This option defines globals exposed by the [jQuery](https://jquery.com/)
      * JavaScript library.
      */
     jquery      : true,
 
     /**
      * This option defines globals available when your code is running inside
-     * of the Node runtime environment. [Node.js](http://nodejs.org/) is a
+     * of the Node runtime environment. [Node.js](https://nodejs.org/) is a
      * server-side JavaScript environment that uses an asynchronous
      * event-driven model. This option also skips some warnings that make sense
      * in the browser environments but don't make sense in Node such as
@@ -18927,45 +18927,45 @@ exports.bool = {
 
     /**
      * This option defines globals exposed by [the QUnit unit testing
-     * framework](http://qunitjs.com/).
+     * framework](https://qunitjs.com/).
      */
     qunit       : true,
 
     /**
      * This option defines globals available when your code is running inside
-     * of the Rhino runtime environment. [Rhino](http://www.mozilla.org/rhino/)
+     * of the Rhino runtime environment. [Rhino](https://www.mozilla.org/rhino/)
      * is an open-source implementation of JavaScript written entirely in Java.
      */
     rhino       : true,
 
     /**
      * This option defines globals exposed by [the ShellJS
-     * library](http://documentup.com/arturadib/shelljs).
+     * library](https://documentup.com/arturadib/shelljs).
      */
     shelljs     : true,
 
     /**
      * This option defines globals exposed by the
-     * [Prototype](http://www.prototypejs.org/) JavaScript framework.
+     * [Prototype](http://prototypejs.org/) JavaScript framework.
      */
     prototypejs : true,
 
     /**
-     * This option defines globals exposed by the [YUI](http://yuilibrary.com/)
+     * This option defines globals exposed by the [YUI](https://yuilibrary.com/)
      * JavaScript framework.
      */
     yui         : true,
 
     /**
      * This option defines globals exposed by the "BDD" and "TDD" UIs of the
-     * [Mocha unit testing framework](http://mochajs.org/).
+     * [Mocha unit testing framework](https://mochajs.org/).
      */
     mocha       : true,
 
     /**
      * This option defines globals available when your code is running as a
      * script for the [Windows Script
-     * Host](http://en.wikipedia.org/wiki/Windows_Script_Host).
+     * Host](https://en.wikipedia.org/wiki/Windows_Script_Host).
      */
     wsh         : true,
 
@@ -19009,7 +19009,7 @@ exports.bool = {
 
     /**
      * This option defines globals exposed by the [Dojo
-     * Toolkit](http://dojotoolkit.org/).
+     * Toolkit](https://dojotoolkit.org/).
      */
     dojo        : true,
 
@@ -19160,7 +19160,7 @@ exports.val = {
    * This option lets you control cyclomatic complexity throughout your code.
    * Cyclomatic complexity measures the number of linearly independent paths
    * through a program's source code. Read more about [cyclomatic complexity on
-   * Wikipedia](http://en.wikipedia.org/wiki/Cyclomatic_complexity).
+   * Wikipedia](https://en.wikipedia.org/wiki/Cyclomatic_complexity).
    */
   maxcomplexity: false,
 
@@ -19215,7 +19215,7 @@ exports.val = {
    *
    * For more in-depth understanding of scoping and hoisting in JavaScript,
    * read [JavaScript Scoping and
-   * Hoisting](http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting)
+   * Hoisting](https://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting)
    * by Ben Cherry.
    */
   latedef      : false,
@@ -25762,7 +25762,7 @@ if (typeof exports === 'object' && exports) exports.JSHINT = JSHINT;
 define("jshint", ["lodash"], function(){});
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
-// Distributed under an MIT license: http://codemirror.net/LICENSE
+// Distributed under an MIT license: https://codemirror.net/LICENSE
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object") // CommonJS
@@ -26761,7 +26761,7 @@ define('controllers/palette',['require','jquery','joint','common/shapes-factory'
 		joint.shapes.flo = {};
 	}
 
-	// http://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
+	// https://stackoverflow.com/questions/23960312/can-i-add-new-attributes-in-jointjs-element
 	joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
 		// The path is the open/close arrow, defaults to vertical (open)
 		markup: '<g class="scalable"><rect/></g><text/><g class="rotatable"><path d="m 10 10 l 5 8.7 l 5 -8.7 z"/></g>',
@@ -29636,7 +29636,7 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
     }
 
     function initPaperListeners() {
-		// http://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
+		// https://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
 		paper.on('cell:pointerclick',
 		    function(cellView, evt, x, y) { // jshint ignore:line
 				if (!readOnlyCanvas()) {
@@ -29678,7 +29678,7 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 
 	function initPaper() {
 		// The paper is what will represent the graph on the screen
-		paper = new PaperExtended({ // http://www.jointjs.com/api#joint.dia.Paper
+		paper = new PaperExtended({ // https://www.jointjs.com/api#joint.dia.Paper
 		 	el: $('#paper', domContext),
 		 	gridSize: _gridSize,
 			drawGrid: true,
@@ -29686,7 +29686,7 @@ define('controllers/graph-editor',['require','angular','joint','jquery','common/
 		 	elementView: renderService && angular.isFunction(renderService.getNodeView) ? renderService.getNodeView() : mainElementView,
 		 	linkView: renderService && angular.isFunction(renderService.getLinkView) ? renderService.getLinkView() : joint.dia.LinkView,
 		 	// Enable link snapping within 25px lookup radius
-		 	snapLinks: { radius: 25 }, // http://www.jointjs.com/tutorial/ports
+		 	snapLinks: { radius: 25 }, // https://www.jointjs.com/tutorial/ports
 			defaultLink: renderService && angular.isFunction(renderService.createLink) ? renderService.createLink() : new joint.shapes.flo.Link(),
 
 			// decide whether to create a link if the user clicks a magnet

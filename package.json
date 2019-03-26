@@ -6,7 +6,7 @@
   "files": [ "dist/*" ],
   "repository": {
     "type": "git",
-    "url": "http://github.com/spring-projects/spring-flo.git"
+    "url": "https://github.com/spring-projects/spring-flo.git"
   },
   "dependencies": {
     "requirejs": "2.1.22",
