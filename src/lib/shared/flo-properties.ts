@@ -109,10 +109,32 @@ export namespace Properties {
 
     protected getValue() {
       const res = super.getValue();
-      if (typeof res !== 'boolean') {
-        return this.property.defaultValue;
+      const type = typeof res;
+      switch (type) {
+        case 'boolean':
+          return res;
+        case 'string':
+          switch ((<any>res).trim().toLowerCase()) {
+            case 'true':
+            case '1':
+              return true;
+            case 'false':
+            case '0':
+              return false;
+            default:
+              return this.property.defaultValue
+          }
+        case 'number':
+          const num = <any> res;
+          if (num === 0) {
+            return false;
+          } else if (num === 1) {
+            return true;
+          } else {
+            return this.property.defaultValue
+          }
       }
-      return res;
+      return this.property.defaultValue;
     }
 
   }
