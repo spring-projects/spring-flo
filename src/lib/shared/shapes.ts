@@ -32,7 +32,7 @@ DECORATION_ICON_MAP.set(ERROR, 'icons/error.svg');
 
 
 joint.util.cloneDeep = (obj: any) => {
-  return _.cloneDeep(obj, (o) => {
+  return _.cloneDeepWith(obj, (o) => {
     if (_.isObject(o) && !_.isPlainObject(o)) {
       return o;
     }
@@ -239,52 +239,52 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
   _tempOpacity: 1.0,
   _hovering: false,
 
-  dragMagnetStart: function(evt: any, x: number, y: number) {
-
-    if (!this.can('addLinkFromMagnet')) {
-      return;
-    }
+  dragLinkStart: function(evt, magnet, x, y) {
 
     this.model.startBatch('add-link');
 
+    const linkView = this.addLinkFromMagnet(magnet, x, y);
+
+    // backwards compatiblity events
+    joint.dia.CellView.prototype.pointerdown.apply(linkView, [evt, x, y]);
+    linkView.notify('link:pointerdown', evt, x, y);
+
+    /*** START MAIN DIFF ***/
+    const sourceOrTarget = $(magnet).attr('port') === 'input' ? 'source' : 'target';
+    linkView.eventData(evt, linkView.startArrowheadMove(sourceOrTarget, { whenNotAllowed: 'remove' }));
+    /*** END MAIN DIFF ***/
+
+    this.eventData(evt, { linkView: linkView });
+  },
+
+  addLinkFromMagnet: function(magnet, x, y) {
+
     const paper = this.paper;
     const graph = paper.model;
-    const magnet = evt.target;
+
     const link = paper.getDefaultLink(this, magnet);
 
-    let sourceEnd, targetEnd;
+    let sourceEnd, targetEnd: any;
 
-    if ($(evt.target).attr('port') === 'input') {
+    /*** START MAIN DIFF ***/
+    if ($(magnet).attr('port') === 'input') {
       sourceEnd = { x: x, y: y };
       targetEnd = this.getLinkEnd(magnet, x, y, link, 'target');
     } else {
       sourceEnd = this.getLinkEnd(magnet, x, y, link, 'source');
       targetEnd = { x: x, y: y };
     }
+    /*** END MAIN DIFF ***/
 
-    link.set({ source: sourceEnd, target: targetEnd });
-    link.addTo(graph, { async: false, ui: true });
-
-    const linkView = link.findView(paper);
-    joint.dia.CellView.prototype.pointerdown.apply(linkView, arguments);
-    linkView.notify('link:pointerdown', evt, x, y);
-    // const data = linkView.startArrowheadMove('target', { whenNotAllowed: 'remove' });
-    let data;
-    if ($(evt.target).attr('port') === 'input') {
-      data = linkView.startArrowheadMove('source', { whenNotAllowed: 'remove' });
-    } else {
-      data = linkView.startArrowheadMove('target', { whenNotAllowed: 'remove' });
-    }
-
-    linkView.eventData(evt, data);
-
-    this.eventData(evt, {
-      action: 'magnet',
-      linkView: linkView,
-      stopPropagation: true
+    link.set({
+      source: sourceEnd,
+      target: targetEnd
+    }).addTo(graph, {
+      async: false,
+      ui: true
     });
 
-    this.paper.delegateDragEvents(this, evt.data);
+    return link.findView(paper);
   },
 
   // pointerdown: function(evt: any, x: number, y: number) {
