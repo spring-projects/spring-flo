@@ -130,7 +130,7 @@ function compile() {
   const packagejson = path.join(NPM_DIR, 'package.json');
   const json = JSON.parse(fs.readFileSync(packagejson));
   if (json['scripts']) {
-    delete json['scripts']['postinstall'];
+    delete json['scripts']['prepare'];
   }
   const searchValue = './' + NPM_DIR + '/';
   const replaceValue = './';

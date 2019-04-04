@@ -239,7 +239,7 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
   _tempOpacity: 1.0,
   _hovering: false,
 
-  dragLinkStart: function(evt, magnet, x, y) {
+  dragLinkStart: function(evt: any, magnet: any, x: number, y: number) {
 
     this.model.startBatch('add-link');
 
@@ -257,7 +257,7 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
     this.eventData(evt, { linkView: linkView });
   },
 
-  addLinkFromMagnet: function(magnet, x, y) {
+  addLinkFromMagnet: function(magnet: any, x: number, y: number) {
 
     const paper = this.paper;
     const graph = paper.model;
