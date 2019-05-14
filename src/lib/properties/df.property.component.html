@@ -26,7 +26,7 @@
 
       <select *ngSwitchCase="types.SELECT" class="df-property-control" [id]="model.id"
              [formControlName]="model.id" [(ngModel)]="model.value">
-        <option *ngFor="let o of model.options" [ngValue]="o.value">{{o.name}}</option>
+        <!-- <option *ngFor="let o of model.options" [ngValue]="o.value">{{o.name}}</option> -->
       </select>
 
       <code-editor *ngSwitchCase="types.CODE" class="df-property-control" [id]="model.id"

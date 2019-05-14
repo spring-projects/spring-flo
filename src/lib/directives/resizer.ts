@@ -105,7 +105,7 @@ export class ResizerDirective implements OnInit, OnDestroy {
   constructor(private element: ElementRef, @Inject(DOCUMENT) private document: any) {
   }
 
-  private startDrag() {
+  startDrag() {
     this.dragInProgress = true;
   }
 
