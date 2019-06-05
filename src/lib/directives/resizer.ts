@@ -1,5 +1,5 @@
 import {Directive, Input, Output, EventEmitter, Inject, ElementRef, OnInit, OnDestroy} from '@angular/core';
-import {DOCUMENT} from '@angular/platform-browser'
+import {DOCUMENT} from '@angular/common'
 import { fromEvent } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 

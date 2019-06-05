@@ -4,7 +4,7 @@ import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';
-import { DOCUMENT } from '@angular/platform-browser'
+import { DOCUMENT } from '@angular/common'
 import * as _$ from 'jquery';
 const joint: any = Flo.joint;
 const $: any = _$;
