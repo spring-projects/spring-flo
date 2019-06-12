@@ -1,0 +1,30 @@
+import { ElementRef, OnInit, OnDestroy } from '@angular/core';
+import * as CodeMirror from 'codemirror-minified';
+import 'codemirror-minified/addon/lint/lint';
+import 'codemirror-minified/addon/hint/show-hint';
+import 'codemirror-minified/addon/display/placeholder';
+import 'codemirror-minified/addon/scroll/annotatescrollbar';
+import 'codemirror-minified/addon/scroll/simplescrollbars';
+export declare class DslEditorComponent implements OnInit, OnDestroy {
+    private element;
+    private doc;
+    private _dsl;
+    private _lint;
+    private _hint;
+    private lineNumbers;
+    private lineWrapping;
+    private scrollbarStyle;
+    private placeholder;
+    private debounce;
+    private dslChange;
+    private focus;
+    private blur;
+    private editor;
+    private _dslChangedHandler;
+    constructor(element: ElementRef);
+    dsl: string;
+    lintOptions: boolean | CodeMirror.LintOptions;
+    hintOptions: any;
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+}

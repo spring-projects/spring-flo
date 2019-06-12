@@ -1,5 +1,4 @@
 node_modules/
-out-tsc/
 debug.log
 npm-debug.log
 src/**/*.js
