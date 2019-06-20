@@ -186,11 +186,11 @@ export namespace Properties {
     }
 
     get value(): string {
-      return this.property.value ? this.property.value.join(', ') : '';
+      return this.property.value ? this.property.value.toString().trim().split(/\s*,\s*/).join(', ') : '';
     }
 
     set value(value: string) {
-      this.property.value = value && value.trim() ? value.split(/\s*,\s*/) : undefined;
+      this.property.value = value && value.trim() ? value.split(/\s*,\s*/).join(',') : undefined;
     }
 
   }
