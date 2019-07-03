@@ -21,7 +21,7 @@ const SCROLLBAR_SIZE = 17;
 @Component({
   selector: 'flo-editor',
   templateUrl: './editor.component.html',
-  styleUrls: ['./../../../node_modules/jointjs/dist/joint.css', './editor.component.scss'],
+  styleUrls: ['./editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
 export class EditorComponent implements OnInit, OnDestroy {

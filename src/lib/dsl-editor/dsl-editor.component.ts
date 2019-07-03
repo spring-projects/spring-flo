@@ -10,15 +10,10 @@ import 'codemirror-minified/addon/display/placeholder';
 import 'codemirror-minified/addon/scroll/annotatescrollbar';
 import 'codemirror-minified/addon/scroll/simplescrollbars';
 
-
 @Component({
   selector: 'dsl-editor',
   templateUrl: './dsl-editor.component.html',
-  styleUrls: [
-    './../../../node_modules/codemirror-minified/lib/codemirror.css',
-    './../../../node_modules/codemirror-minified/addon/hint/show-hint.css',
-    './../../../node_modules/codemirror-minified/addon/lint/lint.css',
-    './dsl-editor.component.scss', ],
+  styleUrls: ['./dsl-editor.component.scss', ],
   encapsulation: ViewEncapsulation.None
 })
 export class DslEditorComponent implements OnInit, OnDestroy {

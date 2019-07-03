@@ -4,6 +4,8 @@ const shell = require('shelljs');
 const chalk = require('chalk');
 const path = require('path');
 const fs = require('fs');
+const sass = require('node-sass');
+const ScssBundler = require('scss-bundle');
 
 const PACKAGE = `spring-flo`;
 const NPM_DIR = `dist`;
@@ -60,17 +62,27 @@ gulp.src(INLINE_TEMPLATES.SRC)
     .pipe(gulp.dest(INLINE_TEMPLATES.DIST)).on('end', compile);
 
 
-function compile() {
-    /* Try to process scss files  */
-  // shell.echo(`Try to process scss files`);
-  // if (shell.exec(`node-sass -r ${OUT_DIR} -o ${OUT_DIR}`).code === 0) {
-  //   shell.rm(`-Rf`, `${OUT_DIR}/**/*.scss`);
-  //   shell.ls(`${OUT_DIR}/**/*.css`).forEach(function (file) {
-  //     shell.mv(file, file.replace('.css', '.scss'));
-  //   });
-  // }
+async function compile() {
 
-  shell.cp('-Rf', ['*.json'], OUT_DIR);
+  shell.cp(`-Rf`, [`*.json`], `${OUT_DIR}`);
+
+  shell.cp('-Rf', './src/lib/styles.scss', `${OUT_DIR}`);
+
+  const mainScssFile = path.join(OUT_DIR, 'styles.scss');
+
+  const scssFiles = shell.ls(`${OUT_DIR}/**/*.scss`).filter(f => f.toString() !== mainScssFile).map(f => f.toString());
+
+  const singleScssFile = path.join(OUT_DIR, 'flo.scss');
+
+  await bundleScss(mainScssFile, scssFiles, singleScssFile);
+
+  const cssResult = sass.renderSync({
+    file: singleScssFile,
+  });
+
+  fs.writeFileSync(path.join(NPM_DIR, 'flo.css'), cssResult.css, (err) => {
+    if (err) throw err;
+  });
 
   /* AoT compilation */
   shell.echo(`Start AoT compilation`);
@@ -143,7 +155,33 @@ function compile() {
   replacePropertyValue(json, 'fesm5', searchValue, replaceValue);
   replacePropertyValue(json, 'fesm2015', searchValue, replaceValue);
   fs.writeFileSync(packagejson, JSON.stringify(json, null, 2));
+}
 
+/** Bundles all SCSS files into a single file */
+async function bundleScss(mainInputFile, inputFiles, outputFile) {
+  const { found, bundledContent, imports } = await new ScssBundler.Bundler()
+    .Bundle(mainInputFile, inputFiles);
+
+  if (imports) {
+    const cwd = process.cwd();
+
+    const filesNotFound = imports
+      .filter(x => !x.found)
+      .map(x => relative(cwd, x.filePath));
+
+    if (filesNotFound.length) {
+      console.error(`SCSS imports failed \n\n${filesNotFound.join('\n - ')}\n`);
+      throw new Error('One or more SCSS imports failed');
+    }
+  }
+
+  if (found) {
+    fs.writeFileSync(outputFile, bundledContent, (err) => {
+      if (err) throw err;
+    });
+  } else {
+    throw new Error('SCSS files not found');
+  }
 }
 
 function replacePropertyValue(json, property, searchValue, newValue) {
