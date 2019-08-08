@@ -1069,7 +1069,10 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.paper.findViewByModel(link).on('link:options', () => this.handleLinkEvent('options', link));
+    var paperLink = this.paper.findViewByModel(link);
+    if (paperLink) {
+      paperLink.on('link:options', () => this.handleLinkEvent('options', link));
+    }
 
     if (this.readOnlyCanvas) {
       link.attr('.link-tools/display', 'none');
