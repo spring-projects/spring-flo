@@ -1,14 +1,14 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 import * as _ from 'lodash';
-import * as CodeMirror from 'codemirror-minified';
+import * as CodeMirror from 'codemirror';
 import * as _$ from 'jquery';
 const $: any = _$;
 
-import 'codemirror-minified/addon/lint/lint';
-import 'codemirror-minified/addon/hint/show-hint';
-import 'codemirror-minified/addon/display/placeholder';
-import 'codemirror-minified/addon/scroll/annotatescrollbar';
-import 'codemirror-minified/addon/scroll/simplescrollbars';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/hint/show-hint';
+import 'codemirror/addon/display/placeholder';
+import 'codemirror/addon/scroll/annotatescrollbar';
+import 'codemirror/addon/scroll/simplescrollbars';
 
 @Component({
   selector: 'dsl-editor',

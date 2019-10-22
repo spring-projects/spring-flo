@@ -7,10 +7,10 @@ const { Renderer } = require('./renderer');
 const { Editor } = require('./editor');
 
 // Code editor used from Flo requires the follwoing CM extensions
-import 'codemirror-minified/mode/javascript/javascript';
-import 'codemirror-minified/mode/ruby/ruby';
-import 'codemirror-minified/mode/clike/clike';
-import 'codemirror-minified/addon/lint/javascript-lint';
+import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/ruby/ruby';
+import 'codemirror/mode/clike/clike';
+import 'codemirror/addon/lint/javascript-lint';
 
 @Component({
   selector: 'demo-app',

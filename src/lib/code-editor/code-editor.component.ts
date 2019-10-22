@@ -1,35 +1,35 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import * as CodeMirror from 'codemirror-minified';
+import * as CodeMirror from 'codemirror';
 
 import * as _$ from 'jquery';
 const $: any = _$;
 
 // CodeMirror extensions
-import 'codemirror-minified/mode/meta';
-import 'codemirror-minified/addon/lint/lint';
-import 'codemirror-minified/addon/hint/show-hint';
-// import 'codemirror-minified/addon/mode/loadmode';
-import 'codemirror-minified/addon/edit/matchbrackets';
-import 'codemirror-minified/addon/edit/closebrackets';
-import 'codemirror-minified/addon/display/placeholder';
-import 'codemirror-minified/addon/scroll/annotatescrollbar';
-import 'codemirror-minified/addon/scroll/simplescrollbars';
+import 'codemirror/mode/meta';
+import 'codemirror/addon/lint/lint';
+import 'codemirror/addon/hint/show-hint';
+// import 'codemirror/addon/mode/loadmode';
+import 'codemirror/addon/edit/matchbrackets';
+import 'codemirror/addon/edit/closebrackets';
+import 'codemirror/addon/display/placeholder';
+import 'codemirror/addon/scroll/annotatescrollbar';
+import 'codemirror/addon/scroll/simplescrollbars';
 
 // Lint support
 // Unclear how to import this dynamically...
-// import 'codemirror-minified/addon/lint/javascript-lint';
-// import 'codemirror-minified/addon/lint/json-lint';
-// import 'codemirror-minified/addon/lint/yaml-lint';
+// import 'codemirror/addon/lint/javascript-lint';
+// import 'codemirror/addon/lint/json-lint';
+// import 'codemirror/addon/lint/yaml-lint';
 
 // TODO: use dynamic import with JS7 in the future. CM autoLoad cannot load it properly - thinks its AMD
 // Supported languages until dynamic loading
-// import 'codemirror-minified/mode/groovy/groovy';
-// import 'codemirror-minified/mode/javascript/javascript';
-// import 'codemirror-minified/mode/python/python';
-// import 'codemirror-minified/mode/ruby/ruby';
-// import 'codemirror-minified/mode/clike/clike';
-// import 'codemirror-minified/mode/yaml/yaml';
+// import 'codemirror/mode/groovy/groovy';
+// import 'codemirror/mode/javascript/javascript';
+// import 'codemirror/mode/python/python';
+// import 'codemirror/mode/ruby/ruby';
+// import 'codemirror/mode/clike/clike';
+// import 'codemirror/mode/yaml/yaml';
 
 @Component({
   selector: 'code-editor',
