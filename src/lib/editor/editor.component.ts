@@ -1246,6 +1246,31 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.paper = new joint.dia.Paper(options);
     this._disposables.add(Disposable.create(() => this.paper.remove()));
 
+    this.paper.options.highlighterNamespace['addParentClass'] = {
+
+      /**
+       * @param {joint.dia.CellView} cellView
+       * @param {Element} magnetEl
+       * @param {object=} opt
+       */
+      highlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
+        const options = opt || {};
+        const className = options.className || this.className;
+        joint.V(magnetEl.parentElement).addClass(className);
+      },
+
+      /**
+       * @param {joint.dia.CellView} cellView
+       * @param {Element} magnetEl
+       * @param {object=} opt
+       */
+      unhighlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
+        const options = opt || {};
+        const className = options.className || this.className;
+        joint.V(magnetEl.parentElement).removeClass(className);
+      }
+    };
+
   }
 
   updatePaletteReadyState(ready: boolean) {
