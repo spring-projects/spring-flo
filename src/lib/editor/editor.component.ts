@@ -1028,8 +1028,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   handleLinkCreation(link: dia.Link) {
-    this.handleLinkEvent('add', link);
-
     link.on('change:source', (l: dia.Link) => {
       this.autosizePaper();
       let newSourceId = l.get('source').id;
@@ -1074,6 +1072,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.readOnlyCanvas) {
       link.attr('.link-tools/display', 'none');
     }
+
+    this.handleLinkEvent('add', link);
   }
 
   initGraphListeners() {
