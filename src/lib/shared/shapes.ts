@@ -123,7 +123,7 @@ joint.shapes.flo.Node = joint.shapes.basic.Generic.extend({
         'stroke-width': 1
       },
       '.input-port': {
-        type: 'input',
+        idp: 'input',
         port: 'input',
         height: 8, width: 8,
         magnet: true,
@@ -133,7 +133,7 @@ joint.shapes.flo.Node = joint.shapes.basic.Generic.extend({
         'stroke-width': 1
       },
       '.output-port': {
-        type: 'output',
+        id: 'output',
         port: 'output',
         height: 8, width: 8,
         magnet: true,
@@ -252,7 +252,7 @@ joint.shapes.flo.ElementView = joint.dia.ElementView.extend({
     linkView.notify('link:pointerdown', evt, x, y);
 
     /*** START MAIN DIFF ***/
-    const sourceOrTarget = $(magnet).attr('type') === 'input' ? 'source' : 'target';
+    const sourceOrTarget = $(magnet).attr('port') === 'input' ? 'source' : 'target';
     linkView.eventData(evt, linkView.startArrowheadMove(sourceOrTarget, { whenNotAllowed: 'remove' }));
     /*** END MAIN DIFF ***/
 
