@@ -38,21 +38,22 @@ export class Utils {
       });
 
     } else if (cell instanceof joint.dia.Link) {
+      const link = <joint.dia.Link> cell;
       // The cell is a link. Let's find its source and target models.
-      let srcId = cell.get('source').id || cell.previous('source').id;
-      let trgId = cell.get('target').id || cell.previous('target').id;
+      let src = link.source() || link.previous('source');
+      let trg = link.target() || cell.previous('target');
 
       // If one of the ends is not a model, the link has no siblings.
-      if (!srcId || !trgId) { return; }
+      if (!src.id || !trg.id) { return; }
 
       const siblings: dia.Link[] = graph.getLinks().filter((sibling: dia.Link) => {
 
-        const _srcId = sibling.get('source').id;
-        const _trgId = sibling.get('target').id;
+        const _src = sibling.source();
+        const _trg = sibling.target();
         const vertices = sibling.get('vertices');
         const fanRouted = !vertices || vertices.length === 0 || sibling.get('fanRouted');
 
-        return ((_srcId === srcId && _trgId === trgId) || (_srcId === trgId && _trgId === srcId)) && fanRouted;
+        return ((_.isEqual(_src, src) && _.isEqual(_trg, trg)) || (_.isEqual(_src, trg) && _.isEqual(_trg, src))) && fanRouted;
 
       });
 
@@ -75,8 +76,8 @@ export class Utils {
           // There is more than one siblings. We need to create vertices.
 
           // First of all we'll find the middle point of the link.
-          let source = <dia.Element> graph.getCell(srcId);
-          let target = <dia.Element> graph.getCell(trgId);
+          let source = link.getSourceElement();
+          let target = link.getTargetElement();
 
           if (!source || !target) {
             // When clearing the graph it may happen that some nodes are gone and some are left
