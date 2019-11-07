@@ -508,12 +508,15 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         });
 
         // Only node view expected
-        let box: dia.BBox = (<dia.ElementView>this.floaterpaper.findViewByModel(floaternode)).getBBox();
+        const view = this.floaterpaper.findViewByModel(floaternode);
+        let box: dia.BBox = (<dia.ElementView>view).getBBox();
         let size: dia.Size = floaternode.get('size');
+        parent.css('width', size.width + 10);
+        parent.css('height', size.height + 10);
         // Account for node real size including ports
         floaternode.translate(box.width - size.width, box.height - size.height);
         this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
-        $('#palette-floater').offset({left: event.pageX + 5, top: event.pageY + 5});
+        parent.offset({left: event.pageX + 5, top: event.pageY + 5});
       } else {
         $('#palette-floater').offset({left: event.pageX + 5, top: event.pageY + 5});
         this.trigger({
