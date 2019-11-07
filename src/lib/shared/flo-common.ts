@@ -101,7 +101,7 @@ export namespace Flo {
   }
 
   export interface Renderer {
-    createNode?(metadata: ElementMetadata, props?: Map<string, any>): dia.Element;
+    createNode?(viewerDescriptor: ViewerDescriptor, metadata: ElementMetadata, props?: Map<string, any>): dia.Element;
     createLink?(source: LinkEnd, target: LinkEnd, metadata?: ElementMetadata, props?: Map<string, any>): dia.Link;
     createHandle?(kind: string, parent: dia.Cell): dia.Element;
     createDecoration?(kind: string, parent: dia.Cell): dia.Element;

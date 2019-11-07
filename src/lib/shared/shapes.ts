@@ -571,7 +571,7 @@ export namespace Shapes {
       }
 
       if (renderer && _.isFunction(renderer.createNode)) {
-        node = renderer.createNode(metadata, props);
+        node = renderer.createNode({graph, paper}, metadata, props);
       } else {
         node = new joint.shapes.flo.Node();
         if (metadata) {
