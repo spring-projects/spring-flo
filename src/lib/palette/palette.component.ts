@@ -356,9 +356,10 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
     // Layout palette entry nodes
     paletteNodes.forEach(pnode => {
+      const elementSize = this.palette.findViewByModel(pnode).getBBox();
       let dimension: dia.Size = {
-        width: pnode.get('size').width,
-        height: pnode.get('size').height
+        width: elementSize.width,
+        height: elementSize.height
       };
       if (pnode.get('header')) { //attributes.attrs.header) {
         // Palette entry header
