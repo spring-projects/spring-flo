@@ -153,11 +153,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         const cell: dia.Cell = cellview.model;
         if (cell.attributes.header) {
           // Toggle the header open/closed
-          if (cell.get('isOpen')) {
-            this.rotateClosed(cell);
-          } else {
-            this.rotateOpen(cell);
-          }
+          // if (cell.get('isOpen')) {
+          //   this.rotateClosed(cell);
+          // } else {
+          //   this.rotateOpen(cell);
+          // }
         }
         // TODO [palette] ensure other mouse handling events do nothing for headers
         // TODO [palette] move 'metadata' field to the right place (not inside attrs I think)
@@ -204,13 +204,55 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   }
 
   private createPaletteGroup(title: string, isOpen: boolean): dia.Element {
-    let newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: title}}});
-    newGroupHeader.set('header', title);
+    const paletteRenderer: Flo.PaletteRenderer = this.renderer.getPaletteRenderer ? this.renderer.getPaletteRenderer() : {
+      createGroupHeader: (title: string, isOpen: boolean) => {
+        const newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: title}}});
+        if (!isOpen) {
+          newGroupHeader.attr({'path': {'transform': 'rotate(-90,15,13)'}});
+        }
+        return newGroupHeader;
+      },
+      onClose: (groupView: dia.CellView) => this.rotateClosed(groupView.model),
+      onOpen: (groupView: dia.CellView) => this.rotateOpen(groupView.model)
+    };
+    let newGroupHeader = paletteRenderer.createGroupHeader(title, isOpen);
     if (!isOpen) {
-      newGroupHeader.attr({'path': {'transform': 'rotate(-90,15,13)'}});
       newGroupHeader.set('isOpen', false);
     }
+    newGroupHeader.set('header', title);
+
     this.paletteGraph.addCell(newGroupHeader);
+
+    const view = this.palette.findViewByModel(newGroupHeader);
+
+    view.on('cell:pointerclick', () => {
+      if (newGroupHeader.get('isOpen')) {
+        if (typeof paletteRenderer.onClose === 'function') {
+          paletteRenderer.onClose(view).then(() => {
+            newGroupHeader.set('isOpen', false);
+            this.closedGroups.add(newGroupHeader.get('header'));
+            this.rebuildPalette();
+          });
+        } else {
+          newGroupHeader.set('isOpen', false);
+          this.closedGroups.add(newGroupHeader.get('header'));
+          this.rebuildPalette();
+        }
+      } else {
+        if (typeof paletteRenderer.onOpen === 'function') {
+          paletteRenderer.onOpen(view).then(() => {
+            newGroupHeader.set('isOpen', true);
+            this.closedGroups.delete(newGroupHeader.get('header'));
+            this.rebuildPalette();
+          });
+        } else {
+          newGroupHeader.set('isOpen', true);
+          this.closedGroups.delete(newGroupHeader.get('header'));
+          this.rebuildPalette();
+        }
+      }
+    });
+
     return newGroupHeader;
   }
 
@@ -270,7 +312,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
             if (nodeActive) {
               if (!groupAdded.has(group)) {
                 let header: dia.Element = this.createPaletteGroup(group, !this.closedGroups.has(group));
-                header.set('size', {width: parentWidth, height: 30});
+                header.set('size', {width: parentWidth, height: header.size().height || 30});
+                console.log('Group size set to: ' + JSON.stringify(header.size()));
                 paletteNodes.push(header);
                 groupAdded.add(group);
               }
@@ -287,9 +330,10 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     // Determine the size of the palette entry cell (width and height)
     paletteNodes.forEach(pnode => {
       if (pnode.attr('metadata/name')) {
+        const elementSize = this.palette.findViewByModel(pnode).getBBox();
         let dimension: dia.Size = {
-          width: pnode.get('size').width,
-          height: pnode.get('size').height
+          width: elementSize.width,
+          height: elementSize.height
         };
         if (cellWidth < dimension.width) {
           cellWidth = dimension.width;
@@ -531,32 +575,36 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   /*
    * Modify the rotation of the arrow in the header from horizontal(closed) to vertical(open)
    */
-  private rotateOpen(element: dia.Cell) {
-    setTimeout(() => this.doRotateOpen(element, 90));
+  private rotateOpen(element: dia.Cell): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => this.doRotateOpen(element, 90).then(() => {
+        resolve();
+      }));
+    });
   }
 
-  private doRotateOpen(element: dia.Cell, angle: number) {
-    angle -= 10;
-    element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
-    if (angle <= 0) {
-      element.set('isOpen', true);
-      this.closedGroups.delete(element.get('header'));
-      this.rebuildPalette();
-    } else {
-      setTimeout(() => this.doRotateOpen(element, angle), 10);
-    }
+  private doRotateOpen(element: dia.Cell, angle: number): Promise<void> {
+    return new Promise(resolve => {
+      angle -= 10;
+      element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
+      if (angle <= 0) {
+        resolve();
+      } else {
+        setTimeout(() => this.doRotateOpen(element, angle).then(() => resolve()), 10);
+      }
+    });
   }
 
-  private doRotateClose(element: dia.Cell, angle: number) {
-    angle += 10;
-    element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
-    if (angle >= 90) {
-      element.set('isOpen', false);
-      this.closedGroups.add(element.get('header'));
-      this.rebuildPalette();
-    } else {
-      setTimeout(() => this.doRotateClose(element, angle), 10);
-    }
+  private doRotateClose(element: dia.Cell, angle: number): Promise<void> {
+    return new Promise(resolve => {
+      angle += 10;
+      element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
+      if (angle >= 90) {
+        resolve();
+      } else {
+        setTimeout(() => this.doRotateClose(element, angle).then(() => resolve()), 10);
+      }
+    });
   }
 
   // TODO better name for this function as this does the animation *and* updates the palette
@@ -564,8 +612,14 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   /*
    * Modify the rotation of the arrow in the header from vertical(open) to horizontal(closed)
    */
-  private rotateClosed(element: dia.Cell) {
-    setTimeout(() => this.doRotateClose(element, 0));
+  private rotateClosed(element: dia.Cell): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.doRotateClose(element, 0).then(() => {
+          resolve();
+        });
+      });
+    });
   }
 
 }

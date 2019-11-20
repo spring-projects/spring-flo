@@ -100,11 +100,18 @@ export namespace Flo {
     kind: string;
   }
 
+  export interface PaletteRenderer {
+    createGroupHeader(title: string, isOpen: boolean): dia.Element;
+    onOpen?(groupView: dia.CellView): Promise<any>;
+    onClose?(groupView: dia.CellView): Promise<any>;
+  }
+
   export interface Renderer {
     createNode?(viewerDescriptor: ViewerDescriptor, metadata: ElementMetadata, props?: Map<string, any>): dia.Element;
     createLink?(source: LinkEnd, target: LinkEnd, metadata?: ElementMetadata, props?: Map<string, any>): dia.Link;
     createHandle?(kind: string, parent: dia.Cell): dia.Element;
     createDecoration?(kind: string, parent: dia.Cell): dia.Element;
+    getPaletteRenderer?(): PaletteRenderer;
     initializeNewNode?(node: dia.Element, viewerDescriptor: ViewerDescriptor): void;
     initializeNewLink?(link: dia.Link, viewerDescriptor: ViewerDescriptor): void;
     initializeNewHandle?(handle: dia.Element, viewerDescriptor: ViewerDescriptor): void;

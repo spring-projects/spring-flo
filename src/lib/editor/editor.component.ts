@@ -103,6 +103,12 @@ export class EditorComponent implements OnInit, OnDestroy {
   paletteSize: number;
 
   /**
+   * Palette entry padding
+   */
+  @Input()
+  paletteEntryPadding: dia.Size;
+
+  /**
    * Min zoom percent value
    */
   @Input()

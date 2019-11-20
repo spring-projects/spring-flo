@@ -3,6 +3,7 @@
   <div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
       <flo-palette [metamodel]="metamodel" [renderer]="renderer" [paletteSize]="paletteSize"
+                   [paletteEntryPadding]="paletteEntryPadding || {width: 12, height: 12}"
                    (onPaletteEntryDrop)="handleDnDFromPalette($event)"
                     (paletteReady)="updatePaletteReadyState($event)"
                     (paletteFocus)="graphToTextSync=true"></flo-palette>
