@@ -654,37 +654,28 @@ export namespace Shapes {
       let decoration: dia.Element;
       if (renderer && _.isFunction(renderer.createDecoration)) {
         decoration = renderer.createDecoration(kind, parent);
-      } else {
-        decoration = new joint.shapes.flo.ErrorDecoration({
-          attrs: {
-            image: { 'xlink:href': DECORATION_ICON_MAP.get(kind) },
-          }
-        });
-        if (parent instanceof joint.dia.Element) {
-          const pt = location || (<dia.Element> parent).getBBox().topRight().offset(-decoration.size().width, 0);
-          decoration.position(pt.x, pt.y);
-        } else {
-          // TODO: do something for the link perhaps?
+      }
+      if (decoration) {
+        decoration.set('type', joint.shapes.flo.DECORATION_TYPE);
+        if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
+          decoration.set('z', parent.get('z') + 1);
         }
+        decoration.attr('./kind', kind);
+        decoration.attr('messages', messages);
+        if (graph) {
+          graph.addCell(decoration);
+        }
+        parent.embed(decoration);
+        if (renderer && _.isFunction(renderer.initializeNewDecoration)) {
+          let descriptor: Flo.ViewerDescriptor = {
+            paper: paper,
+            graph: graph
+          };
+          renderer.initializeNewDecoration(decoration, descriptor);
+        }
+        return decoration;
       }
-      decoration.set('type', joint.shapes.flo.DECORATION_TYPE);
-      if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
-        decoration.set('z', parent.get('z') + 1);
-      }
-      decoration.attr('./kind', kind);
-      decoration.attr('messages', messages);
-      if (graph) {
-        graph.addCell(decoration);
-      }
-      parent.embed(decoration);
-      if (renderer && _.isFunction(renderer.initializeNewDecoration)) {
-        let descriptor: Flo.ViewerDescriptor = {
-          paper: paper,
-          graph: graph
-        };
-        renderer.initializeNewDecoration(decoration, descriptor);
-      }
-      return decoration;
+
     }
 
     static createHandle(params: HandleCreationParams): dia.Element {

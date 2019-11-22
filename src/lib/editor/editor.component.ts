@@ -875,8 +875,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   markElement(cell: dia.Cell, markers: Array<Flo.Marker>) {
-    let errorMessages = markers.map(m => m.message);
+    cell.set('markers', markers);
 
+    // Old legacy code below consider removing
+    let errorMessages = markers.map(m => m.message);
     let errorCell = cell.getEmbeddedCells().find((e: dia.Cell) => e.attr('./kind') === Constants.ERROR_DECORATION_KIND);
     if (errorCell) {
       if (errorMessages.length === 0) {
@@ -893,14 +895,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         kind: Constants.ERROR_DECORATION_KIND,
         messages: errorMessages
       });
-      const view = this.paper.findViewByModel(error);
-      view.setInteractivity(false);
+      if (error) {
+        const view = this.paper.findViewByModel(error);
+        view.setInteractivity(false);
+      }
     }
 
-    const cellView = this.paper.findViewByModel(cell);
-    if (cellView) {
-      joint.V(cellView.el).toggleClass('marker-error', errorMessages.length);
-    }
   }
 
   doLayout(): Promise<void> {
@@ -1018,6 +1018,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    node.on('change:markers', () => {
+      if (this.renderer && this.renderer.markersChanged) {
+        this.renderer.markersChanged(node, this.paper);
+      }
+    });
+
   }
 
   /**

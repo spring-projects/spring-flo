@@ -123,6 +123,7 @@ export namespace Flo {
     isSemanticProperty?(propertyPath: string, element: dia.Cell): boolean;
     refreshVisuals?(cell: dia.Cell, propertyPath: string, paper: dia.Paper): void;
     getLinkAnchorPoint?(linkView: dia.LinkView, view: dia.ElementView, port: SVGElement, reference: dia.Point): dia.Point;
+    markersChanged?(cell: dia.Cell, paper: dia.Paper): void;
   }
 
   export interface EditorContext {
