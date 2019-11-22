@@ -893,16 +893,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         kind: Constants.ERROR_DECORATION_KIND,
         messages: errorMessages
       });
-      let pt: dia.Point;
       const view = this.paper.findViewByModel(error);
-      if (cell instanceof joint.dia.Element) {
-        pt = (<dia.Element> cell).getBBox().topRight().offset(-error.get('size').width, 0);
-        error.set('position', pt);
-        (<dia.ElementView>view).setInteractivity(false);
-      } else {
-        // TODO: do something for the link perhaps?
-      }
+      view.setInteractivity(false);
+    }
 
+    const cellView = this.paper.findViewByModel(cell);
+    if (cellView) {
+      joint.V(cellView.el).toggleClass('marker-error', errorMessages.length);
     }
   }
 

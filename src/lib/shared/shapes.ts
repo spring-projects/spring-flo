@@ -651,9 +651,6 @@ export namespace Shapes {
       let location = params.position;
       let graph = params.graph || (params.paper ? params.paper.model : undefined);
 
-      if (!location) {
-        location = {x: 0, y: 0};
-      }
       let decoration: dia.Element;
       if (renderer && _.isFunction(renderer.createDecoration)) {
         decoration = renderer.createDecoration(kind, parent);
@@ -663,9 +660,14 @@ export namespace Shapes {
             image: { 'xlink:href': DECORATION_ICON_MAP.get(kind) },
           }
         });
+        if (parent instanceof joint.dia.Element) {
+          const pt = location || (<dia.Element> parent).getBBox().topRight().offset(-decoration.size().width, 0);
+          decoration.position(pt.x, pt.y);
+        } else {
+          // TODO: do something for the link perhaps?
+        }
       }
       decoration.set('type', joint.shapes.flo.DECORATION_TYPE);
-      decoration.set('position', location);
       if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
         decoration.set('z', parent.get('z') + 1);
       }
