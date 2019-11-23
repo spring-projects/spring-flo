@@ -364,8 +364,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       if (pnode.get('header')) { //attributes.attrs.header) {
         // Palette entry header
         xpos = startX;
+        if (ypos) {
+          ypos += this.paletteEntryPadding.height;
+        }
         pnode.set('position', {x: 0, y: ypos});
-        ypos += dimension.height + 5;
+        ypos += dimension.height + this.paletteEntryPadding.height;
       } else {
         // Palette entry element
         if (xpos + cellWidth > parentWidth) {
