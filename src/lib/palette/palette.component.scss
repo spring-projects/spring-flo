@@ -25,6 +25,8 @@
   overflow-x: hidden;
   background-color: white;
   color: white;
+  height:calc(100% - 46px);
+  width:100%;
 }
 
 /* Joint JS paper for drawing palette -> canvas DnD visual feedback END */
