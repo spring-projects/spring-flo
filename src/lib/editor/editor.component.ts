@@ -792,8 +792,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     const parentWidth = parent.innerWidth();
     const parentHeight = parent.innerHeight();
     this.fitToContent(this.gridSize, this.gridSize, this.paperPadding, {
-      minWidth: parentWidth - SCROLLBAR_SIZE,
-      minHeight: parentHeight - SCROLLBAR_SIZE,
+      minWidth: parentWidth - Flo.SCROLLBAR_WIDTH,
+      minHeight: parentHeight - Flo.SCROLLBAR_WIDTH,
       allowNewOrigin: 'same'
     });
   }
@@ -810,7 +810,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       minScaleY: minScale,
       maxScaleX: maxScale,
       maxScaleY: maxScale,
-      fittingBBox: {x: 0, y: 0, width: parentWidth - SCROLLBAR_SIZE, height: parentHeight - SCROLLBAR_SIZE}
+      fittingBBox: {x: 0, y: 0, width: parentWidth - Flo.SCROLLBAR_WIDTH, height: parentHeight - Flo.SCROLLBAR_WIDTH}
     });
     /**
      * Size the canvas appropriately and allow origin movement

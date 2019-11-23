@@ -278,7 +278,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     let paletteNodes: Array<dia.Element> = [];
     let groupAdded: Set<string> = new Set<string>();
 
-    let parentWidth: number = this._paletteSize;
+    let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
     console.debug(`Parent Width: ${parentWidth}`);
 
     // The field closedGroups tells us which should not be shown
