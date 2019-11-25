@@ -825,7 +825,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   get zoomPercent(): number {
-    return Math.round(joint.V(this.paper.viewport).scale().sx * 100);
+    return Math.round(this.paper.scale().sx * 100);
   }
 
   set zoomPercent(percent: number) {
