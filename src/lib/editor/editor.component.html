@@ -1,4 +1,4 @@
-<ng-content select="[flo-editor-header]"></ng-content>
+<ng-content select="[header]"></ng-content>
 <div id="flow-view" class="flow-view" style="position:relative">
   <div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
@@ -22,7 +22,7 @@
 
       <div id="paper-container">
         <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
-        <ng-content select="[flo-canvas-actions]"></ng-content>
+        <ng-content select="[canvas]"></ng-content>
       </div>
 
       <span class="canvas-controls-container" ng-if="canvasControls">
@@ -51,5 +51,5 @@
     </div>
   </div>
 </div>
-<ng-content select="[flo-editor-footer]"></ng-content>
+<ng-content select="[footer]"></ng-content>
 
