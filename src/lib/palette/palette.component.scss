@@ -35,11 +35,13 @@
 
 .palette-filter {
   border: 3px solid #6db33f;
+  font-size:24px;
+  background-color: white;
 }
 
 .palette-filter-textfield {
   width: 100%;
-  font-size:24px;
+  border: none;
   /* border: 3px solid #6db33f;
  */	font-family: "Varela Round",sans-serif;
   /* 	padding: 2px; */

@@ -8,6 +8,7 @@
 </div>
 <div id="flo-container">
   <flo-editor (floApi)="editorContext = $event" [metamodel]="metamodel" [renderer]="renderer" [editor]="editor" [paletteSize]="paletteSize" [paletteEntryPadding]="{width: 4, height: 4}" [(dsl)]="dsl" [paperPadding]="20" (validationMarkers)="markersChanged($event)">
+    <div flo-editor-header>
       <div id="controls" class="controls">
         <button class="button" id="clearGraph" (click)="editorContext.clearGraph()">Create New Flow</button>
         <!-- let's use the 'x' control on the nodes themselves when they are selected
@@ -34,8 +35,9 @@
       <div class="flow-definition-container">
         <dsl-editor *ngIf="dslEditor" [(dsl)]="dsl" line-numbers="true" line-wrapping="true" (blur)="editorContext.graphToTextSync=true" (focus)="editorContext.graphToTextSync=false" placeholder="Enter stream definition..."></dsl-editor>
         <textarea *ngIf="!dslEditor" id="flow-definition" class="flow-definition" placeholder="Enter stream definition..."
-                [value]="dsl" (keyup)="dsl=$event.target.value" (blur)="editorContext.graphToTextSync=true" (focus)="editorContext.graphToTextSync=false"></textarea>
+                  [value]="dsl" (keyup)="dsl=$event.target.value" (blur)="editorContext.graphToTextSync=true" (focus)="editorContext.graphToTextSync=false"></textarea>
       </div>
+    </div>
   </flo-editor>
 </div>
 

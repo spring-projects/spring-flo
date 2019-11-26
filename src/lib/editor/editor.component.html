@@ -1,4 +1,4 @@
-<ng-content></ng-content>
+<ng-content select="[flo-editor-header]"></ng-content>
 <div id="flow-view" class="flow-view" style="position:relative">
   <div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
@@ -47,6 +47,10 @@
         </table>
       </span>
 
+      <ng-content select="[flo-canvas-actions]"></ng-content>
+
     </div>
   </div>
 </div>
+<ng-content select="[flo-editor-footer]"></ng-content>
+
