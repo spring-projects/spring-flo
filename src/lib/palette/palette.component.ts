@@ -204,7 +204,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   }
 
   private createPaletteGroup(title: string, isOpen: boolean): dia.Element {
-    const paletteRenderer: Flo.PaletteRenderer = this.renderer.getPaletteRenderer ? this.renderer.getPaletteRenderer() : {
+    const paletteRenderer: Flo.PaletteRenderer = this.renderer && this.renderer.getPaletteRenderer ? this.renderer.getPaletteRenderer() : {
       createGroupHeader: (title: string, isOpen: boolean) => {
         const newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: title}}});
         if (!isOpen) {
