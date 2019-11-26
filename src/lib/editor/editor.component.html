@@ -22,6 +22,7 @@
 
       <div id="paper-container">
         <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
+        <ng-content select="[flo-canvas-actions]"></ng-content>
       </div>
 
       <span class="canvas-controls-container" ng-if="canvasControls">
@@ -46,8 +47,6 @@
           </tbody>
         </table>
       </span>
-
-      <ng-content select="[flo-canvas-actions]"></ng-content>
 
     </div>
   </div>
