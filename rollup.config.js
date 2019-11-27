@@ -41,37 +41,38 @@ const globals = {
   'rxjs/operators': 'rxjs.operators',
   'lodash': 'lodash',
   'ts-disposables': 'ts-disposables',
-  'codemirror': 'codemirror',
+  'codemirror-minified': 'codemirror-minified',
+  'codemirror': 'codemirror-minified',
   'jointjs': 'jointjs',
   'jquery': 'jquery',
 
   // CodeMirror extensions
-  'codemirror/mode/meta': 'codemirror/mode/meta',
-  'codemirror/addon/lint/lint': 'codemirror/addon/lint/lint',
-  'codemirror/addon/hint/show-hint': 'codemirror/addon/hint/show-hint',
-  'codemirror/addon/mode/loadmode': 'codemirror/addon/mode/loadmode',
-  'codemirror/addon/edit/matchbrackets': 'codemirror/addon/edit/matchbrackets',
-  'codemirror/addon/edit/closebrackets': 'codemirror/addon/edit/closebrackets',
-  'codemirror/addon/display/placeholder': 'codemirror/addon/edit/closebrackets',
-  'codemirror/addon/scroll/annotatescrollbar': 'codemirror/addon/scroll/annotatescrollbar',
-  'codemirror/addon/scroll/simplescrollbars': 'codemirror/addon/scroll/simplescrollbars',
+  'codemirror-minified/mode/meta': 'codemirror-minified/mode/meta',
+  'codemirror-minified/addon/lint/lint': 'codemirror-minified/addon/lint/lint',
+  'codemirror-minified/addon/hint/show-hint': 'codemirror-minified/addon/hint/show-hint',
+  'codemirror-minified/addon/mode/loadmode': 'codemirror-minified/addon/mode/loadmode',
+  'codemirror-minified/addon/edit/matchbrackets': 'codemirror-minified/addon/edit/matchbrackets',
+  'codemirror-minified/addon/edit/closebrackets': 'codemirror-minified/addon/edit/closebrackets',
+  'codemirror-minified/addon/display/placeholder': 'codemirror-minified/addon/edit/closebrackets',
+  'codemirror-minified/addon/scroll/annotatescrollbar': 'codemirror-minified/addon/scroll/annotatescrollbar',
+  'codemirror-minified/addon/scroll/simplescrollbars': 'codemirror-minified/addon/scroll/simplescrollbars',
 
   // Lint support
   // Unclear how to import this dynamically...
-  'codemirror/addon/lint/javascript-lint': 'codemirror/addon/lint/javascript-lint',
-  'codemirror/addon/lint/coffeescript-lint': 'codemirror/addon/lint/coffeescript-lint',
-  'codemirror/addon/lint/json-lint': 'codemirror/addon/lint/json-lint',
-  'codemirror/addon/lint/yaml-lint': 'codemirror/addon/lint/yaml-lint',
+  'codemirror-minified/addon/lint/javascript-lint': 'codemirror-minified/addon/lint/javascript-lint',
+  'codemirror-minified/addon/lint/coffeescript-lint': 'codemirror-minified/addon/lint/coffeescript-lint',
+  'codemirror-minified/addon/lint/json-lint': 'codemirror-minified/addon/lint/json-lint',
+  'codemirror-minified/addon/lint/yaml-lint': 'codemirror-minified/addon/lint/yaml-lint',
 
   // TODO: use dynamic import with JS7 in the future. CM autoLoad cannot load it properly - thinks its AMD
   // Supported languages until dynamic loading
-  'codemirror/mode/groovy/groovy': 'codemirror/mode/groovy/groovy',
-  'codemirror/mode/javascript/javascript': 'codemirror/mode/javascript/javascript',
-  'codemirror/mode/python/python': 'codemirror/mode/python/python',
-  'codemirror/mode/ruby/ruby': 'codemirror/mode/ruby/ruby',
-  'codemirror/mode/clike/clike': 'codemirror/mode/clike/clike',
-  'codemirror/mode/yaml/yaml': 'codemirror/mode/yaml/yaml',
-  'codemirror/mode/coffeescript/coffeescript': 'codemirror/mode/coffeescript/coffeescript'
+  'codemirror-minified/mode/groovy/groovy': 'codemirror-minified/mode/groovy/groovy',
+  'codemirror-minified/mode/javascript/javascript': 'codemirror-minified/mode/javascript/javascript',
+  'codemirror-minified/mode/python/python': 'codemirror-minified/mode/python/python',
+  'codemirror-minified/mode/ruby/ruby': 'codemirror-minified/mode/ruby/ruby',
+  'codemirror-minified/mode/clike/clike': 'codemirror-minified/mode/clike/clike',
+  'codemirror-minified/mode/yaml/yaml': 'codemirror-minified/mode/yaml/yaml',
+  'codemirror-minified/mode/coffeescript/coffeescript': 'codemirror-minified/mode/coffeescript/coffeescript'
 
 };
 
