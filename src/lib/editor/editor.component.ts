@@ -346,10 +346,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   createHandle(element: dia.CellView, kind: string, action: () => void, location: dia.Point): dia.Element {
-    if (!location) {
-      let bbox: any = (<any>element.model).getBBox();
-      location = bbox.origin().offset(bbox.width / 2, bbox.height / 2);
-    }
     let handle = Shapes.Factory.createHandle({
       renderer: this.renderer,
       paper: this.paper,

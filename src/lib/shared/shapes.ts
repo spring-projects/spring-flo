@@ -687,9 +687,6 @@ export namespace Shapes {
       let graph = params.graph || (params.paper ? params.paper.model : undefined);
 
       let handle: dia.Element;
-      if (!location) {
-        location = {x: 0, y: 0};
-      }
       if (renderer && _.isFunction(renderer.createHandle)) {
         handle = renderer.createHandle(kind, parent);
       } else {
@@ -703,7 +700,9 @@ export namespace Shapes {
         });
       }
       handle.set('type', joint.shapes.flo.HANDLE_TYPE);
-      handle.set('position', location);
+      if (location) {
+        handle.set('position', location);
+      }
       if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
         handle.set('z', parent.get('z') + 1);
       }
