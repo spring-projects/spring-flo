@@ -262,16 +262,12 @@ export class EditorComponent implements OnInit, OnDestroy {
 
       deleteSelectedNode(): void {
         if (self.selection) {
-          if (self.editor && self.editor.preDelete) {
-            self.editor.preDelete(self.editorContext, self.selection.model);
-          } else {
-            if (self.selection.model instanceof joint.dia.Element) {
-              self.graph.getConnectedLinks(self.selection.model).forEach((l: dia.Link) => l.remove());
-            }
-          }
-          self.selection.model.remove();
-          self.selection = undefined;
+          self.graph.trigger('startDeletion', self.selection.model);
         }
+      }
+
+      delete(cell: dia.Cell) {
+        self.graph.trigger('startDeletion', cell);
       }
 
       get textToGraphConversionObservable(): Observable<void> {
@@ -317,6 +313,16 @@ export class EditorComponent implements OnInit, OnDestroy {
     this._disposables.dispose();
   }
 
+  private delete(cell: dia.Cell) {
+    if (this.editor && this.editor.preDelete) {
+      if (this.editor.preDelete(this.editorContext, this.selection.model)) {
+        cell.remove();
+      }
+    } else {
+      cell.remove();
+    }
+  }
+
   get noPalette(): boolean {
     return this._hiddenPalette;
   }
@@ -346,6 +352,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   createHandle(element: dia.CellView, kind: string, action: () => void, location: dia.Point): dia.Element {
+    if (!location) {
+      let bbox: any = (<any>element.model).getBBox();
+      location = bbox.origin().offset(bbox.width / 2, bbox.height / 2);
+    }
     let handle = Shapes.Factory.createHandle({
       renderer: this.renderer,
       paper: this.paper,
@@ -1120,6 +1130,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
     // adjust vertices when a cell is removed or its source/target was changed
     this.graph.on('add remove change:source change:target change:vertices change:position', _.partial(Utils.fanRoute, this.graph));
+
+    this.graph.on('startDeletion', (cell: dia.Cell) => this.delete(cell));
   }
 
   initPaperListeners() {

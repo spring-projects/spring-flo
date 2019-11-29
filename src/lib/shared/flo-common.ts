@@ -150,6 +150,7 @@ export namespace Flo {
     createNode(metadata: ElementMetadata, props?: Map<string, any>, position?: dia.Point): dia.Element;
     createLink(source: LinkEnd, target: LinkEnd, metadata?: ElementMetadata, props?: Map<string, any>): dia.Link;
     deleteSelectedNode(): void;
+    delete(cell: dia.Cell): void;
     [propName: string]: any;
   }
 
@@ -204,7 +205,7 @@ export namespace Flo {
     showDragFeedback?(context: EditorContext, dragDescriptor: DnDDescriptor): void;
     hideDragFeedback?(context: EditorContext, dragDescriptor: DnDDescriptor): void;
     validate?(graph: dia.Graph, dsl: string, flo: EditorContext): Promise<Map<string | number, Array<Marker>>>;
-    preDelete?(context: EditorContext, deletedElement: dia.Cell): void;
+    preDelete?(context: EditorContext, deletedElement: dia.Cell): boolean;
     setDefaultContent?(editorContext: EditorContext, data: Map<string, Map<string, ElementMetadata>>): void;
   }
 

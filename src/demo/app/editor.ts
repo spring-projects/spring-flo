@@ -94,6 +94,7 @@ export class Editor implements Flo.Editor {
       if (deletedElement instanceof joint.dia.Element) {
         this.repairDamage(context, <dia.Element> deletedElement);
       }
+      return true;
     }
 
     handleNodeDropping(context : Flo.EditorContext, dragDescriptor : Flo.DnDDescriptor) {
