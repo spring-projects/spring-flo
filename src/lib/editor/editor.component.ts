@@ -1272,8 +1272,8 @@ export class EditorComponent implements OnInit, OnDestroy {
        * @param {object=} opt
        */
       highlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
-        const options = opt || {};
-        const className = options.className || this.className;
+        opt = opt || {};
+        const className = opt.className || this.className;
         joint.V(magnetEl.parentElement).addClass(className);
       },
 
@@ -1283,8 +1283,8 @@ export class EditorComponent implements OnInit, OnDestroy {
        * @param {object=} opt
        */
       unhighlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
-        const options = opt || {};
-        const className = options.className || this.className;
+        opt = opt || {};
+        const className = opt.className || this.className;
         joint.V(magnetEl.parentElement).removeClass(className);
       }
     };

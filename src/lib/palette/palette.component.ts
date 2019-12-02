@@ -46,7 +46,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private _metamodelListener: Flo.MetamodelListener = {
     metadataError: (data) => {},
     metadataAboutToChange: () => {},
-    metadataChanged: () => this.rebuildPalette()
+    metadataChanged: () => {
+      if (this.initialized && this.metamodel) {
+        this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
+      }
+    }
   };
 
   /**
@@ -101,7 +105,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     console.debug('Palette Size: ' + size);
     if (this._paletteSize !== size) {
       this._paletteSize = size;
-      this.rebuildPalette();
+      if (this.palette) {
+        this.layout();
+      }
     }
   }
 
@@ -177,7 +183,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         // Add debounced listener to filter text changes
         this.filterTextModel
           .pipe(debounceTime(DEBOUNCE_TIME))
-          .subscribe((value) => this.rebuildPalette());
+          .subscribe((value) => this.layout());
 
         this.initialized = true;
       });
@@ -205,12 +211,12 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private createPaletteGroup(title: string, isOpen: boolean): dia.Element {
     const paletteRenderer: Flo.PaletteRenderer = this.renderer && this.renderer.getPaletteRenderer ? this.renderer.getPaletteRenderer() : {
-      createGroupHeader: (title: string, isOpen: boolean) => {
-        const newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: title}}});
-        if (!isOpen) {
-          newGroupHeader.attr({'path': {'transform': 'rotate(-90,15,13)'}});
+      createGroupHeader: (titleStr: string, isOpenParam: boolean) => {
+        const header = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: titleStr}}});
+        if (!isOpenParam) {
+          header.attr({'path': {'transform': 'rotate(-90,15,13)'}});
         }
-        return newGroupHeader;
+        return header;
       },
       onClose: (groupView: dia.CellView) => this.rotateClosed(groupView.model),
       onOpen: (groupView: dia.CellView) => this.rotateOpen(groupView.model)
@@ -231,24 +237,24 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
           paletteRenderer.onClose(view).then(() => {
             newGroupHeader.set('isOpen', false);
             this.closedGroups.add(newGroupHeader.get('header'));
-            this.rebuildPalette();
+            this.layout();
           });
         } else {
           newGroupHeader.set('isOpen', false);
           this.closedGroups.add(newGroupHeader.get('header'));
-          this.rebuildPalette();
+          this.layout();
         }
       } else {
         if (typeof paletteRenderer.onOpen === 'function') {
           paletteRenderer.onOpen(view).then(() => {
             newGroupHeader.set('isOpen', true);
             this.closedGroups.delete(newGroupHeader.get('header'));
-            this.rebuildPalette();
+            this.layout();
           });
         } else {
           newGroupHeader.set('isOpen', true);
           this.closedGroups.delete(newGroupHeader.get('header'));
-          this.rebuildPalette();
+          this.layout();
         }
       }
     });
@@ -270,12 +276,6 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     this.paletteReady.emit(false);
     this.paletteGraph.clear();
 
-    let filterText = this.filterText;
-    if (filterText) {
-      filterText = filterText.toLowerCase();
-    }
-
-    let paletteNodes: Array<dia.Element> = [];
     let groupAdded: Set<string> = new Set<string>();
 
     let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
@@ -288,41 +288,46 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         Array.from(metamodel.get(group)!.keys()).sort().forEach(name => {
           let node = metamodel.get(group)!.get(name);
           if (node) {
-            let nodeActive: boolean = !(node.metadata && node.metadata.noPaletteEntry);
-            if (nodeActive && filterText) {
-              nodeActive = false;
-              if (name.toLowerCase().indexOf(filterText) !== -1) {
-                nodeActive = true;
-              } else if (group.toLowerCase().indexOf(filterText) !== -1) {
-                nodeActive = true;
-              }
-              // else if (node.description && node.description.toLowerCase().indexOf(filterText) !== -1) {
-              //   nodeActive = true;
-              // }
-              // else if (node.properties) {
-              //   Object.keys(node.properties).sort().forEach(function(propertyName) {
-              //     if (propertyName.toLowerCase().indexOf(filterText) !== -1 ||
-              //       (node.properties[propertyName].description &&
-              //       node.properties[propertyName].description.toLowerCase().indexOf(filterText) !== -1)) {
-              //       nodeActive=true;
-              //     }
-              //   });
-              // }
-            }
-            if (nodeActive) {
               if (!groupAdded.has(group)) {
-                let header: dia.Element = this.createPaletteGroup(group, !this.closedGroups.has(group));
-                header.set('size', {width: parentWidth, height: header.size().height || 30});
-                console.log('Group size set to: ' + JSON.stringify(header.size()));
-                paletteNodes.push(header);
+                this.createPaletteGroup(group, !this.closedGroups.has(group));
                 groupAdded.add(group);
               }
               if (!this.closedGroups.has(group)) {
-                paletteNodes.push(this.createPaletteEntry(name, node));
+                this.createPaletteEntry(name, node);
               }
             }
-          }
         });
+      }
+    });
+
+    this.layout();
+
+    this.paletteReady.emit(true);
+    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
+  }
+
+  private layout() {
+    let startTime: number = new Date().getTime();
+
+    let filterText = this.filterText;
+    if (filterText) {
+      filterText = filterText.toLowerCase();
+    }
+
+    let paletteNodes: Array<dia.Cell> = [];
+
+    let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
+    console.debug(`Parent Width: ${parentWidth}`);
+
+    this.palette.model.getCells().forEach((cell: dia.Cell) => {
+      const metadata: Flo.ElementMetadata = cell.attr('metadata');
+      if (cell.get('header') || metadata && metadata.group && metadata.name && !this.closedGroups.has(metadata.group)
+        && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.group.indexOf(filterText) >= 0)) {
+        cell.attr('./display', 'block');
+        cell.removeAttr('./display');
+        paletteNodes.push(cell);
+      } else {
+        cell.attr('./display', 'none');
       }
     });
 
@@ -352,7 +357,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     let startX: number = parentWidth >= cellWidth ? (parentWidth - Math.floor(parentWidth / cellWidth) * cellWidth) / 2 : 0;
     let xpos = startX;
     let ypos = 0;
-    let prevNode: dia.Element;
+    let prevNode: dia.Cell;
 
     // Layout palette entry nodes
     paletteNodes.forEach(pnode => {
@@ -367,6 +372,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         if (ypos) {
           ypos += this.paletteEntryPadding.height;
         }
+        pnode.set('size', {width: parentWidth, height: pnode.get('size').height || 30});
         pnode.set('position', {x: 0, y: ypos});
         ypos += dimension.height + this.paletteEntryPadding.height;
       } else {
@@ -389,14 +395,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       prevNode = pnode;
     });
     this.palette.setDimensions(parentWidth, ypos);
-    this.paletteReady.emit(true);
-    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
-  }
+    console.debug('buildPalette layout ' + (new Date().getTime() - startTime) + 'ms');
 
-  rebuildPalette() {
-    if (this.initialized && this.metamodel) {
-      this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
-    }
   }
 
   set filterText(text: string) {
