@@ -58,6 +58,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   private _hiddenPalette = false;
 
+  private paletteSizeValue = 170;
+
   private editorContext: Flo.EditorContext;
 
   private textToGraphEventEmitter = new EventEmitter<void>();
@@ -100,7 +102,16 @@ export class EditorComponent implements OnInit, OnDestroy {
    * Size (Width) of the palette
    */
   @Input()
-  paletteSize: number;
+  get paletteSize(): number {
+    return this.paletteSizeValue;
+  }
+
+  @Output()
+  paletteSizeChange = new EventEmitter<number>();
+  set paletteSize(newSize: number) {
+    this.paletteSizeValue = newSize;
+    this.paletteSizeChange.emit(newSize);
+  }
 
   /**
    * Palette entry padding
