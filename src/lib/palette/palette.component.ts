@@ -35,6 +35,39 @@ joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
   }, joint.shapes.basic.Generic.prototype.defaults)
 });
 
+joint.shapes.flo.NoMatchesFound = joint.shapes.basic.Generic.extend({
+  // The path is the open/close arrow, defaults to vertical (open)
+  markup: '<g class="scalable"><rect class="no-matches-label-border"/></g><rect class="no-mathes-label-bg"/><text class="no-matches-label"/>',
+  defaults: joint.util.deepSupplement({
+    size: {width: 170, height: 30},
+    position: {x: 0, y: 0},
+    attrs: {
+      '.no-matches-label-border': {
+        refWidth: 1,
+        refHeight: 1,
+        refX: 0,
+        refY: 0,
+      },
+      '.no-macthes-label-bg': {
+        ref: '.no-matches-label',
+        refWidth: 10,
+        refHeight: 2,
+        'follow-scale': true
+      },
+      '.no-matches-label': {
+        text: 'No Matches Found...',
+        ref: '.no-matches-label-border',
+        refX: 0.5,
+        refY: 0.5,
+        xAlignment: 'middle',
+        yAlignment: 'middle',
+        'fill': '#777777',
+        'font-style': 'italic'
+      },
+    },
+  }, joint.shapes.basic.Generic.prototype.defaults)
+});
+
 @Component({
   selector: 'flo-palette',
   templateUrl: './palette.component.html',
@@ -79,6 +112,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private filterTextModel = new Subject<string>();
 
+  private noMacthesFoundNode: dia.Cell;
+
   @Input()
   metamodel: Flo.Metamodel;
 
@@ -87,6 +122,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   paletteEntryPadding: dia.Size = {width: 12, height: 12};
+
+  @Input()
+  searchFilterPlaceHolder = 'Search...';
 
   @Output()
   onPaletteEntryDrop = new EventEmitter<Flo.DnDEvent>();
@@ -292,13 +330,16 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
                 this.createPaletteGroup(group, !this.closedGroups.has(group));
                 groupAdded.add(group);
               }
-              if (!this.closedGroups.has(group)) {
+              if (!(node.metadata && node.metadata.noPaletteEntry)) {
                 this.createPaletteEntry(name, node);
               }
             }
         });
       }
     });
+
+    this.noMacthesFoundNode = new joint.shapes.flo.NoMatchesFound();
+    this.palette.model.addCell(this.noMacthesFoundNode);
 
     this.layout();
 
@@ -321,15 +362,35 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
     this.palette.model.getCells().forEach((cell: dia.Cell) => {
       const metadata: Flo.ElementMetadata = cell.attr('metadata');
-      if (cell.get('header') || metadata && metadata.group && metadata.name && !this.closedGroups.has(metadata.group)
-        && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.group.indexOf(filterText) >= 0)) {
+      if (cell.get('header')) {
+        const previous = paletteNodes.length > 0 ? paletteNodes[paletteNodes.length - 1] : undefined;
+        // If previous is a paletter header node as well then the previous header had no nodes under it and we can hide it and remove from paletteNodes aeeay
+        if (previous && previous.get('header') && !this.closedGroups.has(previous.get('header'))) {
+          paletteNodes.pop().attr('./display', 'none');
+        }
+        cell.attr('./display', 'block');
+        cell.removeAttr('./display');
+        paletteNodes.push(cell);
+      } else if (metadata && metadata.group && metadata.name && !this.closedGroups.has(metadata.group)
+        && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.name.indexOf(filterText) >= 0)) {
         cell.attr('./display', 'block');
         cell.removeAttr('./display');
         paletteNodes.push(cell);
       } else {
-        cell.attr('./display', 'none');
+        if (cell === this.noMacthesFoundNode) {
+
+        } else {
+          cell.attr('./display', 'none');
+        }
       }
     });
+
+    // Check if last group is empty
+    const previous = paletteNodes.length > 0 ? paletteNodes[paletteNodes.length - 1] : undefined;
+    // If previous is a paletter header node as well then the previous header had no nodes under it and we can hide it and remove from paletteNodes aeeay
+    if (previous && previous.get('header') && !this.closedGroups.has(previous.get('header'))) {
+      paletteNodes.pop().attr('./display', 'none');
+    }
 
     let cellWidth = 0, cellHeight = 0;
     // Determine the size of the palette entry cell (width and height)
@@ -394,6 +455,20 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       }
       prevNode = pnode;
     });
+
+    this.noMacthesFoundNode.set('size', {width: parentWidth, height: this.noMacthesFoundNode.get('size').height || 30});
+    this.noMacthesFoundNode.set('position', {x: 0, y: 0});
+    if (paletteNodes.length === 0 && filterText) {
+      // There is a filter present but everything is filtered out
+      // Show no matches found node
+      this.noMacthesFoundNode.attr('./display', 'block');
+      this.noMacthesFoundNode.removeAttr('./display');
+      ypos = this.noMacthesFoundNode.get('size').height;
+    } else {
+      // Hide no matches node in all other cases
+      this.noMacthesFoundNode.attr('./display', 'none');
+    }
+
     this.palette.setDimensions(parentWidth, ypos);
     console.debug('buildPalette layout ' + (new Date().getTime() - startTime) + 'ms');
 

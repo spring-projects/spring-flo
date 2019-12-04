@@ -1,6 +1,6 @@
 <div id="palette-filter" class="palette-filter">
   <label class="palette-filter-label" for="palette-filter-textfield">
-    <input type="search" id="palette-filter-textfield" class="palette-filter-textfield" [(ngModel)]="filterText" (focus)="onFocus()" placeholder="Applications"/>
+    <input type="search" id="palette-filter-textfield" class="palette-filter-textfield" [(ngModel)]="filterText" (focus)="onFocus()" [placeholder]="searchFilterPlaceHolder"/>
   </label>
 </div>
 <div id="palette-paper-container">

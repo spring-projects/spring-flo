@@ -6,7 +6,9 @@
                    [paletteEntryPadding]="paletteEntryPadding || {width: 12, height: 12}"
                    (onPaletteEntryDrop)="handleDnDFromPalette($event)"
                     (paletteReady)="updatePaletteReadyState($event)"
-                    (paletteFocus)="graphToTextSync=true"></flo-palette>
+                    (paletteFocus)="graphToTextSync=true"
+                    [searchFilterPlaceHolder]="searchFilterPlaceHolder">
+      </flo-palette>
     </div>
 
     <div id="sidebar-resizer" *ngIf="!noPalette"

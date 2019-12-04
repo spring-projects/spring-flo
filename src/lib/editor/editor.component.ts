@@ -113,6 +113,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     this.paletteSizeChange.emit(newSize);
   }
 
+  @Input()
+  searchFilterPlaceHolder = 'Search...';
+
   /**
    * Palette entry padding
    */
