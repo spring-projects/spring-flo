@@ -199,7 +199,24 @@ joint.shapes.flo.Link = joint.dia.Link.extend({
 joint.shapes.flo.LinkView = joint.dia.LinkView.extend({
 
   options: joint.util.deepSupplement({
+    linkToolsOffset: 0.5,
+    shortLinkLength: 40
   }, joint.dia.LinkView.prototype.options),
+
+  updateToolsPosition: function() {
+    // Overriden to support relative offset for tools placement.
+    // If offset is between 0 and 1 then percentage of the connection length will be used to offset the tools group
+    if (this.options.linkToolsOffset < 1 && this.options.linkToolsOffset > 0) {
+      let connectionLength = this.getConnectionLength();
+      const relativeOffset = this.options.linkToolsOffset
+      this.options.linkToolsOffset = connectionLength * relativeOffset;
+      const returnValue = joint.dia.LinkView.prototype.updateToolsPosition.apply(this, arguments);
+      this.options.linkToolsOffset = relativeOffset;
+      return returnValue;
+    } else {
+      return joint.dia.LinkView.prototype.updateToolsPosition.apply(this, arguments);
+    }
+  },
 
   _beforeArrowheadMove: function() {
     if (this.model.get('source').id) {
