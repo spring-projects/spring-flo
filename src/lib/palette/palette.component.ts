@@ -55,14 +55,11 @@ joint.shapes.flo.NoMatchesFound = joint.shapes.basic.Generic.extend({
         'follow-scale': true
       },
       '.no-matches-label': {
-        text: 'No Matches Found...',
+        text: 'No results found.',
         ref: '.no-matches-label-border',
-        refX: 0.5,
         refY: 0.5,
-        xAlignment: 'middle',
+        refY2: 5,
         yAlignment: 'middle',
-        'fill': '#777777',
-        'font-style': 'italic'
       },
     },
   }, joint.shapes.basic.Generic.prototype.defaults)
