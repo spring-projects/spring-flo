@@ -360,22 +360,22 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
     console.debug(`Parent Width: ${parentWidth}`);
 
+    const presentGroups = new Set<string>();
+
     this.palette.model.getCells().forEach((cell: dia.Cell) => {
       const metadata: Flo.ElementMetadata = cell.attr('metadata');
       if (cell.get('header')) {
-        const previous = paletteNodes.length > 0 ? paletteNodes[paletteNodes.length - 1] : undefined;
-        // If previous is a paletter header node as well then the previous header had no nodes under it and we can hide it and remove from paletteNodes aeeay
-        if (previous && previous.get('header') && !this.closedGroups.has(previous.get('header'))) {
-          paletteNodes.pop().attr('./display', 'none');
-        }
-        cell.attr('./display', 'block');
-        cell.removeAttr('./display');
         paletteNodes.push(cell);
-      } else if (metadata && metadata.group && metadata.name && !this.closedGroups.has(metadata.group)
+      } else if (metadata && metadata.group && metadata.name
         && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.name.indexOf(filterText) >= 0)) {
-        cell.attr('./display', 'block');
-        cell.removeAttr('./display');
-        paletteNodes.push(cell);
+        if (!this.closedGroups.has(metadata.group)) {
+          cell.attr('./display', 'block');
+          cell.removeAttr('./display');
+          paletteNodes.push(cell);
+        } else {
+          cell.attr('./display', 'none');
+        }
+        presentGroups.add(metadata.group);
       } else {
         if (cell === this.noMacthesFoundNode) {
 
@@ -384,6 +384,24 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         }
       }
     });
+
+    // Clean group headers
+    const filteredGroupHeaders: dia.Cell[] = [];
+    paletteNodes.forEach(cell => {
+      if (cell.get('header')) {
+        if (presentGroups.has(cell.get('header'))) {
+          cell.attr('./display', 'block');
+          cell.removeAttr('./display');
+          filteredGroupHeaders.push(cell);
+        } else {
+          cell.attr('./display', 'none');
+        }
+      } else {
+        filteredGroupHeaders.push(cell);
+      }
+    });
+
+    paletteNodes = filteredGroupHeaders;
 
     // Check if last group is empty
     const previous = paletteNodes.length > 0 ? paletteNodes[paletteNodes.length - 1] : undefined;
