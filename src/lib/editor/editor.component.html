@@ -20,12 +20,10 @@
       [resizerRight]="'#paper-container'">
     </div>
 
-    <div>
-
-      <div id="paper-container">
+      <flo-editor-paper tabindex="0" (onDelete)="editorContext.deleteSelectedNode()">
         <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
         <ng-content select="[canvas]"></ng-content>
-      </div>
+      </flo-editor-paper>
 
       <span class="canvas-controls-container" ng-if="canvasControls">
         <table ng-if="canvasControls.zoom" class="canvas-control zoom-canvas-control">
@@ -50,7 +48,6 @@
         </table>
       </span>
 
-    </div>
   </div>
 </div>
 <ng-content select="[footer]"></ng-content>

@@ -1,4 +1,13 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
@@ -156,6 +165,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   private dslChange = new EventEmitter<string>();
 
   private _resizeHandler = () => this.autosizePaper();
+
 
   constructor(private element: ElementRef) {
     let self = this;
@@ -1185,9 +1195,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     // JointJS now no longer grabs focus if working in a paper element - crude...
-    $('#flow-view', this.element.nativeElement).on('mousedown', () => {
-      $('#palette-filter-textfield', this.element.nativeElement).focus();
-    });
+    // $('#flow-view', this.element.nativeElement).on('mousedown', () => {
+      // $('#palette-filter-textfield', this.element.nativeElement).focus();
+    // });
   }
 
   initPaper(): void {
