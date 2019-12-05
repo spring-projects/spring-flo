@@ -23,6 +23,9 @@ export class PaperComponent {
   @Output()
   onDelete = new EventEmitter<number>();
 
+  @Output()
+  onProperties = new EventEmitter<number>();
+
   @HostListener('click')
   click() {
     this.paperElement.nativeElement.focus();
@@ -36,6 +39,11 @@ export class PaperComponent {
   @HostListener('keydown.backspace')
   backspaceHandle() {
     this.onDelete.emit();
+  }
+
+  @HostListener('keydown.o')
+  oHandle() {
+    this.onProperties.emit();
   }
 
 }

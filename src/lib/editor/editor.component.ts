@@ -164,6 +164,9 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output()
   private dslChange = new EventEmitter<string>();
 
+  @Output()
+  onProperties = new EventEmitter<any>();
+
   private _resizeHandler = () => this.autosizePaper();
 
 
@@ -307,6 +310,12 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
 
     })();
+  }
+
+  onPropertiesHandle() {
+    if (this.editorContext.selection) {
+      this.onProperties.emit(this.editorContext.selection.model)
+    }
   }
 
   ngOnInit() {

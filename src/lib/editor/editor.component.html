@@ -20,7 +20,8 @@
       [resizerRight]="'#paper-container'">
     </div>
 
-      <flo-editor-paper tabindex="0" (onDelete)="editorContext.deleteSelectedNode()">
+      <flo-editor-paper tabindex="0" (onDelete)="editorContext.deleteSelectedNode()"
+                        (onProperties)="onPropertiesHandle()">
         <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
         <ng-content select="[canvas]"></ng-content>
       </flo-editor-paper>
