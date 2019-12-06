@@ -1175,14 +1175,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   initPaperListeners() {
     // https://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
-    this.paper.on('cell:pointerclick', (cellView: dia.CellView) => {
+    this.paper.on('cell:pointerup', (cellView: dia.CellView) => {
         if (!this.readOnlyCanvas) {
           this.selection = cellView;
         }
       }
     );
 
-    this.paper.on('blank:pointerclick', () => {
+    this.paper.on('blank:pointerdown', () => {
       this.selection = undefined;
     });
 
