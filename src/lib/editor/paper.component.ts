@@ -1,7 +1,7 @@
 import {
   Component,
   ElementRef, EventEmitter,
-  HostListener,
+  HostListener, OnInit,
   Output,
   ViewChild,
   ViewEncapsulation
@@ -16,7 +16,7 @@ import {
   styleUrls: ['./editor.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class PaperComponent {
+export class PaperComponent implements OnInit {
 
   @ViewChild('paper', { static: true }) paperElement: ElementRef;
 
@@ -25,6 +25,9 @@ export class PaperComponent {
 
   @Output()
   onProperties = new EventEmitter<number>();
+
+  @Output()
+  onBlur = new EventEmitter<boolean>();
 
   @HostListener('click')
   click() {
@@ -49,6 +52,13 @@ export class PaperComponent {
   @HostListener('keydown.o')
   oHandle() {
     this.onProperties.emit();
+  }
+
+  ngOnInit(): void {
+    const onBlur = this.onBlur;
+    this.paperElement.nativeElement.addEventListener('blur', () => {
+      onBlur.emit();
+    });
   }
 
 }
