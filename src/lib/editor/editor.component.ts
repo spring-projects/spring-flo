@@ -288,13 +288,11 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
 
       deleteSelectedNode(): void {
-        if (self.selection) {
-          self.graph.trigger('startDeletion', self.selection.model);
-        }
+        self.deleteSelected();
       }
 
       delete(cell: dia.Cell) {
-        self.graph.trigger('startDeletion', cell);
+        self.delete(cell);
       }
 
       get textToGraphConversionObservable(): Observable<void> {
@@ -346,14 +344,14 @@ export class EditorComponent implements OnInit, OnDestroy {
     this._disposables.dispose();
   }
 
-  private delete(cell: dia.Cell) {
-    if (this.editor && this.editor.preDelete) {
-      if (this.editor.preDelete(this.editorContext, this.selection.model)) {
-        cell.remove();
-      }
-    } else {
-      cell.remove();
+  deleteSelected() {
+    if (this.selection) {
+      this.delete(this.selection.model);
     }
+  }
+
+  delete(cell: dia.Cell) {
+    this.graph.trigger('startDeletion', cell);
   }
 
   get noPalette(): boolean {
@@ -1164,7 +1162,15 @@ export class EditorComponent implements OnInit, OnDestroy {
     // adjust vertices when a cell is removed or its source/target was changed
     this.graph.on('add remove change:source change:target change:vertices change:position', _.partial(Utils.fanRoute, this.graph));
 
-    this.graph.on('startDeletion', (cell: dia.Cell) => this.delete(cell));
+    this.graph.on('startDeletion', (cell: dia.Cell) => {
+      if (this.editor && this.editor.preDelete) {
+        if (this.editor.preDelete(this.editorContext, this.selection.model)) {
+          cell.remove();
+        }
+      } else {
+        cell.remove();
+      }
+    });
   }
 
   initPaperListeners() {

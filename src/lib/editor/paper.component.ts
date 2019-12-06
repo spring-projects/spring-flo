@@ -41,6 +41,11 @@ export class PaperComponent {
     this.onDelete.emit();
   }
 
+  @HostListener('keydown.delete')
+  deleteHandle() {
+    this.onDelete.emit();
+  }
+
   @HostListener('keydown.o')
   oHandle() {
     this.onProperties.emit();
