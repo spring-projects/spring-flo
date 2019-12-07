@@ -1,11 +1,14 @@
-<ng-content></ng-content>
+<ng-content select="[header]"></ng-content>
 <div id="flow-view" class="flow-view" style="position:relative">
   <div id="canvas" class="canvas" style="position:relative; display: block; width: 100%; height: 100%;">
     <div *ngIf="!noPalette" id="palette-container" class="palette-container" style="overflow:hidden;">
       <flo-palette [metamodel]="metamodel" [renderer]="renderer" [paletteSize]="paletteSize"
+                   [paletteEntryPadding]="paletteEntryPadding || {width: 12, height: 12}"
                    (onPaletteEntryDrop)="handleDnDFromPalette($event)"
                     (paletteReady)="updatePaletteReadyState($event)"
-                    (paletteFocus)="graphToTextSync=true"></flo-palette>
+                    (paletteFocus)="graphToTextSync=true"
+                    [searchFilterPlaceHolder]="searchFilterPlaceHolder">
+      </flo-palette>
     </div>
 
     <div id="sidebar-resizer" *ngIf="!noPalette"
@@ -17,11 +20,11 @@
       [resizerRight]="'#paper-container'">
     </div>
 
-    <div>
-
-      <div id="paper-container">
+      <flo-editor-paper tabindex="0" (onDelete)="deleteSelected()" (onBlur)="selection = null"
+                        (onProperties)="onPropertiesHandle()">
         <div id="paper" class="paper" tabindex="0" style="overflow: hidden; position: absolute; display: block; height:100%; width:100%; overflow:auto;"></div>
-      </div>
+        <ng-content select="[canvas]"></ng-content>
+      </flo-editor-paper>
 
       <span class="canvas-controls-container" ng-if="canvasControls">
         <table ng-if="canvasControls.zoom" class="canvas-control zoom-canvas-control">
@@ -46,6 +49,7 @@
         </table>
       </span>
 
-    </div>
   </div>
 </div>
+<ng-content select="[footer]"></ng-content>
+

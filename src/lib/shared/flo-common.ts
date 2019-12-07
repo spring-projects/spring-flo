@@ -100,11 +100,18 @@ export namespace Flo {
     kind: string;
   }
 
+  export interface PaletteRenderer {
+    createGroupHeader(title: string, isOpen: boolean): dia.Element;
+    onOpen?(groupView: dia.CellView): Promise<any>;
+    onClose?(groupView: dia.CellView): Promise<any>;
+  }
+
   export interface Renderer {
-    createNode?(metadata: ElementMetadata, props?: Map<string, any>): dia.Element;
+    createNode?(viewerDescriptor: ViewerDescriptor, metadata: ElementMetadata, props?: Map<string, any>): dia.Element;
     createLink?(source: LinkEnd, target: LinkEnd, metadata?: ElementMetadata, props?: Map<string, any>): dia.Link;
     createHandle?(kind: string, parent: dia.Cell): dia.Element;
     createDecoration?(kind: string, parent: dia.Cell): dia.Element;
+    getPaletteRenderer?(): PaletteRenderer;
     initializeNewNode?(node: dia.Element, viewerDescriptor: ViewerDescriptor): void;
     initializeNewLink?(link: dia.Link, viewerDescriptor: ViewerDescriptor): void;
     initializeNewHandle?(handle: dia.Element, viewerDescriptor: ViewerDescriptor): void;
@@ -116,6 +123,7 @@ export namespace Flo {
     isSemanticProperty?(propertyPath: string, element: dia.Cell): boolean;
     refreshVisuals?(cell: dia.Cell, propertyPath: string, paper: dia.Paper): void;
     getLinkAnchorPoint?(linkView: dia.LinkView, view: dia.ElementView, port: SVGElement, reference: dia.Point): dia.Point;
+    markersChanged?(cell: dia.Cell, paper: dia.Paper): void;
   }
 
   export interface EditorContext {
@@ -142,6 +150,7 @@ export namespace Flo {
     createNode(metadata: ElementMetadata, props?: Map<string, any>, position?: dia.Point): dia.Element;
     createLink(source: LinkEnd, target: LinkEnd, metadata?: ElementMetadata, props?: Map<string, any>): dia.Link;
     deleteSelectedNode(): void;
+    delete(cell: dia.Cell): void;
     [propName: string]: any;
   }
 
@@ -196,7 +205,7 @@ export namespace Flo {
     showDragFeedback?(context: EditorContext, dragDescriptor: DnDDescriptor): void;
     hideDragFeedback?(context: EditorContext, dragDescriptor: DnDDescriptor): void;
     validate?(graph: dia.Graph, dsl: string, flo: EditorContext): Promise<Map<string | number, Array<Marker>>>;
-    preDelete?(context: EditorContext, deletedElement: dia.Cell): void;
+    preDelete?(context: EditorContext, deletedElement: dia.Cell): boolean;
     setDefaultContent?(editorContext: EditorContext, data: Map<string, Map<string, ElementMetadata>>): void;
   }
 
@@ -237,6 +246,31 @@ export namespace Flo {
       };
     }
   }
+
+  export function getScrollbarWidth() {
+
+    // Creating invisible container
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll'; // forcing scrollbar to appear
+    outer.style.msOverflowStyle = 'scrollbar'; // needed for WinJS apps
+    document.body.appendChild(outer);
+
+    // Creating inner element and placing it in the container
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    // Calculating difference between container's full width and the child width
+    const scrollbarWidth = (outer.offsetWidth - inner.offsetWidth);
+
+    // Removing temporary elements from the DOM
+    outer.parentNode.removeChild(outer);
+
+    return scrollbarWidth;
+
+  }
+
+  export const SCROLLBAR_WIDTH = getScrollbarWidth();
 
 }
 

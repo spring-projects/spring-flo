@@ -123,6 +123,7 @@ joint.shapes.flo.Node = joint.shapes.basic.Generic.extend({
         'stroke-width': 1
       },
       '.input-port': {
+        idp: 'input',
         port: 'input',
         height: 8, width: 8,
         magnet: true,
@@ -132,6 +133,7 @@ joint.shapes.flo.Node = joint.shapes.basic.Generic.extend({
         'stroke-width': 1
       },
       '.output-port': {
+        id: 'output',
         port: 'output',
         height: 8, width: 8,
         magnet: true,
@@ -197,7 +199,24 @@ joint.shapes.flo.Link = joint.dia.Link.extend({
 joint.shapes.flo.LinkView = joint.dia.LinkView.extend({
 
   options: joint.util.deepSupplement({
+    linkToolsOffset: 0.5,
+    shortLinkLength: 40
   }, joint.dia.LinkView.prototype.options),
+
+  updateToolsPosition: function() {
+    // Overriden to support relative offset for tools placement.
+    // If offset is between 0 and 1 then percentage of the connection length will be used to offset the tools group
+    if (this.options.linkToolsOffset < 1 && this.options.linkToolsOffset > 0) {
+      let connectionLength = this.getConnectionLength();
+      const relativeOffset = this.options.linkToolsOffset
+      this.options.linkToolsOffset = connectionLength * relativeOffset;
+      const returnValue = joint.dia.LinkView.prototype.updateToolsPosition.apply(this, arguments);
+      this.options.linkToolsOffset = relativeOffset;
+      return returnValue;
+    } else {
+      return joint.dia.LinkView.prototype.updateToolsPosition.apply(this, arguments);
+    }
+  },
 
   _beforeArrowheadMove: function() {
     if (this.model.get('source').id) {
@@ -569,7 +588,7 @@ export namespace Shapes {
       }
 
       if (renderer && _.isFunction(renderer.createNode)) {
-        node = renderer.createNode(metadata, props);
+        node = renderer.createNode({graph, paper}, metadata, props);
       } else {
         node = new joint.shapes.flo.Node();
         if (metadata) {
@@ -649,38 +668,31 @@ export namespace Shapes {
       let location = params.position;
       let graph = params.graph || (params.paper ? params.paper.model : undefined);
 
-      if (!location) {
-        location = {x: 0, y: 0};
-      }
       let decoration: dia.Element;
       if (renderer && _.isFunction(renderer.createDecoration)) {
         decoration = renderer.createDecoration(kind, parent);
-      } else {
-        decoration = new joint.shapes.flo.ErrorDecoration({
-          attrs: {
-            image: { 'xlink:href': DECORATION_ICON_MAP.get(kind) },
-          }
-        });
       }
-      decoration.set('type', joint.shapes.flo.DECORATION_TYPE);
-      decoration.set('position', location);
-      if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
-        decoration.set('z', parent.get('z') + 1);
+      if (decoration) {
+        decoration.set('type', joint.shapes.flo.DECORATION_TYPE);
+        if ((isChrome || isFF) && parent && typeof parent.get('z') === 'number') {
+          decoration.set('z', parent.get('z') + 1);
+        }
+        decoration.attr('./kind', kind);
+        decoration.attr('messages', messages);
+        if (graph) {
+          graph.addCell(decoration);
+        }
+        parent.embed(decoration);
+        if (renderer && _.isFunction(renderer.initializeNewDecoration)) {
+          let descriptor: Flo.ViewerDescriptor = {
+            paper: paper,
+            graph: graph
+          };
+          renderer.initializeNewDecoration(decoration, descriptor);
+        }
+        return decoration;
       }
-      decoration.attr('./kind', kind);
-      decoration.attr('messages', messages);
-      if (graph) {
-        graph.addCell(decoration);
-      }
-      parent.embed(decoration);
-      if (renderer && _.isFunction(renderer.initializeNewDecoration)) {
-        let descriptor: Flo.ViewerDescriptor = {
-          paper: paper,
-          graph: graph
-        };
-        renderer.initializeNewDecoration(decoration, descriptor);
-      }
-      return decoration;
+
     }
 
     static createHandle(params: HandleCreationParams): dia.Element {

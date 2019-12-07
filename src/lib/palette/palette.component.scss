@@ -3,8 +3,6 @@
 #palette-floater {
   /* TODO size relative to paper that goes on it? */
   opacity: 0.75;
-  width:170px;
-  height:60px;
   background-color: transparent;
   /*
     background-color: #6db33f;
@@ -27,6 +25,8 @@
   overflow-x: hidden;
   background-color: white;
   color: white;
+  height:calc(100% - 46px);
+  width:100%;
 }
 
 /* Joint JS paper for drawing palette -> canvas DnD visual feedback END */
@@ -35,11 +35,13 @@
 
 .palette-filter {
   border: 3px solid #6db33f;
+  font-size:24px;
+  background-color: white;
 }
 
 .palette-filter-textfield {
   width: 100%;
-  font-size:24px;
+  border: none;
   /* border: 3px solid #6db33f;
  */	font-family: "Varela Round",sans-serif;
   /* 	padding: 2px; */
@@ -55,6 +57,11 @@
         height:100%;
             float: left;
      */
+}
+
+.no-matches-label {
+  fill: #777;
+  font-size: 14px;
 }
 
 /* Palette END */

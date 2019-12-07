@@ -27,6 +27,23 @@ const joint : any = Flo.joint;
  */
 export class Editor implements Flo.Editor {
 
+    get highlighting() {
+      return {
+        connecting: {
+          name: 'addParentClass',
+          options: {
+            className: 'connecting'
+          }
+        },
+        'default': {
+          name: 'addClass',
+          options: {
+            className: 'highlighted'
+          }
+        }
+      };
+    }
+
     constructor(private modelService : BsModalService) {}
 
     createHandles(context : Flo.EditorContext, createHandle : (owner : dia.CellView, kind : string, action : () => void, location : dia.Point) => void, owner : dia.CellView) {
@@ -77,6 +94,7 @@ export class Editor implements Flo.Editor {
       if (deletedElement instanceof joint.dia.Element) {
         this.repairDamage(context, <dia.Element> deletedElement);
       }
+      return true;
     }
 
     handleNodeDropping(context : Flo.EditorContext, dragDescriptor : Flo.DnDDescriptor) {

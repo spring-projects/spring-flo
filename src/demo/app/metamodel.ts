@@ -30,6 +30,11 @@ const metamodelData: Array<RawMetadata> = [{
     {id: 'type', name: 'type', description: 'Type of file watching', type: 'enum', options: ['tough', 'so-so', 'easy']}
   ],
 }, {
+  name: 'multi', group: 'processor', description: 'Custom element with multiple inputs and outputs',
+  properties: [
+    {id: 'inputChannel', name: 'input-channel', description: 'input channel name', type: 'string'}
+  ],
+}, {
   name: 'transform', group: 'processor', description: 'Apply an expression to modify incoming messages',
   properties: [
     {id: 'expression', name: 'expression', defaultValue: 'payload', description: 'SpEL expression to apply'}

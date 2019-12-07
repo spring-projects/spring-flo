@@ -35,6 +35,36 @@ joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
   }, joint.shapes.basic.Generic.prototype.defaults)
 });
 
+joint.shapes.flo.NoMatchesFound = joint.shapes.basic.Generic.extend({
+  // The path is the open/close arrow, defaults to vertical (open)
+  markup: '<g class="scalable"><rect class="no-matches-label-border"/></g><rect class="no-mathes-label-bg"/><text class="no-matches-label"/>',
+  defaults: joint.util.deepSupplement({
+    size: {width: 170, height: 30},
+    position: {x: 0, y: 0},
+    attrs: {
+      '.no-matches-label-border': {
+        refWidth: 1,
+        refHeight: 1,
+        refX: 0,
+        refY: 0,
+      },
+      '.no-macthes-label-bg': {
+        ref: '.no-matches-label',
+        refWidth: 10,
+        refHeight: 2,
+        'follow-scale': true
+      },
+      '.no-matches-label': {
+        text: 'No results found.',
+        ref: '.no-matches-label-border',
+        refY: 0.5,
+        refY2: 5,
+        yAlignment: 'middle',
+      },
+    },
+  }, joint.shapes.basic.Generic.prototype.defaults)
+});
+
 @Component({
   selector: 'flo-palette',
   templateUrl: './palette.component.html',
@@ -46,7 +76,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   private _metamodelListener: Flo.MetamodelListener = {
     metadataError: (data) => {},
     metadataAboutToChange: () => {},
-    metadataChanged: () => this.rebuildPalette()
+    metadataChanged: () => {
+      if (this.initialized && this.metamodel) {
+        this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
+      }
+    }
   };
 
   /**
@@ -75,6 +109,8 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   private filterTextModel = new Subject<string>();
 
+  private noMacthesFoundNode: dia.Cell;
+
   @Input()
   metamodel: Flo.Metamodel;
 
@@ -83,6 +119,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
 
   @Input()
   paletteEntryPadding: dia.Size = {width: 12, height: 12};
+
+  @Input()
+  searchFilterPlaceHolder = 'Search...';
 
   @Output()
   onPaletteEntryDrop = new EventEmitter<Flo.DnDEvent>();
@@ -101,7 +140,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     console.debug('Palette Size: ' + size);
     if (this._paletteSize !== size) {
       this._paletteSize = size;
-      this.rebuildPalette();
+      if (this.palette) {
+        this.layout();
+      }
     }
   }
 
@@ -153,11 +194,11 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         const cell: dia.Cell = cellview.model;
         if (cell.attributes.header) {
           // Toggle the header open/closed
-          if (cell.get('isOpen')) {
-            this.rotateClosed(cell);
-          } else {
-            this.rotateOpen(cell);
-          }
+          // if (cell.get('isOpen')) {
+          //   this.rotateClosed(cell);
+          // } else {
+          //   this.rotateOpen(cell);
+          // }
         }
         // TODO [palette] ensure other mouse handling events do nothing for headers
         // TODO [palette] move 'metadata' field to the right place (not inside attrs I think)
@@ -177,7 +218,7 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         // Add debounced listener to filter text changes
         this.filterTextModel
           .pipe(debounceTime(DEBOUNCE_TIME))
-          .subscribe((value) => this.rebuildPalette());
+          .subscribe((value) => this.layout());
 
         this.initialized = true;
       });
@@ -204,13 +245,55 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   }
 
   private createPaletteGroup(title: string, isOpen: boolean): dia.Element {
-    let newGroupHeader = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: title}}});
-    newGroupHeader.set('header', title);
+    const paletteRenderer: Flo.PaletteRenderer = this.renderer && this.renderer.getPaletteRenderer ? this.renderer.getPaletteRenderer() : {
+      createGroupHeader: (titleStr: string, isOpenParam: boolean) => {
+        const header = new joint.shapes.flo.PaletteGroupHeader({attrs: {text: {text: titleStr}}});
+        if (!isOpenParam) {
+          header.attr({'path': {'transform': 'rotate(-90,15,13)'}});
+        }
+        return header;
+      },
+      onClose: (groupView: dia.CellView) => this.rotateClosed(groupView.model),
+      onOpen: (groupView: dia.CellView) => this.rotateOpen(groupView.model)
+    };
+    let newGroupHeader = paletteRenderer.createGroupHeader(title, isOpen);
     if (!isOpen) {
-      newGroupHeader.attr({'path': {'transform': 'rotate(-90,15,13)'}});
       newGroupHeader.set('isOpen', false);
     }
+    newGroupHeader.set('header', title);
+
     this.paletteGraph.addCell(newGroupHeader);
+
+    const view = this.palette.findViewByModel(newGroupHeader);
+
+    view.on('cell:pointerclick', () => {
+      if (newGroupHeader.get('isOpen')) {
+        if (typeof paletteRenderer.onClose === 'function') {
+          paletteRenderer.onClose(view).then(() => {
+            newGroupHeader.set('isOpen', false);
+            this.closedGroups.add(newGroupHeader.get('header'));
+            this.layout();
+          });
+        } else {
+          newGroupHeader.set('isOpen', false);
+          this.closedGroups.add(newGroupHeader.get('header'));
+          this.layout();
+        }
+      } else {
+        if (typeof paletteRenderer.onOpen === 'function') {
+          paletteRenderer.onOpen(view).then(() => {
+            newGroupHeader.set('isOpen', true);
+            this.closedGroups.delete(newGroupHeader.get('header'));
+            this.layout();
+          });
+        } else {
+          newGroupHeader.set('isOpen', true);
+          this.closedGroups.delete(newGroupHeader.get('header'));
+          this.layout();
+        }
+      }
+    });
+
     return newGroupHeader;
   }
 
@@ -228,15 +311,9 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     this.paletteReady.emit(false);
     this.paletteGraph.clear();
 
-    let filterText = this.filterText;
-    if (filterText) {
-      filterText = filterText.toLowerCase();
-    }
-
-    let paletteNodes: Array<dia.Element> = [];
     let groupAdded: Set<string> = new Set<string>();
 
-    let parentWidth: number = this._paletteSize;
+    let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
     console.debug(`Parent Width: ${parentWidth}`);
 
     // The field closedGroups tells us which should not be shown
@@ -246,50 +323,98 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         Array.from(metamodel.get(group)!.keys()).sort().forEach(name => {
           let node = metamodel.get(group)!.get(name);
           if (node) {
-            let nodeActive: boolean = !(node.metadata && node.metadata.noPaletteEntry);
-            if (nodeActive && filterText) {
-              nodeActive = false;
-              if (name.toLowerCase().indexOf(filterText) !== -1) {
-                nodeActive = true;
-              } else if (group.toLowerCase().indexOf(filterText) !== -1) {
-                nodeActive = true;
-              }
-              // else if (node.description && node.description.toLowerCase().indexOf(filterText) !== -1) {
-              //   nodeActive = true;
-              // }
-              // else if (node.properties) {
-              //   Object.keys(node.properties).sort().forEach(function(propertyName) {
-              //     if (propertyName.toLowerCase().indexOf(filterText) !== -1 ||
-              //       (node.properties[propertyName].description &&
-              //       node.properties[propertyName].description.toLowerCase().indexOf(filterText) !== -1)) {
-              //       nodeActive=true;
-              //     }
-              //   });
-              // }
-            }
-            if (nodeActive) {
               if (!groupAdded.has(group)) {
-                let header: dia.Element = this.createPaletteGroup(group, !this.closedGroups.has(group));
-                header.set('size', {width: parentWidth, height: 30});
-                paletteNodes.push(header);
+                this.createPaletteGroup(group, !this.closedGroups.has(group));
                 groupAdded.add(group);
               }
-              if (!this.closedGroups.has(group)) {
-                paletteNodes.push(this.createPaletteEntry(name, node));
+              if (!(node.metadata && node.metadata.noPaletteEntry)) {
+                this.createPaletteEntry(name, node);
               }
             }
-          }
         });
       }
     });
+
+    this.noMacthesFoundNode = new joint.shapes.flo.NoMatchesFound();
+    this.palette.model.addCell(this.noMacthesFoundNode);
+
+    this.layout();
+
+    this.paletteReady.emit(true);
+    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
+  }
+
+  private layout() {
+    let startTime: number = new Date().getTime();
+
+    let filterText = this.filterText;
+    if (filterText) {
+      filterText = filterText.toLowerCase();
+    }
+
+    let paletteNodes: Array<dia.Cell> = [];
+
+    let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
+    console.debug(`Parent Width: ${parentWidth}`);
+
+    const presentGroups = new Set<string>();
+
+    this.palette.model.getCells().forEach((cell: dia.Cell) => {
+      const metadata: Flo.ElementMetadata = cell.attr('metadata');
+      if (cell.get('header')) {
+        paletteNodes.push(cell);
+      } else if (metadata && metadata.group && metadata.name
+        && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.name.indexOf(filterText) >= 0)) {
+        if (!this.closedGroups.has(metadata.group)) {
+          cell.attr('./display', 'block');
+          cell.removeAttr('./display');
+          paletteNodes.push(cell);
+        } else {
+          cell.attr('./display', 'none');
+        }
+        presentGroups.add(metadata.group);
+      } else {
+        if (cell === this.noMacthesFoundNode) {
+
+        } else {
+          cell.attr('./display', 'none');
+        }
+      }
+    });
+
+    // Clean group headers
+    const filteredGroupHeaders: dia.Cell[] = [];
+    paletteNodes.forEach(cell => {
+      if (cell.get('header')) {
+        if (presentGroups.has(cell.get('header'))) {
+          cell.attr('./display', 'block');
+          cell.removeAttr('./display');
+          filteredGroupHeaders.push(cell);
+        } else {
+          cell.attr('./display', 'none');
+        }
+      } else {
+        filteredGroupHeaders.push(cell);
+      }
+    });
+
+    paletteNodes = filteredGroupHeaders;
+
+    // Check if last group is empty
+    const previous = paletteNodes.length > 0 ? paletteNodes[paletteNodes.length - 1] : undefined;
+    // If previous is a paletter header node as well then the previous header had no nodes under it and we can hide it and remove from paletteNodes aeeay
+    if (previous && previous.get('header') && !this.closedGroups.has(previous.get('header'))) {
+      paletteNodes.pop().attr('./display', 'none');
+    }
 
     let cellWidth = 0, cellHeight = 0;
     // Determine the size of the palette entry cell (width and height)
     paletteNodes.forEach(pnode => {
       if (pnode.attr('metadata/name')) {
+        const elementSize = this.palette.findViewByModel(pnode).getBBox();
         let dimension: dia.Size = {
-          width: pnode.get('size').width,
-          height: pnode.get('size').height
+          width: elementSize.width,
+          height: elementSize.height
         };
         if (cellWidth < dimension.width) {
           cellWidth = dimension.width;
@@ -308,19 +433,24 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
     let startX: number = parentWidth >= cellWidth ? (parentWidth - Math.floor(parentWidth / cellWidth) * cellWidth) / 2 : 0;
     let xpos = startX;
     let ypos = 0;
-    let prevNode: dia.Element;
+    let prevNode: dia.Cell;
 
     // Layout palette entry nodes
     paletteNodes.forEach(pnode => {
+      const elementSize = this.palette.findViewByModel(pnode).getBBox();
       let dimension: dia.Size = {
-        width: pnode.get('size').width,
-        height: pnode.get('size').height
+        width: elementSize.width,
+        height: elementSize.height
       };
       if (pnode.get('header')) { //attributes.attrs.header) {
         // Palette entry header
         xpos = startX;
+        if (ypos) {
+          ypos += this.paletteEntryPadding.height;
+        }
+        pnode.set('size', {width: parentWidth, height: pnode.get('size').height || 30});
         pnode.set('position', {x: 0, y: ypos});
-        ypos += dimension.height + 5;
+        ypos += dimension.height + this.paletteEntryPadding.height;
       } else {
         // Palette entry element
         if (xpos + cellWidth > parentWidth) {
@@ -340,15 +470,23 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       }
       prevNode = pnode;
     });
-    this.palette.setDimensions(parentWidth, ypos);
-    this.paletteReady.emit(true);
-    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
-  }
 
-  rebuildPalette() {
-    if (this.initialized && this.metamodel) {
-      this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
+    this.noMacthesFoundNode.set('size', {width: parentWidth, height: this.noMacthesFoundNode.get('size').height || 30});
+    this.noMacthesFoundNode.set('position', {x: 0, y: 0});
+    if (paletteNodes.length === 0 && filterText) {
+      // There is a filter present but everything is filtered out
+      // Show no matches found node
+      this.noMacthesFoundNode.attr('./display', 'block');
+      this.noMacthesFoundNode.removeAttr('./display');
+      ypos = this.noMacthesFoundNode.get('size').height;
+    } else {
+      // Hide no matches node in all other cases
+      this.noMacthesFoundNode.attr('./display', 'none');
     }
+
+    this.palette.setDimensions(parentWidth, ypos);
+    console.debug('buildPalette layout ' + (new Date().getTime() - startTime) + 'ms');
+
   }
 
   set filterText(text: string) {
@@ -508,12 +646,14 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
         });
 
         // Only node view expected
-        let box: dia.BBox = (<dia.ElementView>this.floaterpaper.findViewByModel(floaternode)).getBBox();
+        this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
+        let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
         let size: dia.Size = floaternode.get('size');
+        parent.css('width', box.width + box.width - size.width);
+        parent.css('height', box.height + box.height - size.height);
         // Account for node real size including ports
         floaternode.translate(box.width - size.width, box.height - size.height);
-        this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
-        $('#palette-floater').offset({left: event.pageX + 5, top: event.pageY + 5});
+        parent.offset({left: event.pageX + 5, top: event.pageY + 5});
       } else {
         $('#palette-floater').offset({left: event.pageX + 5, top: event.pageY + 5});
         this.trigger({
@@ -528,32 +668,36 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   /*
    * Modify the rotation of the arrow in the header from horizontal(closed) to vertical(open)
    */
-  private rotateOpen(element: dia.Cell) {
-    setTimeout(() => this.doRotateOpen(element, 90));
+  private rotateOpen(element: dia.Cell): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => this.doRotateOpen(element, 90).then(() => {
+        resolve();
+      }));
+    });
   }
 
-  private doRotateOpen(element: dia.Cell, angle: number) {
-    angle -= 10;
-    element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
-    if (angle <= 0) {
-      element.set('isOpen', true);
-      this.closedGroups.delete(element.get('header'));
-      this.rebuildPalette();
-    } else {
-      setTimeout(() => this.doRotateOpen(element, angle), 10);
-    }
+  private doRotateOpen(element: dia.Cell, angle: number): Promise<void> {
+    return new Promise(resolve => {
+      angle -= 10;
+      element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
+      if (angle <= 0) {
+        resolve();
+      } else {
+        setTimeout(() => this.doRotateOpen(element, angle).then(() => resolve()), 10);
+      }
+    });
   }
 
-  private doRotateClose(element: dia.Cell, angle: number) {
-    angle += 10;
-    element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
-    if (angle >= 90) {
-      element.set('isOpen', false);
-      this.closedGroups.add(element.get('header'));
-      this.rebuildPalette();
-    } else {
-      setTimeout(() => this.doRotateClose(element, angle), 10);
-    }
+  private doRotateClose(element: dia.Cell, angle: number): Promise<void> {
+    return new Promise(resolve => {
+      angle += 10;
+      element.attr({'path': {'transform': 'rotate(-' + angle + ',15,13)'}});
+      if (angle >= 90) {
+        resolve();
+      } else {
+        setTimeout(() => this.doRotateClose(element, angle).then(() => resolve()), 10);
+      }
+    });
   }
 
   // TODO better name for this function as this does the animation *and* updates the palette
@@ -561,8 +705,14 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
   /*
    * Modify the rotation of the arrow in the header from vertical(open) to horizontal(closed)
    */
-  private rotateClosed(element: dia.Cell) {
-    setTimeout(() => this.doRotateClose(element, 0));
+  private rotateClosed(element: dia.Cell): Promise<void> {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.doRotateClose(element, 0).then(() => {
+          resolve();
+        });
+      });
+    });
   }
 
 }

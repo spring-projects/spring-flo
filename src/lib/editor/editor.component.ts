@@ -1,4 +1,13 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  ElementRef,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+  ViewEncapsulation,
+} from '@angular/core';
 import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
@@ -58,6 +67,8 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   private _hiddenPalette = false;
 
+  private paletteSizeValue = 170;
+
   private editorContext: Flo.EditorContext;
 
   private textToGraphEventEmitter = new EventEmitter<void>();
@@ -100,7 +111,25 @@ export class EditorComponent implements OnInit, OnDestroy {
    * Size (Width) of the palette
    */
   @Input()
-  paletteSize: number;
+  get paletteSize(): number {
+    return this.paletteSizeValue;
+  }
+
+  @Output()
+  paletteSizeChange = new EventEmitter<number>();
+  set paletteSize(newSize: number) {
+    this.paletteSizeValue = newSize;
+    this.paletteSizeChange.emit(newSize);
+  }
+
+  @Input()
+  searchFilterPlaceHolder = 'Search...';
+
+  /**
+   * Palette entry padding
+   */
+  @Input()
+  paletteEntryPadding: dia.Size;
 
   /**
    * Min zoom percent value
@@ -135,7 +164,11 @@ export class EditorComponent implements OnInit, OnDestroy {
   @Output()
   private dslChange = new EventEmitter<string>();
 
+  @Output()
+  onProperties = new EventEmitter<any>();
+
   private _resizeHandler = () => this.autosizePaper();
+
 
   constructor(private element: ElementRef) {
     let self = this;
@@ -255,17 +288,11 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
 
       deleteSelectedNode(): void {
-        if (self.selection) {
-          if (self.editor && self.editor.preDelete) {
-            self.editor.preDelete(self.editorContext, self.selection.model);
-          } else {
-            if (self.selection.model instanceof joint.dia.Element) {
-              self.graph.getConnectedLinks(self.selection.model).forEach((l: dia.Link) => l.remove());
-            }
-          }
-          self.selection.model.remove();
-          self.selection = undefined;
-        }
+        self.deleteSelected();
+      }
+
+      delete(cell: dia.Cell) {
+        self.delete(cell);
       }
 
       get textToGraphConversionObservable(): Observable<void> {
@@ -281,6 +308,12 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
 
     })();
+  }
+
+  onPropertiesHandle() {
+    if (this.editorContext.selection) {
+      this.onProperties.emit(this.editorContext.selection.model)
+    }
   }
 
   ngOnInit() {
@@ -309,6 +342,16 @@ export class EditorComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this._disposables.dispose();
+  }
+
+  deleteSelected() {
+    if (this.selection) {
+      this.delete(this.selection.model);
+    }
+  }
+
+  delete(cell: dia.Cell) {
+    this.graph.trigger('startDeletion', cell);
   }
 
   get noPalette(): boolean {
@@ -786,8 +829,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     const parentWidth = parent.innerWidth();
     const parentHeight = parent.innerHeight();
     this.fitToContent(this.gridSize, this.gridSize, this.paperPadding, {
-      minWidth: parentWidth - SCROLLBAR_SIZE,
-      minHeight: parentHeight - SCROLLBAR_SIZE,
+      minWidth: parentWidth - Flo.SCROLLBAR_WIDTH,
+      minHeight: parentHeight - Flo.SCROLLBAR_WIDTH,
       allowNewOrigin: 'same'
     });
   }
@@ -804,7 +847,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       minScaleY: minScale,
       maxScaleX: maxScale,
       maxScaleY: maxScale,
-      fittingBBox: {x: 0, y: 0, width: parentWidth - SCROLLBAR_SIZE, height: parentHeight - SCROLLBAR_SIZE}
+      fittingBBox: {x: 0, y: 0, width: parentWidth - Flo.SCROLLBAR_WIDTH, height: parentHeight - Flo.SCROLLBAR_WIDTH}
     });
     /**
      * Size the canvas appropriately and allow origin movement
@@ -819,7 +862,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   get zoomPercent(): number {
-    return Math.round(joint.V(this.paper.viewport).scale().sx * 100);
+    return Math.round(this.paper.scale().sx * 100);
   }
 
   set zoomPercent(percent: number) {
@@ -869,8 +912,10 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   markElement(cell: dia.Cell, markers: Array<Flo.Marker>) {
-    let errorMessages = markers.map(m => m.message);
+    cell.set('markers', markers);
 
+    // Old legacy code below consider removing
+    let errorMessages = markers.map(m => m.message);
     let errorCell = cell.getEmbeddedCells().find((e: dia.Cell) => e.attr('./kind') === Constants.ERROR_DECORATION_KIND);
     if (errorCell) {
       if (errorMessages.length === 0) {
@@ -887,17 +932,12 @@ export class EditorComponent implements OnInit, OnDestroy {
         kind: Constants.ERROR_DECORATION_KIND,
         messages: errorMessages
       });
-      let pt: dia.Point;
-      const view = this.paper.findViewByModel(error);
-      if (cell instanceof joint.dia.Element) {
-        pt = (<dia.Element> cell).getBBox().topRight().offset(-error.get('size').width, 0);
-        error.set('position', pt);
-        (<dia.ElementView>view).setInteractivity(false);
-      } else {
-        // TODO: do something for the link perhaps?
+      if (error) {
+        const view = this.paper.findViewByModel(error);
+        view.setInteractivity(false);
       }
-
     }
+
   }
 
   doLayout(): Promise<void> {
@@ -1015,6 +1055,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         }
       });
     }
+
+    node.on('change:markers', () => {
+      if (this.renderer && this.renderer.markersChanged) {
+        this.renderer.markersChanged(node, this.paper);
+      }
+    });
+
   }
 
   /**
@@ -1028,8 +1075,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   handleLinkCreation(link: dia.Link) {
-    this.handleLinkEvent('add', link);
-
     link.on('change:source', (l: dia.Link) => {
       this.autosizePaper();
       let newSourceId = l.get('source').id;
@@ -1074,6 +1119,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.readOnlyCanvas) {
       link.attr('.link-tools/display', 'none');
     }
+
+    this.handleLinkEvent('add', link);
   }
 
   initGraphListeners() {
@@ -1114,18 +1161,28 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
     // adjust vertices when a cell is removed or its source/target was changed
     this.graph.on('add remove change:source change:target change:vertices change:position', _.partial(Utils.fanRoute, this.graph));
+
+    this.graph.on('startDeletion', (cell: dia.Cell) => {
+      if (this.editor && this.editor.preDelete) {
+        if (this.editor.preDelete(this.editorContext, this.selection.model)) {
+          cell.remove();
+        }
+      } else {
+        cell.remove();
+      }
+    });
   }
 
   initPaperListeners() {
     // https://stackoverflow.com/questions/20463533/how-to-add-an-onclick-event-to-a-joint-js-element
-    this.paper.on('cell:pointerclick', (cellView: dia.CellView) => {
+    this.paper.on('cell:pointerup', (cellView: dia.CellView) => {
         if (!this.readOnlyCanvas) {
           this.selection = cellView;
         }
       }
     );
 
-    this.paper.on('blank:pointerclick', () => {
+    this.paper.on('blank:pointerdown', () => {
       this.selection = undefined;
     });
 
@@ -1153,9 +1210,9 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     // JointJS now no longer grabs focus if working in a paper element - crude...
-    $('#flow-view', this.element.nativeElement).on('mousedown', () => {
-      $('#palette-filter-textfield', this.element.nativeElement).focus();
-    });
+    // $('#flow-view', this.element.nativeElement).on('mousedown', () => {
+      // $('#palette-filter-textfield', this.element.nativeElement).focus();
+    // });
   }
 
   initPaper(): void {
@@ -1245,6 +1302,31 @@ export class EditorComponent implements OnInit, OnDestroy {
     // The paper is what will represent the graph on the screen
     this.paper = new joint.dia.Paper(options);
     this._disposables.add(Disposable.create(() => this.paper.remove()));
+
+    this.paper.options.highlighterNamespace['addParentClass'] = {
+
+      /**
+       * @param {joint.dia.CellView} cellView
+       * @param {Element} magnetEl
+       * @param {object=} opt
+       */
+      highlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
+        opt = opt || {};
+        const className = opt.className || this.className;
+        joint.V(magnetEl.parentElement).addClass(className);
+      },
+
+      /**
+       * @param {joint.dia.CellView} cellView
+       * @param {Element} magnetEl
+       * @param {object=} opt
+       */
+      unhighlight(cellView: dia.CellView, magnetEl: SVGElement, opt: any) {
+        opt = opt || {};
+        const className = opt.className || this.className;
+        joint.V(magnetEl.parentElement).removeClass(className);
+      }
+    };
 
   }
 
