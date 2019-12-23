@@ -2,7 +2,7 @@ import { dia } from 'jointjs';
 import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms'
 import { Flo } from './flo-common';
 import { Subject, Observable } from 'rxjs'
-import { debounceTime, mergeMap } from 'rxjs/operators';
+import {debounceTime, map, switchMap} from 'rxjs/operators';
 
 export namespace Properties {
 
@@ -337,24 +337,23 @@ export namespace Properties {
 
   export namespace Validators {
 
-    export function uniqueResource(service: (value: any) => Observable<any>, debounce: number): AsyncValidatorFn {
+    export function uniqueResource(service: (value: any) => Observable<boolean>, debounceDuration: number): AsyncValidatorFn {
       return (control: AbstractControl): Observable<ValidationErrors> => {
-        return new Observable(obs => {
-          if (control.valueChanges && control.value) {
-            control.valueChanges
-              .pipe(debounceTime(debounce), mergeMap(value => service(value)))
-              .subscribe(() => {
-                obs.next({uniqueResource: true});
-                obs.complete();
-              }, () => {
-                obs.next(undefined);
-                obs.complete();
-              })
-          } else {
-            obs.next(undefined);
-            obs.complete();
-          }
-        });
+        if (control.valueChanges) {
+          return control.valueChanges.pipe(
+            debounceTime(debounceDuration),
+            switchMap(() => service(control.value)),
+            map(res => {
+              return res ? {uniqueResource: true} : undefined;
+            })
+          );
+        } else {
+          return service(control.value).pipe(
+            map(res => {
+              return res ? {uniqueResource: true} : undefined;
+            })
+          );
+        }
       }
     }
 
