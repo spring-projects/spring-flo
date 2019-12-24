@@ -2,7 +2,7 @@ import { dia } from 'jointjs';
 import { ValidatorFn, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms'
 import { Flo } from './flo-common';
 import { Subject, Observable } from 'rxjs'
-import {debounceTime, map, switchMap} from 'rxjs/operators';
+import {debounceTime, switchMap} from 'rxjs/operators';
 
 export namespace Properties {
 
@@ -335,25 +335,42 @@ export namespace Properties {
 
   }
 
+  const UNIQUE_RESOURCE_ERROR = {uniqueResource: true};
+
   export namespace Validators {
 
     export function uniqueResource(service: (value: any) => Observable<boolean>, debounceDuration: number): AsyncValidatorFn {
       return (control: AbstractControl): Observable<ValidationErrors> => {
-        if (control.valueChanges) {
-          return control.valueChanges.pipe(
-            debounceTime(debounceDuration),
-            switchMap(() => service(control.value)),
-            map(res => {
-              return res ? {uniqueResource: true} : undefined;
+        return new Observable<ValidationErrors>(obs => {
+          if (control.valueChanges) {
+            return control.valueChanges.pipe(
+              debounceTime(debounceDuration),
+              switchMap(() => service(control.value)),
+            ).subscribe((res) => {
+              if (res) {
+                obs.next(undefined);
+              } else {
+                obs.next(UNIQUE_RESOURCE_ERROR);
+              }
+              obs.complete();
+            }, () => {
+              obs.next(UNIQUE_RESOURCE_ERROR);
+              obs.complete();
+            });
+          } else {
+            service(control.value).subscribe((res) => {
+              if (res) {
+                obs.next(undefined);
+              } else {
+                obs.next(UNIQUE_RESOURCE_ERROR);
+              }
+              obs.complete();
+            }, () => {
+              obs.next(UNIQUE_RESOURCE_ERROR);
+              obs.complete();
             })
-          );
-        } else {
-          return service(control.value).pipe(
-            map(res => {
-              return res ? {uniqueResource: true} : undefined;
-            })
-          );
-        }
+          }
+        });
       }
     }
 
