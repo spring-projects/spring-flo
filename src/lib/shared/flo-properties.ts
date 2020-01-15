@@ -28,6 +28,10 @@ export namespace Properties {
     readonly [propName: string]: any;
   }
 
+  export interface PropertyFilter {
+    accept: (property: Property) => boolean;
+  }
+
   export interface SelectOption {
     name: string;
     value: any;

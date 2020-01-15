@@ -1,6 +1,8 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Properties } from '../shared/flo-properties';
+import Property = Properties.Property;
+import PropertyFilter = Properties.PropertyFilter;
 
 @Component({
   selector: 'properties-group',
@@ -14,6 +16,9 @@ export class PropertiesGroupComponent implements OnInit {
 
   @Input()
   form: FormGroup;
+
+  @Input()
+  filter: PropertyFilter;
 
   ngOnInit() {
     if (this.propertiesGroupModel.isLoading) {
@@ -36,6 +41,10 @@ export class PropertiesGroupComponent implements OnInit {
         this.form.addControl(c.id, new FormControl(c.value || ''));
       }
     })
+  }
+
+  get controlModelsToDisplay() {
+    return this.propertiesGroupModel.getControlsModels().filter(c => !this.filter || this.filter.accept(c.property));
   }
 
 }
