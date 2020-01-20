@@ -1,6 +1,8 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.9.0](https://github.com/spring-projects/spring-flo/compare/v0.8.12...v0.9.0) (2020-01-20)
 
 <a name="0.8.12"></a>
 ## [0.8.12](https://github.com/spring-projects/spring-flo/compare/v0.8.11...v0.8.12) (2019-07-15)
