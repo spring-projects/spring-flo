@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, OnChanges, SimpleChanges, Inject, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, Inject, ViewEncapsulation} from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
@@ -71,7 +71,7 @@ joint.shapes.flo.NoMatchesFound = joint.shapes.basic.Generic.extend({
   styleUrls: ['./palette.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class Palette implements OnInit, OnDestroy, OnChanges {
+export class Palette implements OnInit, OnDestroy {
 
   private _metamodelListener: Flo.MetamodelListener = {
     metadataError: (data) => {},
@@ -236,12 +236,6 @@ export class Palette implements OnInit, OnDestroy, OnChanges {
       }
       $(this.document).off('mouseup', this.mouseUpHanlder);
       this.palette.remove();
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    // if (changes.hasOwnProperty('paletteSize') || changes.hasOwnProperty('filterText')) {
-    //   this.metamodel.load().then(metamodel => this.buildPalette(metamodel));
-    // }
   }
 
   private createPaletteGroup(title: string, isOpen: boolean): dia.Element {

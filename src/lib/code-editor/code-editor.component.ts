@@ -1,4 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation, forwardRef } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnInit, ViewEncapsulation, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as CodeMirror from 'codemirror-minified';
 
@@ -44,7 +44,7 @@ import 'codemirror-minified/addon/scroll/simplescrollbars';
     }
   ]
 })
-export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class CodeEditorComponent implements OnInit, ControlValueAccessor {
 
   private doc: CodeMirror.EditorFromTextArea;
 
@@ -181,9 +181,6 @@ export class CodeEditorComponent implements OnInit, OnDestroy, ControlValueAcces
 
     // Set proper Lint mode
     this.doc.setOption('lint', this.getLintOptions());
-  }
-
-  ngOnDestroy() {
   }
 
   writeValue(obj: any): void {

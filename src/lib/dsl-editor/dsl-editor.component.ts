@@ -1,4 +1,4 @@
-import { Component, Input, Output, ElementRef, EventEmitter, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
+import { Component, Input, Output, ElementRef, EventEmitter, OnInit, ViewEncapsulation } from '@angular/core';
 import * as _ from 'lodash';
 import * as CodeMirror from 'codemirror-minified';
 import * as _$ from 'jquery';
@@ -16,7 +16,7 @@ import 'codemirror-minified/addon/scroll/simplescrollbars';
   styleUrls: ['./dsl-editor.component.scss', ],
   encapsulation: ViewEncapsulation.None
 })
-export class DslEditorComponent implements OnInit, OnDestroy {
+export class DslEditorComponent implements OnInit {
 
   private doc: CodeMirror.EditorFromTextArea;
 
@@ -124,9 +124,6 @@ export class DslEditorComponent implements OnInit, OnDestroy {
     this.doc.on('blur', () => this.blur.emit());
 
     this.editor.emit(this.doc);
-  }
-
-  ngOnDestroy() {
   }
 
 }

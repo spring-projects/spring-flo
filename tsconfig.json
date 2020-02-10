@@ -20,5 +20,8 @@
       "src/lib/@types"
     ],
     "strictNullChecks":false
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true
   }
 }

@@ -1,5 +1,4 @@
 import { Component, ViewEncapsulation } from '@angular/core';
-import { NgModel } from '@angular/forms';
 import { Flo } from 'spring-flo';
 import { BsModalService } from 'ngx-bootstrap';
 const { Metamodel } = require('./metamodel');

@@ -1,0 +1,6 @@
+{
+  "bundlerOptions": {
+    "ignoreImports": ["~@angular/.*"],
+    "logLevel": "silent"
+  }
+}
