@@ -43,6 +43,7 @@
     "skipTemplateCodegen": true,
     "strictMetadataEmit": true,
     "flatModuleOutFile": "./spring-flo.js",
-    "flatModuleId": "spring-flo"
+    "flatModuleId": "spring-flo",
+    "enableIvy": false
   }
 }
