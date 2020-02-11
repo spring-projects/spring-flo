@@ -1,5 +1,10 @@
 {
   "extends": "../../tsconfig.json",
+  "angularCompilerOptions": {
+    "paths": {
+      "spring-flo": [ "../lib/index.ts" ]
+    }
+  },
   "compilerOptions": {
     "baseUrl": "",
     "module": "commonjs",
@@ -7,7 +12,7 @@
     "emitDecoratorMetadata": true,
     "paths": {
       "spring-flo": [
-        "../lib"
+        "../lib/index.ts"
       ]
     }
   },

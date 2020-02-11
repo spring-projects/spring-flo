@@ -19,6 +19,7 @@
       "node_modules/@types",
       "src/lib/@types"
     ],
-    "strictNullChecks":false
+    "strictNullChecks":false,
+    "enableIvy": false
   }
 }
