@@ -24,9 +24,6 @@
     "rxjs": ">=6.0.0 <7.0.0"
   },
   "ngPackage": {
-    "assets": [
-      "styles.scss"
-    ],
     "lib": {
       "entryFile": "./index.ts"
     },

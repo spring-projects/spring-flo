@@ -24,8 +24,9 @@
   },
   "scripts": {
     "serve": "ng serve dev",
-    "build:lib": "rimraf dist && ng-packagr -p src/lib/package.json",
+    "build:lib": "rimraf dist && ng-packagr -p src/lib/package.json && npm run styles:lib",
     "build:app": "cpr dist/lib src/demo/spring-flo -d && ng build packaged && rimraf src/demo/spring-flo",
+    "styles:lib": "scss-bundle --entryFile src/lib/styles.scss --outFile dist/lib/flo.css",
     "build": "npm run build:lib",
     "prestart": "npm run build:lib",
     "start": "npm run serve",
@@ -64,6 +65,7 @@
     "ngx-bootstrap": "5.2.0",
     "rimraf": "2.6.1",
     "rxjs": "6.5.4",
+    "scss-bundle": "^3.0.2",
     "standard-version": "7.0.1",
     "tslint": "^6.0.0",
     "typescript": "3.7.5",
