@@ -30,7 +30,8 @@
     "prestart": "npm run build:lib",
     "start": "npm run serve",
     "release": "standard-version",
-    "prepare": "npm run build"
+    "prepare": "npm run build",
+    "lint": "tslint ./src/**/*.ts -t verbose"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "latest",
@@ -59,10 +60,9 @@
     "rimraf": "2.6.1",
     "rxjs": "6.5.4",
     "standard-version": "7.0.1",
-    "tslint": "5.17.0",
+    "tslint": "^6.0.0",
     "typescript": "3.7.5",
     "zone.js": "0.10.2",
-
     "codemirror-minified": "5.49.2",
     "jointjs": "3.1.0",
     "ts-disposables": "2.2.3"
