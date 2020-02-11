@@ -10,7 +10,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/app",
+            "outputPath": "dist-demo",
             "index": "src/demo/index.html",
             "main": "src/demo/main.ts",
             "tsConfig": "src/demo/tsconfig.dev.json",
@@ -81,7 +81,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/app",
+            "outputPath": "dist-demo",
             "index": "src/demo/index.html",
             "main": "src/demo/main.ts",
             "tsConfig": "src/demo/tsconfig.packaged.json",

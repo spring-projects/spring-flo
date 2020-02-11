@@ -19,7 +19,9 @@
       "node_modules/@types",
       "src/lib/@types"
     ],
-    "strictNullChecks":false,
-    "enableIvy": false
+    "strictNullChecks":false
+  },
+  "angularCompilerOptions": {
+    "enableIvy": true
   }
 }

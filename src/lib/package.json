@@ -25,14 +25,21 @@
   },
   "ngPackage": {
     "lib": {
-      "entryFile": "./index.ts"
+      "entryFile": "./index.ts",
+      "umdModuleIds": {
+        "jointjs": "joint",
+        "jquery": "$",
+        "lodash": "_",
+        "ts-disposables": "tsDisposables",
+        "codemirror-minified": "codemirror"
+      }
     },
     "whitelistedNonPeerDependencies": [
       "codemirror-minified",
       "jointjs",
       "ts-disposables"
     ],
-    "dest": "../../dist/lib",
+    "dest": "../../dist",
     "deleteDestPath": true
   }
 }
