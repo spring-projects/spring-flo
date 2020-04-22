@@ -62,7 +62,7 @@ This project uses code from several open source packages:
 
 This project is powered by:
 
-<a href="https://pivotal.io/"><img alt="Pivotal" width="136" title="Pivotal" src="https://i.imgur.com/XPeBw7A.png"></a> <a href="https://spring.io/"><img alt="Spring" title="Spring" src="https://i.imgur.com/az8Xady.png" width="155"></a>
+<a href="https://www.vmware.com/"><img alt="VMWare" width="150" title="VMWare" src="https://i.imgur.com/xlFSgTU.png"></a> <a href="https://spring.io/"><img alt="Spring" title="Spring" src="https://i.imgur.com/az8Xady.png" width="155"></a>
 
 [Angular]: https://angular.io/
 [Angular CLI]: https://cli.angular.io/
