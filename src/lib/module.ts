@@ -11,6 +11,8 @@ import { PropertiesGroupComponent } from './properties/properties.group.componen
 import { DynamicFormPropertyComponent } from './properties/df.property.component';
 import { PaperComponent } from './editor/paper.component';
 
+import './shared/shapes';
+
 @NgModule({
   imports: [
     FormsModule,
