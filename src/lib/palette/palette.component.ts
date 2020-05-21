@@ -3,6 +3,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
+import '../shared/shapes';
 import { Shapes, Constants } from '../shared/shapes';
 import { DOCUMENT } from '@angular/common'
 import * as _$ from 'jquery';
@@ -10,60 +11,6 @@ const joint: any = Flo.joint;
 const $: any = _$;
 
 const DEBOUNCE_TIME = 300;
-
-joint.shapes.flo.PaletteGroupHeader = joint.shapes.basic.Generic.extend({
-  // The path is the open/close arrow, defaults to vertical (open)
-  markup: '<g class="scalable"><rect/></g><text/><g class="rotatable"><path d="m 10 10 l 5 8.7 l 5 -8.7 z"/></g>',
-  defaults: joint.util.deepSupplement({
-    type: 'palette.groupheader',
-    size: {width: 170, height: 30},
-    position: {x: 0, y: 0},
-    attrs: {
-      'rect': { fill: '#34302d', 'stroke-width': 1, stroke: '#6db33f', 'follow-scale': true, width: 80, height: 40 },
-      'text': {
-        text: '',
-        fill: '#eeeeee',
-        'ref-x': 0.5,
-        'ref-y': 7,
-        'x-alignment': 'middle',
-        'font-size': 18/*, 'font-weight': 'bold', 'font-variant': 'small-caps', 'text-transform': 'capitalize'*/
-      },
-      'path': { fill: 'white', 'stroke-width': 2, stroke: 'white'/*,transform:'rotate(90,15,15)'*/}
-    },
-    // custom properties
-    isOpen: true
-  }, joint.shapes.basic.Generic.prototype.defaults)
-});
-
-joint.shapes.flo.NoMatchesFound = joint.shapes.basic.Generic.extend({
-  // The path is the open/close arrow, defaults to vertical (open)
-  markup: '<g class="scalable"><rect class="no-matches-label-border"/></g><rect class="no-mathes-label-bg"/><text class="no-matches-label"/>',
-  defaults: joint.util.deepSupplement({
-    size: {width: 170, height: 30},
-    position: {x: 0, y: 0},
-    attrs: {
-      '.no-matches-label-border': {
-        refWidth: 1,
-        refHeight: 1,
-        refX: 0,
-        refY: 0,
-      },
-      '.no-macthes-label-bg': {
-        ref: '.no-matches-label',
-        refWidth: 10,
-        refHeight: 2,
-        'follow-scale': true
-      },
-      '.no-matches-label': {
-        text: 'No results found.',
-        ref: '.no-matches-label-border',
-        refY: 0.5,
-        refY2: 5,
-        yAlignment: 'middle',
-      },
-    },
-  }, joint.shapes.basic.Generic.prototype.defaults)
-});
 
 @Component({
   selector: 'flo-palette',
