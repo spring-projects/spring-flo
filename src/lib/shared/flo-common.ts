@@ -170,6 +170,7 @@ export namespace Flo {
     id: string | number;
     selector?: string;
     port?: string;
+    magnet?: string;
   }
 
   export enum Severity {
