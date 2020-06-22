@@ -305,7 +305,10 @@ export class Palette implements OnInit, OnDestroy {
       if (cell.get('header')) {
         paletteNodes.push(cell);
       } else if (metadata && metadata.group && metadata.name
-        && (!filterText || metadata.group.indexOf(filterText) >= 0 || metadata.name.indexOf(filterText) >= 0)) {
+        && (!filterText
+          || metadata.group.toLocaleLowerCase().indexOf(filterText) >= 0
+          || metadata.name.toLocaleLowerCase().indexOf(filterText) >= 0)
+      ) {
         if (!this.closedGroups.has(metadata.group)) {
           cell.attr('./display', 'block');
           cell.removeAttr('./display');
