@@ -50,12 +50,12 @@ class GraphToTextConverter {
     this.nodesInDegrees = new Map<string, number>();
     this.g = graph;
     graph.getElements().forEach((element : dia.Element) => {
-      if (element.attr('metadata/name')) {
+      if (element.get('metadata')?.name) {
         this.nodesToVisit.add(element.get('id'));
         let indegree = 0;
         this.g.getConnectedLinks(element, {inbound: true}).forEach(link => {
           if (link.get('source') && link.get('source').id && this.g.getCell(link.get('source').id) &&
-            this.g.getCell(link.get('source').id).attr('metadata/name')) {
+            this.g.getCell(link.get('source').id).get('metadata')?.name) {
             this.linksToVisit.add(link.get('id'));
             this.numberOfLinksToVisit++;
             indegree++;
@@ -142,7 +142,7 @@ class GraphToTextConverter {
     if (!element) {
       return;
     }
-    text += element.attr('metadata/name');
+    text += element.get('metadata')?.name;
     if (props) {
       Object.keys(props).forEach(propertyName => {
         text += ' --' + propertyName + '=' + props[propertyName];

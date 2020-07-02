@@ -301,7 +301,7 @@ export class Palette implements OnInit, OnDestroy {
     const presentGroups = new Set<string>();
 
     this.palette.model.getCells().forEach((cell: dia.Cell) => {
-      const metadata: Flo.ElementMetadata = cell.attr('metadata');
+      const metadata: Flo.ElementMetadata = cell.get('metadata');
       if (cell.get('header')) {
         paletteNodes.push(cell);
       } else if (metadata && metadata.group && metadata.name
@@ -354,7 +354,7 @@ export class Palette implements OnInit, OnDestroy {
     let cellWidth = 0, cellHeight = 0;
     // Determine the size of the palette entry cell (width and height)
     paletteNodes.forEach(pnode => {
-      if (pnode.attr('metadata/name')) {
+      if (pnode.get('metadata')?.name) {
         const elementSize = this.palette.findViewByModel(pnode).getBBox();
         let dimension: dia.Size = {
           width: elementSize.width,
@@ -403,7 +403,7 @@ export class Palette implements OnInit, OnDestroy {
           pnode.set('position', { x: xpos + (cellWidth - dimension.width) / 2, y: ypos + (cellHeight - dimension.height) / 2});
         } else {
           // Enough real estate to place entry in a row - adjust y position
-          if (prevNode && prevNode.attr('metadata/name')) {
+          if (prevNode && prevNode.get('metadata')?.name) {
             ypos -= cellHeight;
           }
           pnode.set('position', { x: xpos + (cellWidth - dimension.width) / 2, y: ypos + (cellHeight - dimension.height) / 2});
@@ -452,7 +452,7 @@ export class Palette implements OnInit, OnDestroy {
         // $('.node-tooltip').remove();
         // TODO move metadata to the right place (not inside attrs I think)
         self.clickedElement = this.model;
-        if (self.clickedElement && self.clickedElement.attr('metadata')) {
+        if (self.clickedElement && self.clickedElement.get('metadata')) {
           $(self.document).on('mousemove', self.mouseMoveHanlder);
         }
       },
@@ -469,7 +469,7 @@ export class Palette implements OnInit, OnDestroy {
       //     }
       //
       //     var model = this.model;
-      //     var metadata = model.attr('metadata');
+      //     var metadata = model.get('metadata');
       //     if (!metadata) {
       //       return;
       //     }
@@ -487,7 +487,7 @@ export class Palette implements OnInit, OnDestroy {
 
       // showTooltip: function(x, y) {
       //   var model = this.model;
-      //   var metadata = model.attr('metadata');
+      //   var metadata = model.get('metadata');
       //   // TODO refactor to use tooltip module
       //   var nodeTooltip = document.createElement('div');
       //   $(nodeTooltip).addClass('node-tooltip');
@@ -555,10 +555,10 @@ export class Palette implements OnInit, OnDestroy {
     // TODO offsetX/Y not on firefox
     // console.debug("tracking move: x="+event.pageX+",y="+event.pageY);
     // console.debug('Element = ' + (this.clickedElement ? this.clickedElement.attr('metadata/name'): 'null'));
-    if (this.clickedElement && this.clickedElement.attr('metadata')) {
+    if (this.clickedElement && this.clickedElement.get('metadata')) {
       if (!this.viewBeingDragged) {
 
-        let dataOfClickedElement: Flo.ElementMetadata = this.clickedElement.attr('metadata');
+        let dataOfClickedElement: Flo.ElementMetadata = this.clickedElement.get('metadata');
         // custom div if not already built.
         $('<div>', {
           id: 'palette-floater'

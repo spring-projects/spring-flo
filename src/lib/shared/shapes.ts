@@ -402,7 +402,7 @@ export function loadShapes() {
     //   var mousey = y + 10;
     //
     //   var nodeTooltip: HTMLElement;
-    //   if (this.model instanceof joint.dia.Element && this.model.attr('metadata')) {
+    //   if (this.model instanceof joint.dia.Element && this.model.get('metadata')) {
     //     nodeTooltip = document.createElement('div');
     //     $(nodeTooltip).addClass('node-tooltip');
     //
@@ -428,7 +428,7 @@ export function loadShapes() {
     //       }
     //     }
     //
-    //     model.attr('metadata').get('description').then(function(description: string) {
+    //     model.get('metadata').get('description').then(function(description: string) {
     //       $(nodeDescription).text(description);
     //     }, function(error: any) {
     //       if (error) {
@@ -438,7 +438,7 @@ export function loadShapes() {
     //
     //     // defaultValue
     //     if (!model.attr('metadata/metadata/hide-tooltip-options')) {
-    //       model.attr('metadata').get('properties').then(function(metaProps: any) {
+    //       model.get('metadata')?.get('properties').then(function(metaProps: any) {
     //         var props = model.attr('props'); // array of {'name':,'value':}
     //         if (metaProps && props) {
     //           Object.keys(props).sort().forEach(function(propertyName) {
@@ -661,7 +661,7 @@ export namespace Shapes {
       if (props) {
         Array.from(props.keys()).forEach(key => node.attr(`props/${key}`, props!.get(key)));
       }
-      node.attr('metadata', metadata);
+      node.set('metadata', metadata);
       if (graph) {
         graph.addCell(node);
       }
@@ -698,7 +698,7 @@ export namespace Shapes {
       }
       link.set('type', joint.shapes.flo.LINK_TYPE);
       if (metadata) {
-        link.attr('metadata', metadata);
+        link.set('metadata', metadata);
       }
       if (props) {
         Array.from(props.keys()).forEach(key => link.attr(`props/${key}`, props!.get(key)));

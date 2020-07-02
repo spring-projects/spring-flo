@@ -247,7 +247,7 @@ export namespace Properties {
     }
 
     getProperties(): Promise<Array<Property>> {
-      let metadata: Flo.ElementMetadata = this.cell.attr('metadata');
+      let metadata: Flo.ElementMetadata = this.cell.get('metadata');
       return Promise.resolve(metadata.properties().then(propsMetadata => Array.from(propsMetadata.values()).map(m => this.createProperty(m))));
     }
 

@@ -54,16 +54,15 @@ export class Editor implements Flo.Editor {
         createHandle(owner, Constants.REMOVE_HANDLE_TYPE, context.deleteSelectedNode, bbox.origin().offset(bbox.width + 3, bbox.height + 3));
 
         // Properties handle
-        if (!owner.model.attr('metadata/unresolved')) {
+        if (!owner.model.get('metadata')?.unresolved) {
           createHandle(owner, Constants.PROPERTIES_HANDLE_TYPE, () => this.openPropertiesDialog(owner.model), bbox.origin().offset(-14, bbox.height + 3));
         }
       }
     }
 
     openPropertiesDialog(cell : dia.Cell) {
-      console.log('Props view invoked!');
       let bsModalRef = this.modelService.show(PropertiesDialogComponent);
-      let metadata : Flo.ElementMetadata = cell.attr('metadata');
+      let metadata : Flo.ElementMetadata = cell.get('metadata');
       bsModalRef.content.title = `Properties for ${metadata.name.toUpperCase()}`;
       let propertiesModel = new SamplePropertiesGroupModel(new Properties.DefaultCellPropertiesSource(cell));
       propertiesModel.load();
@@ -102,11 +101,11 @@ export class Editor implements Flo.Editor {
       let graph = context.getGraph();
       let source = dragDescriptor.source ? dragDescriptor.source.view.model : undefined;
       let target = dragDescriptor.target ? dragDescriptor.target.view.model : undefined;
-      if (target instanceof joint.dia.Element && target.attr('metadata/name')) {
+      if (target instanceof joint.dia.Element && target.get('metadata')?.name) {
         // Custom handling allowing a node to be dropped on a port and inserting
         // it into the flow directly without the user needing to do more link
         // drawing
-        let type = source.attr('metadata/name');
+        let type = source.get('metadata')?.name;
         if (dragDescriptor.target.cssClassSelector === '.output-port') {
           this.moveNodeOnNode(context, <dia.Element> source, <dia.Element> target, 'right', true);
           relinking = true;
@@ -128,7 +127,7 @@ export class Editor implements Flo.Editor {
 
     calculateDragDescriptor(context : Flo.EditorContext, draggedView : dia.CellView, targetUnderMouse : dia.CellView, point : g.Point, sourceComponent : string) : Flo.DnDDescriptor {
       let source = draggedView.model;
-      let sourceGroup = source.attr('metadata/group');
+      let sourceGroup = source.get('metadata')?.group;
 
       // Find closest port
       let range = 30;
@@ -148,7 +147,7 @@ export class Editor implements Flo.Editor {
         elements.forEach(function(model) {
           let view = paper.findViewByModel(model);
           if (view && view !== draggedView && model instanceof joint.dia.Element) { // jshint ignore:line
-            let targetGroup = model.attr('metadata/group');
+            let targetGroup = model.get('metadata')?.group;
             let targetMaxIcomingLinks = targetGroup === 'source' ? 0 : 1;
             let targetMaxOutgoingLinks = targetGroup === 'sink' ? 0 : 1;
             let targetHasIncomingPort = targetGroup !== 'source';
@@ -211,14 +210,14 @@ export class Editor implements Flo.Editor {
     validate(graph : dia.Graph, dsl: string, flo: Flo.EditorContext) : Promise<Map<string | number, Flo.Marker[]>> {
       return new Promise((resolve, reject) => {
         let allMarkers = new Map<string | number, Array<Flo.Marker>>();
-        graph.getElements().filter(e => e.attr('metadata')).forEach(e => {
+        graph.getElements().filter(e => e.get('metadata')).forEach(e => {
           let markers : Array<Flo.Marker> = []
-          let group = e.attr('metadata/group');
-          if (e.attr('metadata/unresolved')) {
+          let group = e.get('metadata')?.group;
+          if (e.get('metadata')?.unresolved) {
             markers.push({
               severity: Flo.Severity.Error,
               range: e.attr('range'),
-              message: `Unknown element '${e.attr('metadata/name')}` + (group ? ` from group '${e.attr('metadata/group')}'` : '')
+              message: `Unknown element '${e.get('metadata')?.name}` + (group ? ` from group '${e.get('metadata')?.group}'` : '')
             });
           } else if (group) {
             let links = graph.getConnectedLinks(e);
@@ -273,7 +272,7 @@ export class Editor implements Flo.Editor {
               markers.push({
                 severity: Flo.Severity.Error,
                 range: e.attr('range'),
-                message: `Unknown element '${e.attr('metadata/name')} from group '${e.attr('metadata/group')}'`
+                message: `Unknown element '${e.get('metadata')?.name} from group '${e.get('metadata')?.group}'`
               });
             }
           }
@@ -285,7 +284,7 @@ export class Editor implements Flo.Editor {
       });
       // var errors = [];
       // var graph = flo.getGraph();
-      // var constraints = element.attr('metadata/constraints');
+      // var constraints = element.get('metadata')?.constraints);
       // if (constraints) {
       //   var incoming = graph.getConnectedLinks(element, {inbound: true});
       //   var outgoing = graph.getConnectedLinks(element, {outbound: true});
@@ -338,10 +337,10 @@ export class Editor implements Flo.Editor {
       //     });
       //   }
       // }
-      // if (!element.attr('metadata') || element.attr('metadata/unresolved')) {
-      //   var msg = 'Unknown element \'' + element.attr('metadata/name') + '\'';
-      //   if (element.attr('metadata/group')) {
-      //     msg += ' from group \'' + element.attr('metadata/group') + '\'.';
+      // if (!element.get('metadata') || element.get('metadata').unresolved)) {
+      //   var msg = 'Unknown element \'' + element.get('metadata')?.name + '\'';
+      //   if (element.get('metadata')?.group) {
+      //     msg += ' from group \'' + element.get('metadata')?.group + '\'.';
       //   }
       //   errors.push({
       //     message: msg,
@@ -354,7 +353,7 @@ export class Editor implements Flo.Editor {
       // // The format of a range is {'start':{'ch':NNNN,'line':NNNN},'end':{'ch':NNNN,'line':NNNN}}
       // var propertiesRanges = element.attr('propertiesranges');
       // if (propertiesRanges) {
-      //   var moduleSchema = element.attr('metadata');
+      //   var moduleSchema = element.get('metadata');
       //   // Grab the list of supported properties for this module type
       //   moduleSchema.get('properties').then(function(moduleSchemaProperties) {
       //     if (!moduleSchemaProperties) {
@@ -370,7 +369,7 @@ export class Editor implements Flo.Editor {
       //         var propertyRange = propertiesRanges[propertyName];
       //         if (propertyRange) {
       //           errors.push({
-      //             message: 'unrecognized option \''+propertyName+'\' for module \''+element.attr('metadata/name')+'\'',
+      //             message: 'unrecognized option \''+propertyName+'\' for module \''+element.get('metadata')?.name+'\'',
       //             range: propertyRange
       //           });
       //         }

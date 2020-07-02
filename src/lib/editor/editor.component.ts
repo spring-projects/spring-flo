@@ -432,7 +432,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (newSelection && (newSelection.model.get('type') === joint.shapes.flo.DECORATION_TYPE || newSelection.model.get('type') === joint.shapes.flo.HANDLE_TYPE)) {
       newSelection = this.paper.findViewByModel(this.graph.getCell(newSelection.model.get('parent')));
     }
-    if (newSelection && (!newSelection.model.attr('metadata') || newSelection.model.attr('metadata/metadata/unselectable'))) {
+    if (newSelection && (!newSelection.model.get('metadata') || newSelection.model.get('metadata')?.metadata?.unselectable)) {
       newSelection = undefined;
     }
     if (newSelection !== this._selection) {
@@ -728,7 +728,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       if (this.readOnlyCanvas) {
         this.setDragDescriptor(undefined);
       } else {
-        let metadata = cellview.model.attr('metadata');
+        let metadata = cellview.model.get('metadata');
         let props = cellview.model.attr('props');
 
         let position = this.paper.snapToGrid({x: evt.clientX, y: evt.clientY});
@@ -1037,14 +1037,13 @@ export class EditorComponent implements OnInit, OnDestroy {
   handleNodeCreation(node: dia.Element) {
     node.on('change:size', this._resizeHandler);
     node.on('change:position', this._resizeHandler);
-    if (node.attr('metadata')) {
+    if (node.get('metadata')) {
 
       node.on('change:attrs', (cell: dia.Element, attrs: any, changeData: any) => {
         let propertyPath = changeData ? changeData.propertyPath : undefined;
         if (propertyPath) {
           let propAttr = propertyPath.substr(propertyPath.indexOf('/') + 1);
-          if (propAttr.indexOf('metadata') === 0 ||
-            propAttr.indexOf('props') === 0 ||
+          if (propAttr.indexOf('props') === 0 ||
             (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, node))) {
             this.performGraphToTextSyncing();
           }
@@ -1054,6 +1053,14 @@ export class EditorComponent implements OnInit, OnDestroy {
 
         }
       });
+
+      node.on('change:metadata', (cell: dia.Element, attrs: any, changeData: any) => {
+        let propertyPath = changeData ? changeData.propertyPath : undefined;
+        if (propertyPath && this.renderer && this.renderer.refreshVisuals) {
+            this.renderer.refreshVisuals(node, propertyPath, this.paper);
+        }
+      });
+
     }
 
     node.on('change:markers', () => {
@@ -1101,8 +1108,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       let propertyPath = changeData ? changeData.propertyPath : undefined;
       if (propertyPath) {
         let propAttr = propertyPath.substr(propertyPath.indexOf('/') + 1);
-        if (propAttr.indexOf('metadata') === 0 ||
-          propAttr.indexOf('props') === 0 ||
+        if (propAttr.indexOf('props') === 0 ||
           (this.renderer && this.renderer.isSemanticProperty && this.renderer.isSemanticProperty(propAttr, link))) {
           let sourceId = link.get('source').id;
           let targetId = link.get('target').id;
@@ -1111,6 +1117,13 @@ export class EditorComponent implements OnInit, OnDestroy {
         if (this.renderer && this.renderer.refreshVisuals) {
           this.renderer.refreshVisuals(link, propAttr, this.paper);
         }
+      }
+    });
+
+    link.on('change:metadata', (cell: dia.Element, attrs: any, changeData: any) => {
+      let propertyPath = changeData ? changeData.propertyPath : undefined;
+      if (propertyPath && this.renderer && this.renderer.refreshVisuals) {
+        this.renderer.refreshVisuals(link, propertyPath, this.paper);
       }
     });
 

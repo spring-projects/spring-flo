@@ -300,10 +300,10 @@ export class Renderer implements Flo.Renderer {
     }
 
     initializeNewNode(node : dia.Element, viewerDescriptor : Flo.ViewerDescriptor) {
-      let metadata : Flo.ElementMetadata = node.attr('metadata');
+      let metadata : Flo.ElementMetadata = node.get('metadata');
       if (metadata) {
-        node.attr('.label/text', node.attr('metadata/name'));
-        let group = node.attr('metadata/group');
+        node.attr('.label/text', node.get('metadata').name);
+        let group = node.get('metadata')?.group;
         if (group === 'source') {
           node.attr('.input-port/display','none');
         }
