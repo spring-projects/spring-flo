@@ -693,7 +693,6 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   handleDragFromPalette(dnDEvent: Flo.DnDEvent) {
-    console.debug('Dragging from palette');
     if (dnDEvent.view && !this.readOnlyCanvas) {
       let location = this.paper.snapToGrid({x: dnDEvent.event.clientX, y: dnDEvent.event.clientY});
       this.handleNodeDragging(dnDEvent.view,  this.getTargetViewFromEvent(dnDEvent.event, location.x, location.y, [dnDEvent.view]), location.x, location.y, Constants.PALETTE_CONTEXT);
@@ -1208,7 +1207,6 @@ export class EditorComponent implements OnInit, OnDestroy {
     });
 
     this.paper.on('dragging-node-over-canvas', (dndEvent: Flo.DnDEvent) => {
-      console.debug(`Canvas DnD type = ${dndEvent.type}`);
       let location = this.paper.snapToGrid({x: dndEvent.event.clientX, y: dndEvent.event.clientY});
       switch (dndEvent.type) {
         case Flo.DnDEventType.DRAG:

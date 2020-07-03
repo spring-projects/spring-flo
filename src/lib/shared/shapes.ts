@@ -105,8 +105,8 @@ export function loadShapes() {
         '.': { magnet: false },
         // rounded edges around image
         '.border': {
-          width: IMAGE_W,
-          height: IMAGE_H,
+          refWidth: 1,
+          refHeight: 1,
           rx: 3,
           ry: 3,
           'fill-opacity': 0, // see through
@@ -115,8 +115,8 @@ export function loadShapes() {
         },
 
         '.box': {
-          width: IMAGE_W,
-          height: IMAGE_H,
+          refWidth: 1,
+          refHeight: 1,
           rx: 3,
           ry: 3,
           //'fill-opacity': 0, // see through
@@ -166,8 +166,8 @@ export function loadShapes() {
         '.shape': {
         },
         '.image': {
-          width: IMAGE_W,
-          height: IMAGE_H
+          refWidth: 1,
+          refHeight: 1,
         }
       }
     }, joint.shapes.basic.Generic.prototype.defaults)

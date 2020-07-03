@@ -593,9 +593,14 @@ export class Palette implements OnInit, OnDestroy {
         this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
 
         const resizeObserver = new ResizeObserver(() => {
-          const box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
-          parent.css('width', box.width);
-          parent.css('height', box.height);
+          if (this.viewBeingDragged) {
+            const box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
+            const size: dia.Size = (<dia.ElementView>this.viewBeingDragged).model.size();
+            // Account for ports. Especially on the left side. Box includes ports, size does not
+            parent.css('width', box.width + box.width - size.width);
+            parent.css('height', box.height + box.height - size.height);
+            floaternode.position(box.width - size.width, box.height - size.height);
+          }
         });
 
         resizeObserver.observe(this.viewBeingDragged.el);
@@ -619,11 +624,11 @@ export class Palette implements OnInit, OnDestroy {
         // }, 2000);
 
         let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
-        let size: dia.Size = floaternode.get('size');
+        let size: dia.Size = floaternode.size();
+        // Account for node real size including ports
         parent.css('width', box.width + box.width - size.width);
         parent.css('height', box.height + box.height - size.height);
-        // Account for node real size including ports
-        floaternode.translate(box.width - size.width, box.height - size.height);
+        floaternode.position(box.width - size.width, box.height - size.height);
         parent.offset({left: event.pageX + 5, top: event.pageY + 5});
       } else {
         $('#palette-floater').offset({left: event.pageX + 5, top: event.pageY + 5});
