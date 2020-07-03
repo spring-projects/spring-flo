@@ -1,5 +1,5 @@
 import {Component, ElementRef, Input, Output, EventEmitter, OnInit, OnDestroy, Inject, ViewEncapsulation} from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, fromEvent } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { dia } from 'jointjs';
 import { Flo } from '../shared/flo-common';
@@ -591,6 +591,33 @@ export class Palette implements OnInit, OnDestroy {
 
         // Only node view expected
         this.viewBeingDragged = this.floaterpaper.findViewByModel(floaternode);
+
+        const resizeObserver = new ResizeObserver(() => {
+          const box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
+          parent.css('width', box.width);
+          parent.css('height', box.height);
+        });
+
+        resizeObserver.observe(this.viewBeingDragged.el);
+
+        // const interval = setInterval(() => {
+        //   if (this.viewBeingDragged) {
+        //     // let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
+        //     // console.log(`Current view size: w=${box.width} h=${box.height}`);
+        //
+        //     // const modelSize = floaternode.size();
+        //     // console.log(`Current model size: w=${modelSize.width} h=${modelSize.height}`);
+        //
+        //     const width = Math.random() * 400;
+        //     const height = Math.random() * 300;
+        //     console.log(`Setting width=${width} height=${height}`);
+        //     (<dia.ElementView>this.viewBeingDragged).model.size(width, height);
+        //     // (<dia.ElementView>this.viewBeingDragged).update();
+        //   } else {
+        //     clearInterval(interval);
+        //   }
+        // }, 2000);
+
         let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
         let size: dia.Size = floaternode.get('size');
         parent.css('width', box.width + box.width - size.width);
