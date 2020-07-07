@@ -273,7 +273,8 @@ export namespace Properties {
           let currentValue = this.cell.attr(property.attr);
           if (currentValue !== undefined && currentValue !== null) {
             // Remove attr doesn't fire appropriate event. Set default value first as a workaround to schedule DSL resync
-            this.cell.attr(property.attr, property.defaultValue === undefined ? null : property.defaultValue);
+            // this.cell.attr(property.attr, property.defaultValue === undefined ? null : property.defaultValue);
+            this.cell.attr(property.attr, null);
             this.cell.removeAttr(property.attr);
           }
         } else {
