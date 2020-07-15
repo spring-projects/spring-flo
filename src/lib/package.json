@@ -13,14 +13,14 @@
     "npm": ">= 3.0.0"
   },
   "dependencies": {
-    "codemirror-minified": "5.49.2",
-    "jointjs": "3.1.0",
+    "codemirror-minified": "5.54.0",
+    "jointjs": "3.2.0",
     "ts-disposables": "2.2.3"
   },
   "peerDependencies": {
-    "@angular/core": ">=9.0.0 <10.0.0",
-    "@angular/forms": ">=9.0.0 < 10.0.0",
-    "@angular/common": ">=9.0.0 <10.0.0",
+    "@angular/core": ">=9.0.0 <11.0.0",
+    "@angular/forms": ">=9.0.0 < 11.0.0",
+    "@angular/common": ">=9.0.0 <11.0.0",
     "rxjs": ">=6.0.0 <7.0.0"
   },
   "ngPackage": {
