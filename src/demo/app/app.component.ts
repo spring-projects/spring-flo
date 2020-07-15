@@ -1,6 +1,6 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Flo } from 'spring-flo';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 const { Metamodel } = require('./metamodel');
 const { Renderer } = require('./renderer');
 const { Editor } = require('./editor');

@@ -17,7 +17,7 @@
 import { Flo, Constants, Properties } from 'spring-flo';
 import { Validators } from '@angular/forms';
 import { dia, g } from 'jointjs';
-import { BsModalService } from 'ngx-bootstrap';
+import { BsModalService } from 'ngx-bootstrap/modal';
 import { PropertiesDialogComponent } from './properties.dialog.component';
 const joint : any = Flo.joint;
 
