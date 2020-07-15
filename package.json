@@ -70,7 +70,7 @@
     "rimraf": "2.6.1",
     "rxjs": "6.5.4",
     "scss-bundle": "^3.0.2",
-    "standard-version": "7.0.1",
+    "standard-version": "^8.0.2",
     "tslint": "^6.1.0",
     "typescript": "3.8.3",
     "zone.js": "0.10.3"
