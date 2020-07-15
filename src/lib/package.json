@@ -1,6 +1,6 @@
 {
   "name": "spring-flo",
-  "version": "0.9.0",
+  "version": "0.10.0-alpha",
   "description": "Library for quickly building text DSL visualization diagram editor",
   "author": "Andy Clement, Alex Boyko",
   "license": "Apache-2.0",
