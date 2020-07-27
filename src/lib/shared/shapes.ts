@@ -432,7 +432,7 @@ export function loadShapes() {
     //       $(nodeDescription).text(description);
     //     }, function(error: any) {
     //       if (error) {
-    //         console.error(error);
+    //         Logger.error(error);
     //       }
     //     });
     //
@@ -466,14 +466,14 @@ export function loadShapes() {
     //         }
     //       }, function(error: any) {
     //         if (error) {
-    //           console.error(error);
+    //           Logger.error(error);
     //         }
     //       });
     //     }
     //
     //     $('.node-tooltip').css({ top: mousey, left: mousex });
     //   } else if (this.model.get('type') === joint.shapes.flo.DECORATION_TYPE && this.model.attr('./kind') === 'error') {
-    //     console.debug('mouse enter: ERROR box=' + JSON.stringify(this.model.getBBox()));
+    //     Logger.debug('mouse enter: ERROR box=' + JSON.stringify(this.model.getBBox()));
     //     nodeTooltip = document.createElement('div');
     //     var errors = this.model.attr('messages');
     //     if (errors && errors.length > 0) {

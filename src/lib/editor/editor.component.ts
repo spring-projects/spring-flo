@@ -17,6 +17,7 @@ import { CompositeDisposable, Disposable } from 'ts-disposables';
 import * as _$ from 'jquery';
 import * as _ from 'lodash';
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { Logger } from '../shared/logger';
 const joint: any = Flo.joint;
 const $: any = _$;
 
@@ -962,7 +963,7 @@ export class EditorComponent implements OnInit, OnDestroy {
    * then update the view based on that new information.
    */
   updateGraphRepresentation(): Promise<any> {
-    console.debug(`Updating graph to represent '${this._dslText}'`);
+    Logger.debug(`Updating graph to represent '${this._dslText}'`);
     if (this.metamodel && this.metamodel.textToGraph) {
       return this.metamodel.textToGraph(this.editorContext, this._dslText).then(() => {
         this.textToGraphConversionCompleted.next();

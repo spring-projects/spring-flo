@@ -7,6 +7,7 @@ import '../shared/shapes';
 import { Shapes, Constants } from '../shared/shapes';
 import { DOCUMENT } from '@angular/common'
 import * as _$ from 'jquery';
+import {Logger} from '../shared/logger';
 const joint: any = Flo.joint;
 const $: any = _$;
 
@@ -84,7 +85,7 @@ export class Palette implements OnInit, OnDestroy {
 
   @Input()
   set paletteSize(size: number) {
-    console.debug('Palette Size: ' + size);
+    Logger.debug('Palette Size: ' + size);
     if (this._paletteSize !== size) {
       this._paletteSize = size;
       if (this.palette) {
@@ -170,7 +171,7 @@ export class Palette implements OnInit, OnDestroy {
         this.initialized = true;
       });
     } else {
-      console.error('No Metamodel service specified for palette!');
+      Logger.error('No Metamodel service specified for palette!');
     }
 
     this._paletteSize = this._paletteSize || $(this.element.nativeElement.parentNode).width();
@@ -255,7 +256,7 @@ export class Palette implements OnInit, OnDestroy {
     let groupAdded: Set<string> = new Set<string>();
 
     let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
-    console.debug(`Parent Width: ${parentWidth}`);
+    Logger.debug(`Parent Width: ${parentWidth}`);
 
     // The field closedGroups tells us which should not be shown
     // Work out the list of active groups/nodes based on the filter text
@@ -282,7 +283,7 @@ export class Palette implements OnInit, OnDestroy {
     this.layout();
 
     this.paletteReady.emit(true);
-    console.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
+    Logger.debug('buildPalette took ' + (new Date().getTime() - startTime) + 'ms');
   }
 
   private layout() {
@@ -296,7 +297,7 @@ export class Palette implements OnInit, OnDestroy {
     let paletteNodes: Array<dia.Cell> = [];
 
     let parentWidth: number = this._paletteSize - Flo.SCROLLBAR_WIDTH;
-    console.debug(`Parent Width: ${parentWidth}`);
+    Logger.debug(`Parent Width: ${parentWidth}`);
 
     const presentGroups = new Set<string>();
 
@@ -429,7 +430,7 @@ export class Palette implements OnInit, OnDestroy {
     }
 
     this.palette.setDimensions(parentWidth, ypos);
-    console.debug('buildPalette layout ' + (new Date().getTime() - startTime) + 'ms');
+    Logger.debug('buildPalette layout ' + (new Date().getTime() - startTime) + 'ms');
 
   }
 
@@ -553,8 +554,8 @@ export class Palette implements OnInit, OnDestroy {
 
   private handleDrag(event: any) {
     // TODO offsetX/Y not on firefox
-    // console.debug("tracking move: x="+event.pageX+",y="+event.pageY);
-    // console.debug('Element = ' + (this.clickedElement ? this.clickedElement.attr('metadata/name'): 'null'));
+    // Logger.debug("tracking move: x="+event.pageX+",y="+event.pageY);
+    // Logger.debug('Element = ' + (this.clickedElement ? this.clickedElement.attr('metadata/name'): 'null'));
     if (this.clickedElement && this.clickedElement.get('metadata')) {
       if (!this.viewBeingDragged) {
 
@@ -604,24 +605,6 @@ export class Palette implements OnInit, OnDestroy {
         });
 
         resizeObserver.observe(this.viewBeingDragged.el);
-
-        // const interval = setInterval(() => {
-        //   if (this.viewBeingDragged) {
-        //     // let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
-        //     // console.log(`Current view size: w=${box.width} h=${box.height}`);
-        //
-        //     // const modelSize = floaternode.size();
-        //     // console.log(`Current model size: w=${modelSize.width} h=${modelSize.height}`);
-        //
-        //     const width = Math.random() * 400;
-        //     const height = Math.random() * 300;
-        //     console.log(`Setting width=${width} height=${height}`);
-        //     (<dia.ElementView>this.viewBeingDragged).model.size(width, height);
-        //     // (<dia.ElementView>this.viewBeingDragged).update();
-        //   } else {
-        //     clearInterval(interval);
-        //   }
-        // }, 2000);
 
         let box: dia.BBox = (<dia.ElementView>this.viewBeingDragged).getBBox();
         let size: dia.Size = floaternode.size();
