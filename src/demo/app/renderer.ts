@@ -101,7 +101,7 @@ joint.shapes.flo.Multi = joint.shapes.basic.Generic.extend({
         'stroke-width': 2,
       },
       '.input-port1': {
-        id: 'in-port-1',
+        portName: 'port-1',
         port: 'input',
         ref: '.box',
         refCx: 0,
@@ -126,7 +126,7 @@ joint.shapes.flo.Multi = joint.shapes.basic.Generic.extend({
         class: 'port1-label-rect flo-port-label-bg'
       },
       '.input-port2': {
-        id: 'in-port-2',
+        portName: 'port-2',
         port: 'in-port-2',
         r: PORT_RADIUS,
         ref: '.box',
@@ -151,7 +151,7 @@ joint.shapes.flo.Multi = joint.shapes.basic.Generic.extend({
         class: 'port2-label-rect flo-port-label-bg'
       },
       '.input-port3': {
-        id: 'in-port-3',
+        portName: 'port-3',
         port: 'input',
         r: PORT_RADIUS,
         ref: '.box',
@@ -176,7 +176,7 @@ joint.shapes.flo.Multi = joint.shapes.basic.Generic.extend({
         class: 'port3-label-rect flo-port-label-bg'
       },
       '.input-port4': {
-        id: 'in-port-4',
+        portName: 'port-4',
         port: 'input',
         r: PORT_RADIUS,
         ref: '.box',
@@ -201,7 +201,7 @@ joint.shapes.flo.Multi = joint.shapes.basic.Generic.extend({
         class: 'port4-label-rect flo-port-label-bg'
       },
       '.input-port5': {
-        id: 'in-port-5',
+        portName: 'port-5',
         port: 'input',
         r: PORT_RADIUS,
         ref: '.box',
@@ -339,7 +339,7 @@ export class Renderer implements Flo.Renderer {
   updateTargetLabel(link: joint.dia.Link, paper: dia.Paper) {
       const view = paper.findViewByModel(link.getTargetElement());
       const portElement = view ? view.findBySelector(link.target().selector) : undefined;
-      const labelText = portElement && portElement.length ? portElement[0].getAttribute('id') : undefined;
+      const labelText = portElement && portElement.length ? portElement[0].getAttribute('port-name') : undefined;
       setTimeout(() => {
         let idx = -1;
         for (let i = 0; idx < 0 && i < link.labels().length; i++) {
