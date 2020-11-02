@@ -86,6 +86,11 @@ export class DslEditorComponent implements OnInit {
     }
   }
 
+  triggerLinting() {
+    this.doc.setOption('lint', {});
+    this.doc.setOption('lint', this._lint);
+  }
+
   ngOnInit() {
 
     let options: CodeMirror.EditorConfiguration = {
