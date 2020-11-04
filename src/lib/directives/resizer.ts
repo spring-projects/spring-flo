@@ -44,10 +44,10 @@ export class ResizerDirective implements OnInit, OnDestroy {
         left: splitSize + 'px'
       });
 
-      $(this.first).css({
+      $(this.element.nativeElement).parent().find(this.first).css({
         width: splitSize + 'px'
       });
-      $(this.second).css({
+      $(this.element.nativeElement).parent().find(this.second).css({
         left: (splitSize + this._size) + 'px'
       });
     } else {
@@ -56,10 +56,10 @@ export class ResizerDirective implements OnInit, OnDestroy {
         bottom: splitSize + 'px'
       });
 
-      $(this.first).css({
+      $(this.element.nativeElement).parent().find(this.first).css({
         bottom: (splitSize + this._size) + 'px'
       });
-      $(this.second).css({
+      $(this.element.nativeElement).parent().find(this.second).css({
         height: splitSize + 'px'
       });
     }
