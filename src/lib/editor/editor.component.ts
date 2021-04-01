@@ -894,7 +894,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   }
 
   validateContent(): Promise<any> {
-    return new Promise(resolve => {
+    return new Promise<void>(resolve => {
       if (this.editor && this.editor.validate) {
         return this.editor
           .validate(this.graph, this.dsl, this.editorContext)

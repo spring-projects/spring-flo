@@ -242,7 +242,7 @@ export namespace Flo {
         name: name,
         group: group,
         unresolved: true,
-        get: (property: string) => new Promise(resolve => resolve()),
+        get: (property: string) => new Promise<PropertyMetadata>(resolve => resolve(undefined)),
         properties: () => Promise.resolve(new Map<string, PropertyMetadata>())
       };
     }
