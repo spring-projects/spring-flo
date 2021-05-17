@@ -4,7 +4,7 @@ import { Properties } from 'spring-flo';
 import { FormGroup } from '@angular/forms';
 
 // For JS linting
-import 'jshint';
+// import 'jshint';
 
 @Component({
   selector: 'properties-dialog-content',
@@ -19,7 +19,7 @@ export class PropertiesDialogComponent {
 
   propertiesFormGroup : FormGroup;
 
-  constructor(private bsModalRef: BsModalRef) {
+  constructor(public bsModalRef: BsModalRef) {
     this.propertiesFormGroup = new FormGroup({});
   }
 

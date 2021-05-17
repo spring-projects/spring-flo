@@ -427,7 +427,7 @@ export class Renderer implements Flo.Renderer {
           }
         });
 
-        resolve();
+        resolve(undefined);
       });
     }
 

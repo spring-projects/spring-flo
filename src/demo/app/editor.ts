@@ -60,7 +60,7 @@ export class Editor implements Flo.Editor {
       }
     }
 
-    openPropertiesDialog(cell : dia.Cell) {
+    openPropertiesDialog(cell: dia.Cell) {
       let bsModalRef = this.modelService.show(PropertiesDialogComponent);
       let metadata : Flo.ElementMetadata = cell.get('metadata');
       bsModalRef.content.title = `Properties for ${metadata.name.toUpperCase()}`;
@@ -69,11 +69,11 @@ export class Editor implements Flo.Editor {
       bsModalRef.content.propertiesGroupModel = propertiesModel;
     }
 
-    validatePort(context : Flo.EditorContext, view : dia.ElementView, magnet : SVGElement) {
+    validatePort(context: Flo.EditorContext, view : dia.ElementView, magnet : SVGElement) {
       return true;
     }
 
-    validateLink(context : Flo.EditorContext, cellViewS : dia.ElementView, magnetS : SVGElement, cellViewT : dia.ElementView, magnetT : SVGElement, isSource : boolean, linkView : dia.LinkView) {
+    validateLink(context: Flo.EditorContext, cellViewS : dia.ElementView, magnetS : SVGElement, cellViewT : dia.ElementView, magnetT : SVGElement, isSource : boolean, linkView : dia.LinkView) {
       // Prevent linking from input ports.
       if (magnetS && magnetS.getAttribute('port') === 'input') {
         return false;

@@ -25,7 +25,7 @@ export class AppComponent {
   dsl : string;
   dslEditor = false;
 
-  private editorContext : Flo.EditorContext;
+  editorContext: Flo.EditorContext;
 
   paletteSize = 170;
 
