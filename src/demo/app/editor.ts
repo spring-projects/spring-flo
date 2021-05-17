@@ -15,11 +15,9 @@
  */
 
 import { Flo, Constants, Properties } from 'spring-flo';
-import { Validators } from '@angular/forms';
 import { dia, g } from 'jointjs';
-import { BsModalService } from 'ngx-bootstrap/modal';
-import { PropertiesDialogComponent } from './properties.dialog.component';
-const joint : any = Flo.joint;
+import {PropertiesEditorService} from './properties-editor.service';
+const joint: any = Flo.joint;
 
 /**
  * @author Alex Boyko
@@ -44,7 +42,7 @@ export class Editor implements Flo.Editor {
       };
     }
 
-    constructor(private modelService : BsModalService) {}
+    constructor(private propertiesEditor: PropertiesEditorService) {}
 
     createHandles(context : Flo.EditorContext, createHandle : (owner : dia.CellView, kind : string, action : () => void, location : dia.Point) => void, owner : dia.CellView) {
       if (owner.model instanceof joint.dia.Element) {
@@ -55,18 +53,9 @@ export class Editor implements Flo.Editor {
 
         // Properties handle
         if (!owner.model.get('metadata')?.unresolved) {
-          createHandle(owner, Constants.PROPERTIES_HANDLE_TYPE, () => this.openPropertiesDialog(owner.model), bbox.origin().offset(-14, bbox.height + 3));
+          createHandle(owner, Constants.PROPERTIES_HANDLE_TYPE, () => this.propertiesEditor.openPropertiesDialog(owner.model), bbox.origin().offset(-14, bbox.height + 3));
         }
       }
-    }
-
-    openPropertiesDialog(cell: dia.Cell) {
-      let bsModalRef = this.modelService.show(PropertiesDialogComponent);
-      let metadata : Flo.ElementMetadata = cell.get('metadata');
-      bsModalRef.content.title = `Properties for ${metadata.name.toUpperCase()}`;
-      let propertiesModel = new SamplePropertiesGroupModel(new Properties.DefaultCellPropertiesSource(cell));
-      propertiesModel.load();
-      bsModalRef.content.propertiesGroupModel = propertiesModel;
     }
 
     validatePort(context: Flo.EditorContext, view : dia.ElementView, magnet : SVGElement) {
@@ -561,65 +550,3 @@ export class Editor implements Flo.Editor {
     }
 
 }
-
-class SamplePropertiesGroupModel extends Properties.PropertiesGroupModel {
-  protected createControlModel(property : Properties.Property) : Properties.ControlModel<any> {
-    let inputType = Properties.InputType.TEXT;
-    let validation : Properties.Validation;
-    switch (property.type) {
-      case 'number':
-        inputType = Properties.InputType.NUMBER;
-        break;
-      case 'url':
-        inputType = Properties.InputType.URL;
-        break;
-      case 'password':
-        inputType = Properties.InputType.PASSWORD;
-        break;
-      case 'boolean':
-        return new Properties.CheckBoxControlModel(property);
-      case 'e-mail':
-        inputType = Properties.InputType.EMAIL;
-        break;
-      case 'list':
-      case 'list[number]':
-      case 'list[boolean]':
-        return new Properties.GenericListControlModel(property);
-      case 'enum':
-        if (Array.isArray(property.valueOptions)) {
-          return new Properties.SelectControlModel(property, Properties.InputType.SELECT, (<Array<string>> property.valueOptions).map(o => {
-            return {
-              name: o,
-              value: o === property.defaultValue ? undefined : o
-            }
-          }));
-        }
-      case 'code':
-        return new Properties.CodeControlModelWithDynamicLanguageProperty(property, 'language', this, this.encodeTextToDSL, this.decodeTextFromDSL);
-      default:
-        if (property.name === 'name') {
-          validation = {
-            validator: Validators.required,
-            errorData: [
-              { id: 'required', message: 'Name is required!' }
-            ]
-          }
-        }
-        break;
-    }
-    return new Properties.GenericControlModel(property, inputType, validation);
-  }
-
-  encodeTextToDSL(text: string): string {
-    return '\"' + text.replace(/(?:\r\n|\r|\n)/g, '\\n').replace(/"/g, '""') + '\"';
-  }
-
-  decodeTextFromDSL(dsl: string): string {
-    if (dsl.charAt(0) === '\"' && dsl.charAt(dsl.length - 1) === '\"') {
-      dsl = dsl.substr(1, dsl.length - 2);
-    }
-    return dsl.replace(/\\n/g, '\n').replace(/\"\"/g, '"');
-  }
-
-}
-

@@ -208,7 +208,6 @@ export namespace Flo {
     validate?(graph: dia.Graph, dsl: string, flo: EditorContext): Promise<Map<string | number, Array<Marker>>>;
     preDelete?(context: EditorContext, deletedElement: dia.Cell): boolean;
     setDefaultContent?(editorContext: EditorContext, data: Map<string, Map<string, ElementMetadata>>): void;
-    openPropertiesDialog(cell: dia.Cell): void;
   }
 
   export function findMagnetByClass(view: dia.CellView, className: string): SVGElement | undefined {

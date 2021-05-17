@@ -10,7 +10,7 @@
   <flo-editor (floApi)="editorContext = $event" [metamodel]="metamodel" [renderer]="renderer" [editor]="editor"
               [paletteSize]="paletteSize" [paletteEntryPadding]="{width: 4, height: 4}" [(dsl)]="dsl"
               [paperPadding]="20" (validationMarkers)="markersChanged($event)" searchFilterPlaceHolder="Apps..."
-              (onProperties)="editor.openPropertiesDialog($event)">
+              (onProperties)="openPropertiesDialog($event)">
     <div header>
       <div id="controls" class="controls">
         <button class="button" id="clearGraph" (click)="editorContext.clearGraph()">Create New Flow</button>
