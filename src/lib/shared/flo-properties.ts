@@ -222,8 +222,8 @@ export namespace Properties {
   }
 
   export class SelectControlModel extends GenericControlModel<any> {
-    constructor(_property: Property, type: InputType, public options: Array<SelectOption>) {
-      super(_property, type);
+    constructor(_property: Property, type: InputType, public options: Array<SelectOption>, validation?: Validation) {
+      super(_property, type, validation);
       if (_property.defaultValue === undefined) {
         options.unshift({
           name: 'SELECT',
