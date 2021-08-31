@@ -33,13 +33,13 @@ export function loadShapes() {
   joint.shapes.flo.HANDLE_TYPE = 'handle';
 
 
-  joint.util.cloneDeep = (obj: any) => {
-    return _.cloneDeepWith(obj, (o) => {
-      if (_.isObject(o) && !_.isPlainObject(o)) {
-        return o;
-      }
-    });
-  };
+  // joint.util.cloneDeep = (obj: any) => {
+  //   return _.cloneDeepWith(obj, (o) => {
+  //     if (_.isObject(o) && !_.isPlainObject(o)) {
+  //       return o;
+  //     }
+  //   });
+  // };
 
   joint.util.filter.redscale = (args: Shapes.FilterOptions) => {
 
