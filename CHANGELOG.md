@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.11.0](https://github.com/spring-projects/spring-flo/compare/v0.10.1...v0.11.0) (2021-09-23)
+
 ### [0.10.1](https://github.com/spring-projects/spring-flo/compare/v0.10.0...v0.10.1) (2020-11-10)
 
 ## [0.10.0](https://github.com/spring-projects/spring-flo/compare/v0.10.0-alpha...v0.10.0) (2020-07-27)
