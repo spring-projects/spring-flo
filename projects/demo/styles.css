@@ -1,0 +1,64 @@
+@import "./../../node_modules/jointjs/dist/joint.core.css";
+@import "./../../node_modules/codemirror/lib/codemirror.css";
+@import "./../../node_modules/codemirror/addon/hint/show-hint.css";
+@import "./../../node_modules/codemirror/addon/lint/lint.css";
+@import "./../../node_modules/codemirror/addon/scroll/simplescrollbars.css";
+
+h1 {
+  color: #369;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 250%;
+}
+
+.connecting .flo-input-port {
+  fill: #aa1111;
+  r: 4;
+}
+
+.connecting .label-group {
+  display: block;
+}
+
+.label-group {
+  display: none;
+}
+
+.flo-input-port {
+  fill: #eeeeee;
+  stroke: #34302d;
+  stroke-width: 1px;
+}
+
+.flo-port-label {
+  text-anchor: start;
+  fill: black;
+}
+
+.flo-port-label-bg {
+  fill: lightblue;
+  stroke: lightblue;
+  stroke-width: 7px;
+  rx: 3;
+  ry: 3;
+  refWidth: 1;
+  refHeight: 1;
+}
+
+.joint-link:hover .link-channel-label {
+  opacity: 1;
+}
+
+.link-channel-label {
+  opacity: 0;
+}
+
+.available-magnet {
+  stroke-width: 2px;
+}
+
+.joint-element.highlighted rect {
+  stroke: #34302d;
+  stroke-width: 3;
+}
+
+

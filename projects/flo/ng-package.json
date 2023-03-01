@@ -1,0 +1,15 @@
+{
+  "$schema": "../../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/flo",
+  "deleteDestPath": true,
+  "lib": {
+    "entryFile": "./index.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "codemirror",
+    "jointjs",
+    "jquery",
+    "lodash",
+    "ts-disposables"
+  ]
+}

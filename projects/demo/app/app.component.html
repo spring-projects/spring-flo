@@ -1,0 +1,61 @@
+<!--
+<my-lib></my-lib>
+<h3>Meaning is: {{meaning}}</h3>
+<flo-editor></flo-editor>
+-->
+<div id="header" class="header">
+  Spring Flo Sample
+</div>
+<div id="flo-container">
+  <flo-editor (floApi)="editorContext = $event" [metamodel]="metamodel" [renderer]="renderer" [editor]="editor"
+              [paletteSize]="paletteSize" [paletteEntryPadding]="{width: 4, height: 4}" [(dsl)]="dsl"
+              [paperPadding]="20" (validationMarkers)="markersChanged($event)" searchFilterPlaceHolder="Apps..."
+              (onProperties)="openPropertiesDialog($event)">
+    <div header>
+      <div id="controls" class="controls">
+        <button class="button" id="clearGraph" (click)="editorContext.clearGraph()">Create New Flow</button>
+        <!-- let's use the 'x' control on the nodes themselves when they are selected
+                  <button class="button" id="deleteSelectedNode" ng-click="flo.deleteSelectedNode()">Delete Selected Node</button>
+                   -->
+        <button class="button" id="performLayout" (click)="arrangeAll()">Reset Layout</button>
+        <button class="button" id="sync" (click)="editorContext.graphToTextSync = !editorContext.graphToTextSync"
+                [ngClass]="{on:editorContext.graphToTextSync}">Synchronize
+        </button>
+        <button class="button" id="readOnly" (click)="editorContext.readOnlyCanvas = !editorContext.readOnlyCanvas"
+                [ngClass]="{on:editorContext.readOnlyCanvas}">Read-Only
+        </button>
+        <button class="button" id="noPalette" (click)="editorContext.noPalette = !editorContext.noPalette"
+                [ngClass]="{on:!editorContext.noPalette}">Palette
+        </button>
+        <button class="button" id="editor" (click)="dslEditor = !dslEditor" [ngClass]="{on:dslEditor}">{{dslEditor ?
+          'TextArea' : 'Editor'}}
+        </button>
+        <span class="button">
+          <label>Zoom: </label>
+          <input id="zoomInput" type="text" [(ngModel)]="editorContext.zoomPercent" size="3">
+          <label>%</label>
+          <input type="range" [(ngModel)]="editorContext.zoomPercent" [step]="editorContext.getZoomStep()"
+                 [max]="editorContext.getMaxZoom()" [min]="editorContext.getMinZoom()" data-type="range" name="range"
+                 class="range">
+        </span>
+        <span class="button">
+				  <label>Grid Size: </label>
+			    <input id="gridSizeInput" type="text" [(ngModel)]="editorContext.gridSize" size="2">
+			    <label>pixels</label>
+			    <input type="range" [(ngModel)]="editorContext.gridSize" step="1" max="50" min="1" data-type="range"
+                 name="range" class="range">
+				</span>
+      </div>
+      <div class="flow-definition-container">
+        <dsl-editor *ngIf="dslEditor" [(dsl)]="dsl" [line-numbers]="true" [line-wrapping]="true"
+                    (blur)="editorContext.graphToTextSync=true" (focus)="editorContext.graphToTextSync=false"
+                    placeholder="Enter stream definition..."></dsl-editor>
+        <textarea *ngIf="!dslEditor" id="flow-definition" class="flow-definition"
+                  placeholder="Enter stream definition..."
+                  [value]="dsl" (keyup)="processKeyUp($event)" (blur)="editorContext.graphToTextSync=true"
+                  (focus)="editorContext.graphToTextSync=false"></textarea>
+      </div>
+    </div>
+  </flo-editor>
+</div>
+
