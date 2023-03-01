@@ -70,25 +70,6 @@
     "npm-run-all": "^4.1.5",
     "rimraf": "^3.0.2",
     "wait-on": "^6.0.1"
-  },
-
-  "module": "dist/flo/fesm2015/spring-flo.mjs",
-  "es2020": "dist/flo/fesm2020/spring-flo.mjs",
-  "esm2020": "dist/flo/esm2020/spring-flo.mjs",
-  "fesm2020": "dist/flo/fesm2020/spring-flo.mjs",
-  "fesm2015": "dist/flo/fesm2015/spring-flo.mjs",
-  "typings": "dist/flo/index.d.ts",
-  "exports": {
-    "./package.json": {
-      "default": "./dist/flo/package.json"
-    },
-    ".": {
-      "types": "./dist/flo/index.d.ts",
-      "esm2020": "./dist/flo/esm2020/spring-flo.mjs",
-      "es2020": "./dist/flo/fesm2020/spring-flo.mjs",
-      "es2015": "./dist/flo/fesm2015/spring-flo.mjs",
-      "node": "./dist/flo/fesm2015/spring-flo.mjs",
-      "default": "./dist/flo/fesm2020/spring-flo.mjs"
-    }
   }
+
 }
