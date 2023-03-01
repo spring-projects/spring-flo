@@ -1,8 +1,7 @@
 import { Component, Input, Output, ElementRef, EventEmitter, OnInit, ViewEncapsulation } from '@angular/core';
-import * as _ from 'lodash';
+import debounce from 'lodash/debounce';
 import * as CodeMirror from 'codemirror';
-import * as _$ from 'jquery';
-const $: any = _$;
+import $ from 'jquery';
 
 import 'codemirror/addon/lint/lint';
 import 'codemirror/addon/hint/show-hint';
@@ -124,7 +123,7 @@ export class DslEditorComponent implements OnInit {
     // Turns out "value" in the option doesn't set it.
     this.doc.setValue(this._dsl || '');
 
-    this.doc.on('change', this.debounce ? _.debounce(this._dslChangedHandler, this.debounce) : this._dslChangedHandler);
+    this.doc.on('change', this.debounce ? debounce(this._dslChangedHandler, this.debounce) : this._dslChangedHandler);
     this.doc.on('focus', () => this.focus.emit());
     this.doc.on('blur', () => this.blur.emit());
 

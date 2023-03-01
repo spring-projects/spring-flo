@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { Properties } from '../shared/flo-properties';
-import Property = Properties.Property;
 import PropertyFilter = Properties.PropertyFilter;
 
 @Component({

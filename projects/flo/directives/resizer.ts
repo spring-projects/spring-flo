@@ -4,8 +4,7 @@ import { fromEvent } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 
 import { CompositeDisposable, Disposable } from 'ts-disposables';
-import * as _$ from 'jquery';
-const $: any = _$;
+import $ from 'jquery';
 
 @Directive({
   selector: '[resizer]',

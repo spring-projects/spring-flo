@@ -2,8 +2,7 @@ import { Component, Input, Output, ElementRef, EventEmitter, OnInit, ViewEncapsu
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import * as CodeMirror from 'codemirror';
 
-import * as _$ from 'jquery';
-const $: any = _$;
+import $ from 'jquery';
 
 // CodeMirror extensions
 import 'codemirror/mode/meta';

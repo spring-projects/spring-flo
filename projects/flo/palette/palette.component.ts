@@ -6,10 +6,9 @@ import { Flo } from '../shared/flo-common';
 import '../shared/shapes';
 import { Shapes, Constants } from '../shared/shapes';
 import { DOCUMENT } from '@angular/common'
-import * as _$ from 'jquery';
+import $ from 'jquery';
 import {Logger} from '../shared/logger';
 const joint: any = Flo.joint;
-const $: any = _$;
 
 const DEBOUNCE_TIME = 300;
 

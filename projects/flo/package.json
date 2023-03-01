@@ -1,6 +1,6 @@
 {
   "name": "spring-flo",
-  "version": "0.11.0",
+  "version": "0.12.0-beta.2",
   "description": "Library for quickly building text DSL visualization diagram editor",
   "author": "Andy Clement, Alex Boyko",
   "license": "Apache-2.0",
@@ -11,11 +11,11 @@
   "dependencies": {
     "codemirror": "5.54.0",
     "jointjs": "3.4.1",
+    "jquery": "^3.6.3",
+    "lodash": "^4.17.21",
     "ts-disposables": "2.2.3"
   },
   "peerDependencies": {
-    "jquery": ">=3.6.0",
-    "lodash": ">=4.17.0",
     "@angular/core": ">=15.0.0 <17.0.0",
     "@angular/forms": ">=15.0.0 < 17.0.0",
     "@angular/common": ">=15.0.0 <17.0.0",

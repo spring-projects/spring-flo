@@ -14,12 +14,13 @@ import { Flo } from '../shared/flo-common';
 import { Shapes, Constants } from '../shared/shapes';
 import { Utils } from './editor-utils';
 import { CompositeDisposable, Disposable } from 'ts-disposables';
-import * as _$ from 'jquery';
-import * as _ from 'lodash';
+import $ from 'jquery';
+import isEqual from 'lodash/isEqual';
+import partial from 'lodash/partial';
+
 import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { Logger } from '../shared/logger';
 const joint: any = Flo.joint;
-const $: any = _$;
 
 export interface VisibilityState {
   visibility: string;
@@ -559,7 +560,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     if (this.highlighted === dragDescriptor) {
       return;
     }
-    if (this.highlighted && dragDescriptor && _.isEqual(this.highlighted.sourceComponent, dragDescriptor.sourceComponent)) {
+    if (this.highlighted && dragDescriptor && isEqual(this.highlighted.sourceComponent, dragDescriptor.sourceComponent)) {
       if (this.highlighted.source === dragDescriptor.source && this.highlighted.target === dragDescriptor.target) {
         return;
       }
@@ -673,7 +674,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     // }
 
     let oldVisibility = excludeViews.map(_x => this._hideNode(_x.el));
-    let targetElement = document.elementFromPoint(event.clientX, event.clientY);
+    let targetElement = document.elementFromPoint(event.clientX, event.clientY) as HTMLElement;
     excludeViews.forEach((excluded, i) => {
       this._restoreNodeVisibility(excluded.el, oldVisibility[i]);
     });
@@ -724,7 +725,7 @@ export class EditorComponent implements OnInit, OnDestroy {
   handleDropFromPalette(event: Flo.DnDEvent) {
     let cellview = event.view;
     let evt = event.event;
-    if (this.paper.el === evt.target || $.contains(this.paper.el, evt.target)) {
+    if (this.paper.el === evt.target || $.contains(this.paper.el, evt.target as HTMLElement)) {
       if (this.readOnlyCanvas) {
         this.setDragDescriptor(undefined);
       } else {
@@ -1173,7 +1174,7 @@ export class EditorComponent implements OnInit, OnDestroy {
       }
     });
     // adjust vertices when a cell is removed or its source/target was changed
-    this.graph.on('add remove change:source change:target change:vertices change:position', _.partial(Utils.fanRoute, this.graph));
+    this.graph.on('add remove change:source change:target change:vertices change:position', partial(Utils.fanRoute, this.graph));
 
     this.graph.on('startDeletion', (cell: dia.Cell) => {
       if (this.editor && this.editor.preDelete) {

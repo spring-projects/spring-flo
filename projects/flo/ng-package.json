@@ -8,6 +8,8 @@
   "allowedNonPeerDependencies": [
     "codemirror",
     "jointjs",
+    "jquery",
+    "lodash",
     "ts-disposables"
   ]
 }

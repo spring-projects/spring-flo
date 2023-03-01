@@ -1,9 +1,9 @@
 import { dia } from 'jointjs';
 import { Flo } from './flo-common';
-import * as _ from 'lodash';
-import * as _$ from 'jquery';
+import template from 'lodash/template';
+import isFunction from 'lodash/isFunction';
+import $ from 'jquery';
 const joint: any = Flo.joint;
-const $: any = _$;
 
 const isChrome: boolean = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
 const isFF: boolean = navigator.userAgent.indexOf('Firefox') > 0;
@@ -45,7 +45,7 @@ export function loadShapes() {
 
     let amount = Number.isFinite(args.amount) ? args.amount : 1;
 
-    return _.template(
+    return template(
       '<filter><feColorMatrix type="matrix" values="${a} ${b} ${c} 0 ${d} ${e} ${f} ${g} 0 0 ${h} ${i} ${k} 0 0 0 0 0 1 0"/></filter>',
       <any>{
         a: 1 - 0.96 * amount,
@@ -66,7 +66,7 @@ export function loadShapes() {
 
     let amount = Number.isFinite(args.amount) ? args.amount : 1;
 
-    return _.template(
+    return template(
       '<filter><feColorMatrix type="matrix" values="${a} ${b} ${c} 0 ${d} ${e} ${f} ${g} 0 ${h} ${i} ${k} ${l} 0 0 0 0 0 1 0"/></filter>',
       <any>{
         a: 1.0 + 0.5 * amount,
@@ -355,7 +355,7 @@ export function loadShapes() {
     //   }
     // },
     drag: function(evt: MouseEvent, x: number, y: number) {
-      let interactive = _.isFunction(this.options.interactive) ? this.options.interactive(this, 'pointermove') :
+      let interactive = isFunction(this.options.interactive) ? this.options.interactive(this, 'pointermove') :
         this.options.interactive;
       if (interactive !== false) {
         this.paper.trigger('dragging-node-over-canvas', {type: Flo.DnDEventType.DRAG, view: this, event: evt});
@@ -646,7 +646,7 @@ export namespace Shapes {
         position = {x: 0, y: 0};
       }
 
-      if (renderer && _.isFunction(renderer.createNode)) {
+      if (renderer && isFunction(renderer.createNode)) {
         node = renderer.createNode({graph, paper}, metadata, props);
       } else {
         node = new joint.shapes.flo.Node();
@@ -665,7 +665,7 @@ export namespace Shapes {
       if (graph) {
         graph.addCell(node);
       }
-      if (renderer && _.isFunction(renderer.initializeNewNode)) {
+      if (renderer && isFunction(renderer.initializeNewNode)) {
         let descriptor: Flo.ViewerDescriptor = {
           paper: paper,
           graph: graph
@@ -685,7 +685,7 @@ export namespace Shapes {
       let graph = params.graph || (params.paper ? params.paper.model : undefined);
 
       let link: dia.Link;
-      if (renderer && _.isFunction(renderer.createLink)) {
+      if (renderer && isFunction(renderer.createLink)) {
         link = renderer.createLink(source, target, metadata, props);
       } else {
         link = new joint.shapes.flo.Link();
@@ -706,7 +706,7 @@ export namespace Shapes {
       if (graph) {
         graph.addCell(link);
       }
-      if (renderer && _.isFunction(renderer.initializeNewLink)) {
+      if (renderer && isFunction(renderer.initializeNewLink)) {
         let descriptor: Flo.ViewerDescriptor = {
           paper: paper,
           graph: graph
@@ -728,7 +728,7 @@ export namespace Shapes {
       let graph = params.graph || (params.paper ? params.paper.model : undefined);
 
       let decoration: dia.Element;
-      if (renderer && _.isFunction(renderer.createDecoration)) {
+      if (renderer && isFunction(renderer.createDecoration)) {
         decoration = renderer.createDecoration(kind, parent);
       }
       if (decoration) {
@@ -742,7 +742,7 @@ export namespace Shapes {
           graph.addCell(decoration);
         }
         parent.embed(decoration);
-        if (renderer && _.isFunction(renderer.initializeNewDecoration)) {
+        if (renderer && isFunction(renderer.initializeNewDecoration)) {
           let descriptor: Flo.ViewerDescriptor = {
             paper: paper,
             graph: graph
@@ -766,7 +766,7 @@ export namespace Shapes {
       if (!location) {
         location = {x: 0, y: 0};
       }
-      if (renderer && _.isFunction(renderer.createHandle)) {
+      if (renderer && isFunction(renderer.createHandle)) {
         handle = renderer.createHandle(kind, parent);
       } else {
         handle = new joint.shapes.flo.ErrorDecoration({
@@ -788,7 +788,7 @@ export namespace Shapes {
         graph.addCell(handle);
       }
       parent.embed(handle);
-      if (renderer && _.isFunction(renderer.initializeNewHandle)) {
+      if (renderer && isFunction(renderer.initializeNewHandle)) {
         let descriptor: Flo.ViewerDescriptor = {
           paper: paper,
           graph: graph
