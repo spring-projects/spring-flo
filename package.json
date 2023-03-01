@@ -6,6 +6,7 @@
     "start": "npm-run-all clean --parallel flo:watch demo:start-waiton",
     "build": "run-s flo:build demo:build",
     "prepare": "npm run flo:build",
+    "postinstall": "npm run flo:build",
     "test": "run-p flo:test demo:test",
     "test-coverage": "run-p flo:test-coverage demo:test-coverage",
 
