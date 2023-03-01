@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {dia} from 'jointjs';
 import {PropertiesDialogComponent} from './properties.dialog.component';
 import {BsModalService} from 'ngx-bootstrap/modal';
-import {Flo, Properties} from '../../lib';
+import {Flo, Properties} from '../../flo';
 import {Validators} from '@angular/forms';
 
 

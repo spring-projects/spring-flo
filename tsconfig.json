@@ -3,9 +3,8 @@
   "compileOnSave": false,
   "compilerOptions": {
     "paths": {
-      "spring-flo": ["projects/lib"],
-      "spring-flo/*": ["projects/lib/*"]
-
+      "spring-flo": ["projects/flo"],
+      "spring-flo/*": ["projects/flo/*"]
     },
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
