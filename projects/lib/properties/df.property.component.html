@@ -1,0 +1,47 @@
+<tr [formGroup]="form" class="df-property-row" [ngClass]="{'invalid-property-value': control.invalid}">
+
+  <td class="df-property-label-cell">
+    <label [attr.for]="model.id" class="df-form-label">{{model.name}}</label>
+  </td>
+
+  <td class="df-property-control-cell">
+    <div [ngSwitch]="model.type" class="df-property-container">
+
+      <label *ngSwitchCase="types.CHECKBOX" class="df-property-control">
+        <input type="checkbox" [id]="model.id" [(ngModel)]="model.value" [formControlName]="model.id">
+        {{model.value ? 'True' : 'False' }}
+      </label>
+
+      <input *ngSwitchCase="types.NUMBER" class="df-property-control" type="number" [id]="model.id"
+             [formControlName]="model.id" [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+
+      <input *ngSwitchCase="types.PASSWORD" class="df-property-control" type="password" [id]="model.id"
+             [formControlName]="model.id" [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+
+      <input *ngSwitchCase="types.EMAIL" class="df-property-control" type="password" [id]="model.id"
+             [formControlName]="model.id" [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+
+      <input *ngSwitchCase="types.URL" class="df-property-control" type="url" [id]="model.id"
+             [formControlName]="model.id" [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+
+      <select *ngSwitchCase="types.SELECT" class="df-property-control" [id]="model.id"
+             [formControlName]="model.id" [(ngModel)]="model.value">
+        <option *ngFor="let o of model['options']" [ngValue]="o.value">{{o.name}}</option>
+      </select>
+
+      <code-editor *ngSwitchCase="types.CODE" class="df-property-control" [id]="model.id"
+              [formControlName]="model.id" [language]="model['language']" [(ngModel)]="model.value" [line-numbers]="true"
+              scrollbar-style="simple" [placeholder]="model.defaultValue || 'Enter code snippet...'" [overview-ruler]="true">
+      </code-editor>
+
+      <input *ngSwitchDefault class="df-property-control" type="text" [id]="model.id" [formControlName]="model.id"
+             [placeholder]="model.defaultValue || ''" [(ngModel)]="model.value">
+    </div>
+    <div class="help-block">
+      <div>{{model.description}}</div>
+      <div *ngFor="let e of errorData" class="validation-error-block">{{e.message}}</div>
+    </div>
+  </td>
+
+</tr>
+

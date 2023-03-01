@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../../node_modules/ng-packagr/ng-package.schema.json",
+  "dest": "../../dist/spring-flo",
+  "deleteDestPath": true,
+  "lib": {
+    "entryFile": "./index.ts"
+  },
+  "allowedNonPeerDependencies": [
+    "codemirror",
+    "jointjs",
+    "ts-disposables"
+  ]
+}

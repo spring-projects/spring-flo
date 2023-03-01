@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "angularCompilerOptions": {
+    "paths": {
+      "spring-flo": [ "../../dist/spring-flo" ]
+    }
+  },
+  "compilerOptions": {
+    "outDir": "../../out-tsc/app",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "paths": {
+      "spring-flo/*": [
+        "../../dist/spring-flo/*"
+      ],
+      "spring-flo": [
+        "../../dist/spring-flo"
+      ]
+    }
+  },
+  "files": [
+    "main.ts",
+    "polyfills.ts"
+  ],
+  "include": [
+    "**/*.d.ts"
+  ]
+}

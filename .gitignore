@@ -1,20 +1,42 @@
-dist/
-node_modules/
-out-tsc/
-debug.log
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
+
+# Node
+/node_modules
 npm-debug.log
-src/**/*.js
-src/**/*.d.ts
-!src/lib/typings.d.ts
-!src/demo/typings.d.ts
-!src/demo/systemjs.config.js
-!src/demo/systemjs.config.lib.js
-!**/*systemjs-angular-loader.js
-*.js.map
-e2e/**/*.js
-e2e/**/*.js.map
-.DS_Store
-**/.DS_Store
-*.iml
+yarn-error.log
+
+# IDEs and editors
 .idea/
-!/src/lib/@types/codemirror-minified/index.d.ts
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+
+# Miscellaneous
+/.angular/cache
+.sass-cache/
+/connect.lock
+/coverage
+/libpeerconnection.log
+testem.log
+/typings
+
+# System files
+.DS_Store
+Thumbs.db
