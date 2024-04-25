@@ -3,6 +3,7 @@ import { Flo } from '../shared/flo-common';
 import * as _ from 'lodash';
 const joint: any = Flo.joint;
 import * as _$ from 'jquery';
+import { Event } from 'jquery';
 const $: any = _$;
 
 
@@ -126,7 +127,7 @@ export class Utils {
     return args.length === 5 &&
       _.isString(args[0]) &&
       (args[0].indexOf('link:') === 0 || args[0].indexOf('element:') === 0) &&
-      args[1] instanceof $.Event &&
+      args[1] instanceof Event &&
       args[2] instanceof joint.dia.CellView &&
       _.isNumber(args[3]) &&
       _.isNumber(args[4]);
