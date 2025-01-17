@@ -10,7 +10,6 @@ import { AppComponent }  from './app.component';
 @NgModule({
   imports:      [ BrowserModule, FormsModule, FloModule, ModalModule.forRoot() ],
   declarations: [ AppComponent, PropertiesDialogComponent ],
-  entryComponents: [ PropertiesDialogComponent ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

@@ -9,7 +9,8 @@ import { FormGroup } from '@angular/forms';
 @Component({
   selector: 'properties-dialog-content',
   templateUrl: './properties.dialog.component.html',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
+  standalone: false
 })
 export class PropertiesDialogComponent {
 
