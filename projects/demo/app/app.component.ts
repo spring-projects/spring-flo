@@ -12,7 +12,6 @@ import 'codemirror/mode/clike/clike';
 import 'codemirror/addon/lint/javascript-lint';
 import {PropertiesEditorService} from './properties-editor.service';
 import {dia} from 'jointjs';
-import {setTheme} from "ngx-bootstrap/utils";
 
 @Component({
   selector: 'demo-app',
@@ -37,7 +36,6 @@ export class AppComponent {
     this.renderer = new Renderer();
     this.editor = new Editor(propertiesEditor);
     this.dsl = '';
-    setTheme('bs5'); // or 'bs4'
   }
 
   arrangeAll() {

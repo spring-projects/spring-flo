@@ -26,11 +26,11 @@
 
       <select *ngSwitchCase="types.SELECT" class="df-property-control" [id]="model.id"
              [formControlName]="model.id" [(ngModel)]="model.value">
-        <option *ngFor="let o of model['options']" [ngValue]="o.value">{{o.name}}</option>
+        <option *ngFor="let o of selectControlModel.options" [ngValue]="o.value">{{o.name}}</option>
       </select>
 
       <code-editor *ngSwitchCase="types.CODE" class="df-property-control" [id]="model.id"
-              [formControlName]="model.id" [language]="model['language']" [(ngModel)]="model.value" [line-numbers]="true"
+              [formControlName]="model.id" [language]="codeControlModel.language" [(ngModel)]="model.value" [line-numbers]="true"
               scrollbar-style="simple" [placeholder]="model.defaultValue || 'Enter code snippet...'" [overview-ruler]="true">
       </code-editor>
 

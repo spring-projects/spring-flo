@@ -29,4 +29,12 @@ export class DynamicFormPropertyComponent {
       .filter(e => this.control.errors && this.control.errors[e.id]);
   }
 
+  get selectControlModel(): Properties.SelectControlModel {
+    return this.model as Properties.SelectControlModel;
+  }
+
+  get codeControlModel(): Properties.CodeControlModel<any> {
+    return this.model as Properties.CodeControlModel<any>;
+  }
+
 }

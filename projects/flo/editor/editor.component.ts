@@ -614,7 +614,7 @@ export class EditorComponent implements OnInit, OnDestroy {
    * @param domNode DOM node to hide
    * @returns
    */
-  private _hideNode(domNode: HTMLElement): VisibilityState {
+  private _hideNode(domNode: Element & ElementCSSInlineStyle): VisibilityState {
     let oldVisibility: VisibilityState = {
       visibility: domNode.style ? domNode.style.display : undefined,
       children: []
@@ -634,7 +634,7 @@ export class EditorComponent implements OnInit, OnDestroy {
    * @param domNode DOM node to restore visibility of
    * @param oldVisibility original visibility parameter
    */
-  _restoreNodeVisibility(domNode: HTMLElement, oldVisibility: VisibilityState) {
+  _restoreNodeVisibility(domNode: Element & ElementCSSInlineStyle, oldVisibility: VisibilityState) {
     if (domNode.style) {
       domNode.style.display = oldVisibility.visibility;
     }
@@ -642,8 +642,8 @@ export class EditorComponent implements OnInit, OnDestroy {
     for (let i = 0; i < domNode.childNodes.length; i++) {
       if (j < oldVisibility.children.length) {
         let node = domNode.children.item(i);
-        if (node instanceof HTMLElement) {
-          this._restoreNodeVisibility(<HTMLElement> node, oldVisibility.children[j++]);
+        if (node instanceof Element) {
+          this._restoreNodeVisibility(node as any, oldVisibility.children[j++]);
         }
       }
     }
