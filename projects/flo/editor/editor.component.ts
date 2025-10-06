@@ -642,7 +642,7 @@ export class EditorComponent implements OnInit, OnDestroy {
     for (let i = 0; i < domNode.childNodes.length; i++) {
       if (j < oldVisibility.children.length) {
         let node = domNode.children.item(i);
-        if (node instanceof Element) {
+        if (node instanceof HTMLElement) {
           this._restoreNodeVisibility(node as any, oldVisibility.children[j++]);
         }
       }
