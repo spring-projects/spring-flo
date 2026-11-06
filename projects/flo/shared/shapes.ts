@@ -266,7 +266,7 @@ export function loadShapes() {
 
       const linkView = this.addLinkFromMagnet(magnet, x, y);
 
-      // backwards compatiblity events
+      // backwards compatibility events
       joint.dia.CellView.prototype.pointerdown.apply(linkView, [evt, x, y]);
       linkView.notify('link:pointerdown', evt, x, y);
 
